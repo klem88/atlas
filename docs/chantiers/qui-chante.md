@@ -1,8 +1,8 @@
 # Chantier : « Qui chante autour de chez toi »
 
-Branche : `feat/qui-chante`
+Branche : `feat/qui-chante` (4 commits, **pas encore poussée**). Elle est ouverte dans le dossier de travail séparé `../atlas-cadrages` (un *worktree* git). Pour reprendre ailleurs : `git checkout feat/qui-chante`.
 
-État : **cadrage validé (2026-09-30), sondes faites, prêt pour le pipeline**
+État : **données et page faites (2026-09-30) ; restent le partage, le test sur téléphone et la publication**
 
 ## Cadrage
 
@@ -99,8 +99,12 @@ Branche : `feat/qui-chante`
 - [x] Visualisation : recherche, chiffre, liste avec spectrogrammes et lecture, textes de méthode, sources et limites. Vérifiée sur données d'aperçu (Arles) en clair, en sombre et à 375 px.
 - [x] Chœur de l'aube (Web Audio : 6 voix décalées de 2,5 s, curseur et voix actives à l'accent)
 - [x] Vérification sur les données complètes (Paris 239 espèces, Brest 205, Saulieu 156, Chamonix 114 avec le chocard à bec jaune en tête)
-- [ ] Vérification sur un vrai téléphone (iOS Safari : son au premier toucher)
-- [ ] Image de partage 4:5, image d'aperçu, publication
+- [ ] **À décider par l'auteur** : pour l'image de partage, déplacer maintenant le dialogue de partage de salaire-logement (`viz/salaire-logement/ui/share.ts`) dans le socle, quitte à gérer un petit conflit avec le travail en cours sur salaire-logement, ou attendre que ce travail soit fusionné.
+- [ ] Image de partage 4:5 générée dans le navigateur : commune, nombre d'espèces, les trois plus présentes, la partition du chœur. Partage natif sur mobile, téléchargement sinon.
+- [ ] Image d'aperçu des liens : `og/build-og.ts` puis `npm run og -- qui-chante` (1200 × 630, depuis les vraies données, par exemple Paris).
+- [ ] Vérification sur un vrai téléphone par l'auteur : liste, lecture d'un chant, chœur (iOS Safari n'autorise le son qu'après un toucher), mode sombre.
+- [ ] Fusion avec `main` : la branche part d'un `main` antérieur aux corrections de salaire-logement ; attendre un possible conflit sur `src/shell/components.css` et `viz/salaire-logement/viz.css` (styles de la recherche déplacés dans le socle).
+- [ ] Publication : `status: 'published'` et mois dans `src/shell/site.ts`, cocher la liste de `viz/qui-chante/README.md`, pousser sur `main`.
 
 ## Pistes notées
 
@@ -108,4 +112,5 @@ Branche : `feat/qui-chante`
 
 ## Prochaine action
 
-Image de partage 4:5 (chiffre, commune, partition du chœur) générée dans le navigateur, en réutilisant le dialogue de partage de salaire-logement déplacé dans le socle (à coordonner : l'autre session travaille sur salaire-logement). Puis image d'aperçu (`npm run og -- qui-chante`) et publication.
+1. Relancer l'affichage : `npm run dev`, puis ouvrir http://localhost:5173/viz/qui-chante/ (les données sont déjà dans `public/data/qui-chante/`, pas besoin de relancer le pipeline).
+2. Trancher la question du dialogue de partage (voir la première case non cochée), puis faire l'image de partage.
