@@ -1,6 +1,6 @@
 # Chantier : « Qui chante autour de chez toi »
 
-Branche : `feat/qui-chante` (à créer quand le cadrage sera validé)
+Branche : `feat/qui-chante`
 
 État : **cadrage validé (2026-09-30), sondes faites, prêt pour le pipeline**
 
@@ -42,6 +42,8 @@ Branche : `feat/qui-chante` (à créer quand le cadrage sera validé)
 
 ## Décisions (validées le 2026-09-30)
 
+0. **Grille en degrés** (0,13° × 0,09°, soit environ 10 km) plutôt qu'en Lambert-93 : aucune projection à calculer, ni dans le pipeline ni dans le navigateur. Les mailles vont de 9 km de large au nord à 11 km au sud, ce qui est sans conséquence pour « autour de chez toi ».
+
 1. **Licences** : CC0, CC BY et CC BY-NC acceptées, avec citation. **Enregistrements « ND » exclus** (couper un extrait et en tirer un spectrogramme, c'est modifier). Partage à l'identique (SA) conservé sur les extraits publiés.
 2. **Entrée par commune** (socle réutilisé, 100 % statique).
 3. **Année entière** en V1, avec une mention du printemps. Le curseur de mois viendra si la page prend.
@@ -82,7 +84,7 @@ Branche : `feat/qui-chante` (à créer quand le cadrage sera validé)
 - [x] Validation du cadrage (2026-09-30)
 - [x] Sonde de faisabilité GBIF : 3 lieux tests, nombre d'espèces et temps de requête
 - [x] Sonde Xeno-canto : 198 espèces sur 200 couvertes, sans clé, via GBIF
-- [ ] Contrat de données + validation (`data/`)
+- [x] Contrat de données + validation (`data/`), grille de mailles et agrégation (`domain/`), testés
 - [ ] Pipeline observations → `public/data/qui-chante/` + `REPORT.md`
 - [ ] Pipeline chants : extraits, spectrogrammes, crédits
 - [ ] `domain/` : rattachement commune → mailles, agrégation, tri, tests
@@ -92,4 +94,4 @@ Branche : `feat/qui-chante` (à créer quand le cadrage sera validé)
 
 ## Prochaine action
 
-Créer la branche `feat/qui-chante` (`npm run new:viz -- qui-chante --title "Qui chante autour de chez toi" …`), puis écrire le contrat de données (`data/`) : grille de mailles, espèces par maille, index des espèces, crédits des chants.
+Écrire le pipeline des observations (`pipeline/build.ts`) : communes (geo.api.gouv.fr), mailles à interroger, facettes GBIF par maille avec cache et nouvelles tentatives, noms français (TAXREF via GBIF), agrégation 3 × 3, fichiers `communes.json`, `species.json`, `cells/*.json` et `REPORT.md`.
