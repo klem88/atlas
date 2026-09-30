@@ -513,3 +513,50 @@
   font-size: var(--text-sm);
   color: var(--ink-2);
 }
+
+/* Mobile et tablette : la carte d'abord ------------------------------------
+ * Sous 1000 px, le panneau et la scène s'effacent (display: contents) pour que
+ * leurs éléments se rangent dans une seule colonne : le revenu, sans lequel la
+ * carte ne veut rien dire, puis la carte, la fiche commune, et les réglages
+ * secondaires en dessous. Le bureau garde son panneau latéral. */
+@media (max-width: 999px) {
+  .viz-panel,
+  .panel-form,
+  .viz-stage {
+    display: contents;
+  }
+
+  .field--income { order: 1; }
+  .map-frame { order: 2; }
+  .map-legend { order: 3; }
+  .commune-card { order: 4; }
+  .timeline { order: 5; }
+  .result { order: 6; }
+  .share-button { order: 7; }
+  .field--mode { order: 8; }
+  .search { order: 9; }
+  .disclosure { order: 10; }
+
+  /* La scène éclatée garde son allure : carte et légende forment un bloc, la frise un autre. */
+  .map-frame,
+  .map-legend,
+  .timeline {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+  }
+
+  .map-legend {
+    margin-top: calc(-1 * var(--space-5));
+    border-top-color: var(--rule);
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+
+  .timeline {
+    border-radius: var(--radius);
+  }
+
+  .result {
+    padding-top: 0;
+    border-top: 0;
+  }
+}

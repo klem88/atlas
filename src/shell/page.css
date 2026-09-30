@@ -56,6 +56,13 @@
   color: var(--ink);
 }
 
+/* Sur téléphone, le titre de la visualisation est déjà en tête de page : l'en-tête tient sur une ligne. */
+@media (max-width: 640px) {
+  .site-mark span {
+    display: none;
+  }
+}
+
 /* Introduction ------------------------------------------------------------ */
 .viz-intro {
   padding-block: var(--space-7) var(--space-6);
@@ -83,6 +90,22 @@
   line-height: 1.5;
   color: var(--ink-2);
   max-width: var(--measure);
+}
+
+/* Sur téléphone, l'intro se resserre pour laisser la visualisation apparaître dès le premier écran. */
+@media (max-width: 640px) {
+  .viz-intro {
+    padding-block: var(--space-5) var(--space-5);
+  }
+
+  .viz-kicker {
+    margin-bottom: var(--space-3);
+  }
+
+  .viz-lede {
+    margin-top: var(--space-3);
+    font-size: var(--text-md);
+  }
 }
 
 /* Espace de travail : panneau + scène ----------------------------------- */

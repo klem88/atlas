@@ -52,7 +52,7 @@ export function renderCommuneCard(
   onClear: () => void,
 ): void {
   if (!commune) {
-    target.innerHTML = `<p class="commune-empty">Clique sur une commune de la carte, ou cherche-la, pour voir son détail et son évolution.</p>`;
+    target.innerHTML = `<p class="commune-empty">Choisis une commune sur la carte, ou cherche-la par son nom, pour voir son détail et son évolution.</p>`;
     return;
   }
 

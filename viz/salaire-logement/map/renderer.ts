@@ -10,6 +10,7 @@ import {
   type MapGeometry,
   type TerritoryLayout,
 } from './geo';
+import { pickCandidates } from './pick';
 
 /** Apparence d'une commune : une couleur de remplissage et éventuellement une texture. */
 export interface CommuneFill {
@@ -34,6 +35,8 @@ export interface MapEvents {
 }
 
 const MAX_ZOOM = 60;
+/** Demi-côté (px) du carré lu autour du point visé : assez pour un doigt sur une commune de 2 px. */
+const PICK_RADIUS = 4;
 
 /** Opacité des hachures « estimation » selon le zoom : 15 % en vue d'ensemble, 100 % dès ×4. */
 export function hatchOpacity(k: number): number {
@@ -364,11 +367,17 @@ export class CanvasMap {
 
   private indexAt(x: number, y: number): number | null {
     if (this.pickDirty) this.redrawPick();
-    const [r, g, b, a] = this.pickCtx.getImageData(Math.round(x), Math.round(y), 1, 1).data;
-    // Pixels d'anticrénelage (alpha partiel) : couleur non fiable, on ignore.
-    if (a !== 255) return null;
-    const id = r! + (g! << 8) + (b! << 16);
-    return id === 0 ? null : id - 1;
+    const x0 = Math.round(x) - PICK_RADIUS;
+    const y0 = Math.round(y) - PICK_RADIUS;
+    const size = PICK_RADIUS * 2 + 1;
+    const candidates = pickCandidates(this.pickCtx.getImageData(x0, y0, size, size).data, size, this.paths.length);
+    // Le pickCtx garde la transformation du zoom : isPointInPath teste la géométrie telle qu'elle est affichée.
+    const contains = (i: number, px: number, py: number) => this.pickCtx.isPointInPath(this.paths[i]!, px, py);
+    // La commune qui contient vraiment le point visé ; à défaut (bord, commune minuscule), la plus proche.
+    const under = candidates.find((c) => contains(c.index, x, y));
+    if (under) return under.index;
+    const near = candidates.find((c) => contains(c.index, x0 + c.x + 0.5, y0 + c.y + 0.5));
+    return near ? near.index : null;
   }
 
   private handlePointer(e: PointerEvent): void {

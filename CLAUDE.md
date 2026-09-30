@@ -32,8 +32,6 @@ npm run og -- <slug>                 # image d'aperçu des liens
 
 Sous Git Bash (Windows), préfixer `MSYS_NO_PATHCONV=1` pour tester localement un build avec `BASE_PATH=/atlas/`.
 
-## Prochaines étapes identifiées
+## Prochaines étapes : les chantiers
 
-1. « Ce que ton salaire achète » : **carte d'abord sur mobile** (réglages ensuite ou repliés).
-2. Choisir la deuxième visualisation dans la réserve : *Sous tes pieds* ou *Qui chante autour de chez toi* (voir docs/IDEES.md).
-3. Décider d'un point de ralliement pour l'audience (newsletter, compte), et de l'éventuel nom définitif du site (aujourd'hui « Atlas », modifiable dans `src/shell/site.ts`).
+Le travail avance **un chantier à la fois**, chacun décrit par une fiche de reprise dans [docs/chantiers/](docs/chantiers/README.md) (objectif, critères de fin, tâches, décisions, prochaine action) et mené sur une branche `feat/<slug>`. Pour reprendre : lire la fiche en cours et faire sa « prochaine action ». L'ordre prévu est dans `docs/chantiers/README.md`.
