@@ -1,3 +1,5 @@
+import type { ChartScales } from '@shell/charts/line-chart';
+import { attachScrub } from '@shell/charts/scrub';
 import { fmtInt, parseFrenchNumber } from '@shell/format';
 import { createSearch } from '@shell/search';
 import { mountShell } from '@shell/shell';
@@ -171,10 +173,21 @@ async function main() {
   });
   renderLegend($('legend'));
 
+  // Les courbes du budget et de la commune choisissent aussi l'année, comme la frise : tout reste synchronisé par l'état.
+  let resultScales: ChartScales | null = null;
+  let communeScales: ChartScales | null = null;
+  const pickYear = (year: number) => {
+    timeline.stop();
+    store.set({ year });
+  };
+  const years = { min: prices.years[0]!, max: prices.years.at(-1)! };
+  attachScrub($('result'), { selector: '.result-chart svg', scales: () => resultScales, ...years, onPick: pickYear });
+  attachScrub($('commune-card'), { selector: '.result-chart svg', scales: () => communeScales, ...years, onPick: pickYear });
+
   const renderPanels = (s: VizState) => {
-    renderResult($('result'), model, s);
+    resultScales = renderResult($('result'), model, s);
     const i = s.selectedCode ? indexByCode.get(s.selectedCode) : undefined;
-    renderCommuneCard($('commune-card'), model, s, i === undefined ? null : communes[i]!, () => {
+    communeScales = renderCommuneCard($('commune-card'), model, s, i === undefined ? null : communes[i]!, () => {
       store.set({ selectedCode: null });
       search.clear();
     });

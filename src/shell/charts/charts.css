@@ -43,3 +43,9 @@
   stroke-width: 4px;
   stroke-linejoin: round;
 }
+
+/* Graphique glissable (scrub.ts) : cliquer ou glisser dessus choisit une valeur. Le défilement vertical reste à la page. */
+.lc-scrub {
+  cursor: ew-resize;
+  touch-action: pan-y;
+}

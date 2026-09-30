@@ -100,18 +100,19 @@ export class CanvasMap {
           }
           return true;
         }
-        // Tactile : un doigt fait défiler la page, deux doigts déplacent et zoomment la carte.
-        if (event.type === 'touchstart') return (event as TouchEvent).touches.length >= 2;
+        // Tactile : en vue d'ensemble, un doigt fait défiler la page et deux doigts zooment.
+        // Une fois zoomé, un doigt déplace la carte (et la page défile en dehors de la carte).
+        if (event.type === 'touchstart') return (event as TouchEvent).touches.length >= 2 || this.transform.k > 1;
         return !(event as MouseEvent).button;
       })
       .on('zoom', (e: { transform: ZoomTransform }) => {
         this.transform = e.transform;
         this.pickDirty = true;
+        this.syncTouchAction();
         this.requestDraw();
       });
     select(this.canvas).call(this.zoomBehavior).on('dblclick.zoom', null);
-    // d3-zoom impose `touch-action: none` ; on rend le défilement vertical au navigateur.
-    this.canvas.style.touchAction = 'pan-y';
+    this.syncTouchAction();
 
     this.canvas.addEventListener('pointermove', (e) => this.handlePointer(e));
     this.canvas.addEventListener('pointerleave', () => this.setHovered(null, { x: 0, y: 0 }));
@@ -363,6 +364,14 @@ export class CanvasMap {
       ctx.fill(p);
     });
     this.pickDirty = false;
+  }
+
+  /**
+   * d3-zoom impose `touch-action: none`. En vue d'ensemble, on rend le défilement vertical au navigateur ;
+   * une fois zoomé, la carte garde le geste pour qu'un doigt la déplace.
+   */
+  private syncTouchAction(): void {
+    this.canvas.style.touchAction = this.transform.k > 1 ? 'none' : 'pan-y';
   }
 
   private indexAt(x: number, y: number): number | null {

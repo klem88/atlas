@@ -30,6 +30,12 @@ Sur téléphone, on voit la carte tout de suite. Aujourd'hui (375 px) elle comme
 - [x] Fusion sur `main` et déploiement (2026-09-30)
 - [ ] Retour de l'auteur après test en ligne sur son téléphone
 
+### Retours de l'auteur (2026-09-30), branche `fix/mobile-salaire`
+
+- [x] Déplacer la carte au pouce : une fois zoomé, un doigt déplace la carte (`touch-action: none`) ; en vue d'ensemble, un doigt fait défiler la page.
+- [x] Courbe du budget (et de la fiche commune) cliquable et glissable comme la frise, tout reste synchronisé (`src/shell/charts/scrub.ts`, testé).
+- [ ] Afficher moins d'informations par défaut, le reste sur demande : proposition faite à l'auteur, en attente de son choix.
+
 ## Prochaine action
 
-Attendre le retour de l'auteur (test sur https://klem88.github.io/atlas/viz/salaire-logement/). S'il y a des corrections, les faire sur une nouvelle branche `fix/mobile-salaire`.
+Attendre le choix de l'auteur sur l'allègement, puis l'implémenter, et fusionner `fix/mobile-salaire` sur `main`.

@@ -46,7 +46,7 @@ Chaque visualisation a un **élément signature**, et un seul. Pour « Ce que to
 
 - Survol → infobulle ; clic ou recherche → sélection détaillée.
 - L'état est reflété dans l'URL : un lien partagé redonne exactement la même vue.
-- Sur mobile, un doigt fait défiler la page et deux doigts manipulent la carte. Sur ordinateur, Ctrl + molette zoome.
+- Sur mobile, en vue d'ensemble, un doigt fait défiler la page et deux doigts zooment ; une fois zoomé, un doigt déplace la carte (le bouton « vue d'ensemble » rend la page). Sur ordinateur, Ctrl + molette zoome.
 - Clavier, focus visible, `prefers-reduced-motion` respecté.
 
 ## Textes

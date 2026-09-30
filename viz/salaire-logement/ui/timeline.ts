@@ -125,5 +125,7 @@ export function createTimeline(target: HTMLElement, o: TimelineOptions) {
     update(year: number) {
       set(year, false);
     },
+    /** Arrête l'animation (l'année a été choisie ailleurs). */
+    stop,
   };
 }
