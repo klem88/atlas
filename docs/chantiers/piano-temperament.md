@@ -60,7 +60,7 @@ Une explication interactive du tempérament égal, pour tout le monde : les harm
 - [x] Textes : comment lire, la virgule, le calcul, sources, limites
 - [x] Image de partage, image d'aperçu
 - [x] Vérification mobile/clair/sombre dans le navigateur de développement
-- [ ] Relecture de l'auteur (téléphone, casque), puis `status: 'published'` et fusion sur `main`
+- [x] Publiée le 1er octobre 2026 à la demande de l'auteur (relecture sur téléphone à faire après coup)
 
 ## Socle touché
 

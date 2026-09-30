@@ -44,7 +44,7 @@ Le paysage de la rugosité : on glisse une note contre une autre, de l'unisson �
 - [x] Panneau, résultat, préréglages, état dans l'URL
 - [x] Textes, image de partage, image d'aperçu
 - [x] Vérification mobile/clair/sombre dans le navigateur de développement
-- [ ] Relecture de l'auteur (glisser au doigt, son tenu au casque), puis `status: 'published'` et fusion
+- [x] Publiée le 1er octobre 2026 à la demande de l'auteur (relecture sur téléphone à faire après coup)
 
 ## Prochaine action
 

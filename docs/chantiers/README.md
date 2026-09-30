@@ -25,11 +25,11 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | Ordre | Chantier | État |
 | --- | --- | --- |
 | 1 | [mobile-salaire](mobile-salaire.md) | en ligne, en attente du retour de l'auteur |
-| 2 | [piano-temperament](piano-temperament.md) : Pourquoi ton piano est (légèrement) faux | construit, en attente de relecture (branche `feat/piano-temperament`) |
-| 2b | [forme-accord](forme-accord.md) : La forme d’un accord (three.js) | construit, en attente de relecture (branche `feat/forme-accord`) |
-| 2c | [consonance](consonance.md) : Pourquoi une tierce sonne douce | construit, en attente de relecture (branche `feat/consonance`) |
-| 2d | [gamme-sans-fin](gamme-sans-fin.md) : La gamme qui monte sans fin (three.js) | construit, en attente de relecture (branche `feat/gamme-sans-fin`) |
-| 2e | [une-seule-note](une-seule-note.md) : Ce qu’une seule note contient | construit, en attente de relecture (branche `feat/une-seule-note`, contient toutes les précédentes) |
+| 2 | [piano-temperament](piano-temperament.md) : Pourquoi ton piano est (légèrement) faux | publiée le 1er octobre 2026 |
+| 2b | [forme-accord](forme-accord.md) : La forme d’un accord (three.js) | publiée le 1er octobre 2026 |
+| 2c | [consonance](consonance.md) : Pourquoi une tierce sonne douce | publiée le 1er octobre 2026 |
+| 2d | [gamme-sans-fin](gamme-sans-fin.md) : La gamme qui monte sans fin (three.js) | publiée le 1er octobre 2026 |
+| 2e | [une-seule-note](une-seule-note.md) : Ce qu’une seule note contient | publiée le 1er octobre 2026 |
 | 3 | Point de ralliement et nom du site | à décider par l'auteur |
 | 3a | [progression-jouee](progression-jouee.md) : Ta progression a déjà été jouée 40 000 fois | cadré, sondes faites ([sondes-progressions](sondes-progressions.md)) |
 | 3b | [fleuve-des-accords](fleuve-des-accords.md) : Le fleuve des enchaînements | cadré |
@@ -42,7 +42,7 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 
 ### Cycle « harmonies » (nuit du 30 septembre 2026)
 
-Cinq visualisations musicales construites en autonomie, chacune en brouillon sur sa branche, en chaîne : `feat/piano-temperament` → `feat/forme-accord` → `feat/consonance` → `feat/gamme-sans-fin` → `feat/une-seule-note`. La dernière contient tout ; on fusionne dans cet ordre, après relecture. Aucune n'est poussée.
+Cinq visualisations musicales construites en autonomie, chacune en brouillon sur sa branche, en chaîne : `feat/piano-temperament` → `feat/forme-accord` → `feat/consonance` → `feat/gamme-sans-fin` → `feat/une-seule-note`. Fusionnées sur `main` et publiées le 1er octobre 2026.
 
 ### Cycle « progressions » (cadré le 1er octobre 2026)
 

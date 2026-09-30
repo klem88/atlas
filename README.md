@@ -72,8 +72,8 @@ docs/                       idées, design
 |---|---|---|
 | [Ce que ton salaire achète](viz/salaire-logement/) | publiée | [pipeline](viz/salaire-logement/pipeline/README.md) · [rapport qualité](viz/salaire-logement/pipeline/REPORT.md) |
 | [Qui chante autour de chez toi](viz/qui-chante/) | publiée | [rapport qualité](viz/qui-chante/pipeline/REPORT.md) |
-| [Pourquoi ton piano est (légèrement) faux](viz/piano-temperament/) | brouillon | aucune donnée, tout est calculé |
-| [La forme d’un accord](viz/forme-accord/) | brouillon | aucune donnée, three.js |
-| [Pourquoi une tierce sonne douce](viz/consonance/) | brouillon | aucune donnée, modèle de Plomp–Levelt |
-| [La gamme qui monte sans fin](viz/gamme-sans-fin/) | brouillon | aucune donnée, three.js |
-| [Ce qu’une seule note contient](viz/une-seule-note/) | brouillon | aucune donnée, série harmonique |
+| [Pourquoi ton piano est (légèrement) faux](viz/piano-temperament/) | publiée | aucune donnée, tout est calculé |
+| [La forme d’un accord](viz/forme-accord/) | publiée | aucune donnée, three.js |
+| [Pourquoi une tierce sonne douce](viz/consonance/) | publiée | aucune donnée, modèle de Plomp–Levelt |
+| [La gamme qui monte sans fin](viz/gamme-sans-fin/) | publiée | aucune donnée, three.js |
+| [Ce qu’une seule note contient](viz/une-seule-note/) | publiée | aucune donnée, série harmonique |

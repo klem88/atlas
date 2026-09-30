@@ -44,7 +44,7 @@ Chaque accord dessine une courbe : on porte l'onde de la première note sur un a
 - [x] Panneau, clavier, son, état dans l'URL
 - [x] Textes, image de partage, image d'aperçu
 - [x] Vérification mobile/clair/sombre dans le navigateur de développement
-- [ ] Relecture de l'auteur (téléphone, deux doigts pour tourner), puis `status: 'published'` et fusion
+- [x] Publiée le 1er octobre 2026 à la demande de l'auteur (relecture sur téléphone à faire après coup)
 
 ## Leçon
 

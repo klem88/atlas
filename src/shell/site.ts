@@ -46,7 +46,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'Pourquoi ton piano est (légèrement) faux',
     summary: 'Joue un accord et regarde les ondes battre : sur un piano, aucune quinte n’est juste, et c’est voulu.',
     tags: ['Musique', 'Physique'],
-    status: 'draft',
+    status: 'published',
     published: '2026-09',
   },
   {
@@ -54,7 +54,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'La forme d’un accord',
     summary: 'Chaque accord dessine une courbe dans l’espace : simple quand il est pur, qui tourne sans fin quand il vient d’un piano.',
     tags: ['Musique', 'Géométrie'],
-    status: 'draft',
+    status: 'published',
     published: '2026-09',
   },
   {
@@ -62,7 +62,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'Pourquoi une tierce sonne douce',
     summary: 'Glisse d’une note à l’autre et écoute la rugosité monter et descendre : les intervalles doux sont des vallées, et ton piano n’en atteint aucune tout à fait.',
     tags: ['Musique', 'Psychoacoustique'],
-    status: 'draft',
+    status: 'published',
     published: '2026-09',
   },
   {
@@ -70,7 +70,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'La gamme qui monte sans fin',
     summary: 'Un son qui monte, monte, monte… et ne va nulle part. L’illusion de Shepard, vue de l’intérieur : une hélice de hauteurs qui tourne sur elle-même.',
     tags: ['Musique', 'Illusion'],
-    status: 'draft',
+    status: 'published',
     published: '2026-09',
   },
   {
@@ -78,7 +78,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'Ce qu’une seule note contient',
     summary: 'Joue un do : tu entends déjà un accord majeur. Allume et éteins ses harmoniques une à une, et découvre celles que ton piano ne sait pas jouer.',
     tags: ['Musique', 'Acoustique'],
-    status: 'draft',
+    status: 'published',
     published: '2026-09',
   },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).

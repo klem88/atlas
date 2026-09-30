@@ -43,7 +43,7 @@ On allume et on éteint chaque harmonique, on entend le timbre changer, on voit 
 - [x] Panneau, préréglages, état dans l'URL
 - [x] Textes, image de partage, image d'aperçu
 - [x] Vérification mobile/clair/sombre dans le navigateur de développement
-- [ ] Relecture de l'auteur (jetons au doigt, son au casque), puis `status: 'published'` et fusion
+- [x] Publiée le 1er octobre 2026 à la demande de l'auteur (relecture sur téléphone à faire après coup)
 
 ## Prochaine action
 
