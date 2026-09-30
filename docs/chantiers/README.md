@@ -24,7 +24,12 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 
 | Ordre | Chantier | État |
 | --- | --- | --- |
-| 1 | [mobile-salaire](mobile-salaire.md) | en cours |
-| 2 | Point de ralliement et nom du site | à décider par l'auteur |
-| 3 | [Qui chante autour de chez toi](qui-chante.md) | cadrage validé, sondes faites |
-| 4 | [Sous tes pieds](sous-tes-pieds.md) | cadrage validé, sondes faites |
+| 1 | [mobile-salaire](mobile-salaire.md) | en ligne, en attente du retour de l'auteur |
+| 2 | [piano-temperament](piano-temperament.md) : Pourquoi ton piano est (légèrement) faux | à cadrer, dans une session parallèle |
+| 3 | Point de ralliement et nom du site | à décider par l'auteur |
+| 4 | [Qui chante autour de chez toi](qui-chante.md) | cadrage validé, sondes faites |
+| 5 | [Sous tes pieds](sous-tes-pieds.md) | cadrage validé, sondes faites |
+
+### Sessions parallèles
+
+Exception à la règle « un chantier à la fois », choisie par l'auteur. Chaque session travaille dans **son propre worktree** (`git worktree add ../atlas-<slug> -b feat/<slug>`), jamais dans le même dossier qu'une autre, et ne touche au socle (`src/shell/`) qu'en le signalant dans sa fiche : le premier chantier fusionné sur `main` passe, l'autre se met à jour depuis `main` avant de fusionner.
