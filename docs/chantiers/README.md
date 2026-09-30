@@ -26,5 +26,5 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | --- | --- | --- |
 | 1 | [mobile-salaire](mobile-salaire.md) | en cours |
 | 2 | Point de ralliement et nom du site | à décider par l'auteur |
-| 3 | Qui chante autour de chez toi | à cadrer |
-| 4 | Sous tes pieds | à cadrer |
+| 3 | [Qui chante autour de chez toi](qui-chante.md) | cadrage proposé, à valider |
+| 4 | [Sous tes pieds](sous-tes-pieds.md) | cadrage proposé, à valider |
