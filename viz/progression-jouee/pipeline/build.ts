@@ -10,28 +10,19 @@
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import { parseChord, type Chord } from '@shell/music/chords';
-import { degreeLabel, tokenToDegree, tokensOf } from '@shell/music/degrees';
-import { estimateKey, relativeMajor, type WeightedChord } from '@shell/music/key';
-import {
-  CORPORA_CACHE,
-  dedupeBillboard,
-  ensureCorpora,
-  readBillboard,
-  readChordonomicon,
-  readIrb,
-  type CorpusSong,
-} from '@tools/lib/corpora';
+import { degreeLabel, tokenToDegree } from '@shell/music/degrees';
+import { estimateKey, relativeMajor } from '@shell/music/key';
+import { CORPORA_CACHE, dedupeBillboard, ensureCorpora, readBillboard, readIrb, type CorpusSong } from '@tools/lib/corpora';
+import { DECADES, GENRES, knownKey, loadChordonomiconDegrees, weightedChords, type SongTokens } from '@tools/lib/degrees-corpus';
 import { log } from '@tools/lib/log';
 import { MIN_SONGS_BY_LENGTH, SCHEMA_VERSION, type Meta, type NamedSong, type ProgressionRow, type Shard, type SongsFile } from '../data/contract';
 import { validateMeta, validateShard, validateSongs } from '../data/validate';
-import { DECADES, FIRST_YEAR_SUPPORT, MIN_PLAUSIBLE_YEAR, countNgrams, decadeIndex, firstYear, packSections, tokensOfKey, type SongTokens, type Tally } from './ngrams';
+import { FIRST_YEAR_SUPPORT, MIN_PLAUSIBLE_YEAR, countNgrams, firstYear, tokensOfKey, type Tally } from './ngrams';
 
 const PIPELINE = import.meta.dirname;
 const REPO = join(PIPELINE, '..', '..', '..');
 const OUT = join(REPO, 'public', 'data', 'progression-jouee');
 
-export const GENRES = ['pop', 'rock', 'country', 'alternative', 'pop rock', 'punk', 'metal', 'rap', 'soul', 'jazz', 'reggae', 'electronic'];
 const LENGTHS = [2, 3, 4, 5, 6, 7, 8];
 
 export default async function buildData(args: string[] = []): Promise<void> {
@@ -57,33 +48,22 @@ export default async function buildData(args: string[] = []): Promise<void> {
 
   // 2. Chordonomicon en jetons --------------------------------------------------------------------------
   log.step('Chordonomicon → degrés');
-  const songs: SongTokens[] = [];
+  const degrees = await loadChordonomiconDegrees();
+  const songs: SongTokens[] = degrees.songs;
   const corpus = { songs: 0, withGenre: 0, withYear: 0, minor: 0, byGenre: new Array<number>(GENRES.length).fill(0), byDecade: new Array<number>(DECADES.length).fill(0) };
-  let read = 0;
-  let dropped = 0;
-  const margins: number[] = [];
-  for await (const song of readChordonomicon()) {
-    read++;
-    const st = toTokens(song);
-    if (!st) {
-      dropped++;
-      continue;
-    }
-    songs.push(st.tokens);
-    margins.push(st.margin);
+  for (const st of songs) {
     corpus.songs++;
-    if (st.tokens.genre >= 0) {
+    if (st.genre >= 0) {
       corpus.withGenre++;
-      corpus.byGenre[st.tokens.genre]!++;
+      corpus.byGenre[st.genre]!++;
     }
-    if (st.tokens.decade >= 0) {
+    if (st.decade >= 0) {
       corpus.withYear++;
-      corpus.byDecade[st.tokens.decade]!++;
+      corpus.byDecade[st.decade]!++;
     }
-    if (st.tokens.minor) corpus.minor++;
-    if (read % 100_000 === 0) log.info(`${read} lus`);
+    if (st.minor) corpus.minor++;
   }
-  margins.sort((a, b) => a - b);
+  const { read, dropped, margins } = degrees;
   log.info(`${read} morceaux lus, ${dropped} écartés (moins de deux degrés), ${corpus.songs} retenus`);
 
   // 3. Comptage -------------------------------------------------------------------------------------------
@@ -109,7 +89,7 @@ export default async function buildData(args: string[] = []): Promise<void> {
     generatedAt,
     lengths: LENGTHS,
     minSongs: LENGTHS.map((n) => MIN_SONGS_BY_LENGTH[n]!),
-    genres: GENRES,
+    genres: [...GENRES],
     decades: [...DECADES],
     corpus,
     keyAccuracy: { irb: irbAcc, billboard: bbAcc },
@@ -123,70 +103,12 @@ export default async function buildData(args: string[] = []): Promise<void> {
   log.step(`Terminé en ${((Date.now() - t0) / 60_000).toFixed(1)} min. Rapport : ${join(PIPELINE, 'REPORT.md')}`);
 }
 
-/* Tonalité et jetons ------------------------------------------------------------------------------------- */
-
-function weighted(song: CorpusSong): WeightedChord[] {
-  const out: WeightedChord[] = [];
-  for (const sec of song.sections) {
-    let first = true;
-    for (const c of sec.chords) {
-      const chord = parseChord(c.symbol);
-      if (!chord) continue;
-      out.push(first ? { chord, weight: c.beats, sectionStart: true } : { chord, weight: c.beats });
-      first = false;
-    }
-  }
-  return out;
-}
-
-function sectionTokens(song: CorpusSong, tonic: number): number[][] {
-  return song.sections.map((sec) => tokensOf(sec.chords.map((c) => parseChord(c.symbol)), tonic)).filter((t) => t.length > 0);
-}
-
-/** Chordonomicon : tonalité estimée, jetons relatifs au relatif majeur. `null` si moins de deux degrés. */
-function toTokens(song: CorpusSong): { tokens: SongTokens; margin: number } | null {
-  const chords = weighted(song);
-  const key = estimateKey(chords);
-  if (!key) return null;
-  const tonic = relativeMajor(key);
-  const sections = sectionTokens(song, tonic);
-  const total = sections.reduce((a, s) => a + s.length, 0);
-  if (total < 2) return null;
-  return {
-    tokens: {
-      tokens: packSections(sections),
-      genre: song.genre ? GENRES.indexOf(song.genre) : -1,
-      decade: decadeIndex(song.year),
-      minor: key.mode === 'minor',
-      year: song.year !== undefined && song.year >= MIN_PLAUSIBLE_YEAR ? song.year : null,
-    },
-    margin: key.margin,
-  };
-}
-
-/** Mode d'un morceau dont on connaît la tonique : le poids de ses accords de tonique, majeurs ou mineurs. */
-function modeGivenTonic(chords: readonly WeightedChord[], tonic: number): 'major' | 'minor' {
-  let maj = 0;
-  let min = 0;
-  for (const { chord, weight } of chords) {
-    if (chord.root !== tonic) continue;
-    const q = chord.quality;
-    if (q === 'min' || q === 'min7') min += weight;
-    else if (q === 'maj' || q === 'maj7' || q === 'dom7') maj += weight;
-  }
-  return min > maj ? 'minor' : 'major';
-}
-
-function knownKey(song: CorpusSong): { tonic: number; mode: 'major' | 'minor' } | null {
-  if (!song.key) return null;
-  const mode = song.key.mode ?? modeGivenTonic(weighted(song), song.key.tonic);
-  return { tonic: song.key.tonic, mode };
-}
+/* Morceaux nommés et mesure de l'estimation ------------------------------------------------------------ */
 
 function namedSong(song: CorpusSong): NamedSong | null {
   const key = knownKey(song);
   if (!key || !song.title) return null;
-  const tonic = key.mode === 'major' ? key.tonic : (key.tonic + 3) % 12;
+  const tonic = key.relativeMajor;
   return {
     id: song.id,
     corpus: song.corpus as 'irb' | 'billboard',
@@ -210,7 +132,7 @@ function measureIrb(songs: readonly CorpusSong[]) {
   let exact = 0;
   for (const s of songs) {
     if (!s.key?.mode) continue;
-    const est = estimateKey(weighted(s));
+    const est = estimateKey(weightedChords(s));
     if (!est) continue;
     n++;
     const truthMajor = s.key.mode === 'major' ? s.key.tonic : (s.key.tonic + 3) % 12;
@@ -226,7 +148,7 @@ function measureBillboard(songs: readonly CorpusSong[]) {
   let signature = 0;
   for (const s of songs) {
     if (!s.key) continue;
-    const est = estimateKey(weighted(s));
+    const est = estimateKey(weightedChords(s));
     if (!est) continue;
     n++;
     if (est.tonic === s.key.tonic) tonic++;
@@ -298,5 +220,4 @@ function renderReport(r: {
   return lines.join('\n');
 }
 
-/** Exporté pour les tests du domaine : la conversion d'une grille nommée. */
-export { namedSong as toNamedSong, type Chord };
+export { namedSong as toNamedSong };

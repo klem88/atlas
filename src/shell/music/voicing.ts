@@ -1,10 +1,10 @@
 /**
- * Du degré au son, et du clavier au degré.
+ * Du degré au son, et du clavier au degré (socle : sert à toutes les pages qui font entendre des degrés).
  * - `voice` : les notes MIDI d'un degré dans une tonalité, en position serrée autour du do du milieu, avec la basse.
  * - `chordFromNotes` : reconnaît une triade (majeure, mineure, diminuée, augmentée, suspendue) dans un ensemble de notes.
  */
-import type { TriadClass } from '@shell/music/chords';
-import { degreeOf, type Degree } from '@shell/music/degrees';
+import type { TriadClass } from './chords';
+import { degreeOf, type Degree } from './degrees';
 
 const INTERVALS: Record<TriadClass, number[]> = {
   maj: [0, 4, 7],

@@ -89,6 +89,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-09',
   },
+  {
+    slug: 'fleuve-des-accords',
+    title: 'Le fleuve des enchaînements',
+    summary: 'D’un accord au suivant, où va la musique ? Compare deux styles : le jazz descend le cercle des quintes, la pop tourne autour de quatre accords.',
+    tags: ['Musique', 'Harmonie', 'Données'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 

@@ -1,0 +1,285 @@
+/* Styles propres à « Le fleuve des enchaînements ». Toujours dériver des jetons de src/shell/tokens.css. */
+
+.field--plain {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.select {
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  width: 100%;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+/* Résultat -------------------------------------------------------------------------------------- */
+.result {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-5);
+  border-block: 1px solid var(--rule);
+}
+
+.result-eyebrow {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.result-figure {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.result-unit {
+  font-size: 0.55em;
+  color: var(--ink-2);
+}
+
+.result-line,
+.result-sentence {
+  font-size: var(--text-md);
+}
+
+.result-line strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.result-sentence {
+  color: var(--ink-2);
+}
+
+.arrivals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.arrivals-title {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  margin-bottom: var(--space-1);
+}
+
+.arrivals ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 3px;
+  font-size: var(--text-sm);
+}
+
+.arrivals li {
+  display: grid;
+  grid-template-columns: 2.6rem 1fr 2.6rem;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.arrivals-degree {
+  font-weight: 600;
+}
+
+.arrivals-bar {
+  height: 8px;
+  background: var(--surface-sunk);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.arrivals-bar span {
+  display: block;
+  height: 100%;
+  background: var(--seq-4);
+}
+
+.arrivals li:first-child .arrivals-bar span {
+  background: var(--accent);
+}
+
+.arrivals-value {
+  text-align: right;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.arrivals-none {
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Scène ------------------------------------------------------------------------------------------ */
+.stage-frame {
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+}
+
+.figure-title {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  font-weight: 400;
+}
+
+.figure-sub {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.rivers {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.rivers--two {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 760px) {
+  .rivers--two {
+    grid-template-columns: 1fr;
+  }
+}
+
+.river {
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.river-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.river-ribbon {
+  fill: var(--seq-3);
+  fill-opacity: 0.7;
+  stroke: var(--surface);
+  stroke-width: 0.5;
+  cursor: pointer;
+  transition: fill-opacity 0.2s var(--ease);
+}
+
+.river-ribbon:hover {
+  fill-opacity: 1;
+}
+
+.river-ribbon.is-active {
+  fill: var(--accent);
+  fill-opacity: 0.85;
+}
+
+.river-ribbon.is-dim {
+  fill: var(--seq-1);
+  fill-opacity: 0.45;
+}
+
+.river-node rect {
+  fill: var(--seq-6);
+}
+
+.river-node.is-active rect {
+  fill: var(--accent);
+}
+
+.river-node--left {
+  cursor: pointer;
+}
+
+.river-node--left:focus-visible {
+  outline: none;
+}
+
+.river-node--left:focus-visible rect:first-of-type {
+  stroke: var(--focus);
+  stroke-width: 2;
+}
+
+.river-hit {
+  fill: transparent !important;
+}
+
+.river-node text {
+  fill: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.river-node text.river-share {
+  fill: var(--ink-3);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.river-caption {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  min-height: 1.5em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .river-ribbon {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .stage-frame {
+    padding: var(--space-4);
+  }
+
+  .arrivals-grid {
+    grid-template-columns: 1fr;
+  }
+}

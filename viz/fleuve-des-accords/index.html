@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Le fleuve des enchaînements — Atlas</title>
+    <meta name="description" content="D’un accord au suivant, où va la musique ? Compare deux styles : le jazz descend le cercle des quintes, la pop tourne autour de quatre accords." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/fleuve-des-accords/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="Le fleuve des enchaînements" />
+    <meta property="og:description" content="D’un accord au suivant, où va la musique ? Compare deux styles : le jazz descend le cercle des quintes, la pop tourne autour de quatre accords." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/fleuve-des-accords/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/fleuve-des-accords.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Musique · Harmonie · Données</p>
+        <h1>Le fleuve des enchaînements</h1>
+        <p class="viz-lede">
+          Un accord en appelle un autre. Après un V, la pop rentre à la maison ; le jazz, lui, préfère faire un détour. Ce fleuve montre
+          où va chaque degré, dans le style que tu choisis, et te laisse en comparer deux, côte à côte, à l’oreille comme à l’œil.
+        </p>
+        <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+          <span class="details-toggle-label">Plus de détails</span>
+        </button>
+      </header>
+
+      <section class="viz-workspace" aria-label="Visualisation">
+        <div class="viz-panel" id="panel">
+          <div class="field field--plain">
+            <label class="field-label" for="style-a">Style</label>
+            <select id="style-a" class="select"></select>
+          </div>
+          <div class="field field--plain">
+            <label class="field-label" for="style-b">Comparé à</label>
+            <select id="style-b" class="select"></select>
+          </div>
+          <div class="field field--plain">
+            <span class="field-label">Comparaisons toutes prêtes</span>
+            <div class="chips" id="presets"></div>
+          </div>
+          <div class="field field--plain">
+            <span class="field-label">Après un…</span>
+            <div class="chips" id="departures"></div>
+            <p class="field-help detail">Isole un degré de départ : ses courants passent à l’accent, les parts s’affichent à droite. Touche aussi les barres de gauche du fleuve.</p>
+          </div>
+
+          <section class="result" id="result" aria-live="polite"><p class="result-line">Chargement des transitions…</p></section>
+
+          <div class="actions">
+            <button class="button button--primary" type="button" id="listen">Écouter</button>
+            <button class="button share-button" type="button" id="share-button">
+              <svg viewBox="0 0 16 16" aria-hidden="true" width="16" height="16"><path d="M8 2v8M5 5l3-3 3 3M3 9v4h10V9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              Partager
+            </button>
+          </div>
+          <p class="note detail">Le son ne part que quand tu le demandes : les trois courants les plus forts du départ choisi, en do majeur, pour chaque style.</p>
+        </div>
+
+        <div class="viz-stage">
+          <div class="stage-frame">
+            <div class="rivers" id="rivers"></div>
+            <p class="river-caption" id="caption" aria-live="polite">Survole ou touche un courant pour lire sa part.</p>
+            <p class="figure-sub detail">À gauche, les degrés de départ (les dix plus fréquents, le reste dans « autres ») ; à droite, les arrivées ; l’épaisseur d’un courant est le nombre de transitions. Les parts se lisent par degré de départ.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#methode">La méthode</a></li>
+            <li><a href="#sources">D’où viennent les chiffres</a></li>
+            <li><a href="#limites">Ce que ça ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>
+              Chaque fleuve va de gauche à droite : à gauche, l’accord d’où l’on part, à droite, celui où l’on arrive. Un
+              <strong>courant</strong> relie les deux, épais comme le nombre de fois où cet enchaînement a été joué dans le style. Les
+              accords sont écrits en <strong>degrés</strong> (I, IV, V, vi…), c’est-à-dire par leur place dans la gamme et non par leur
+              nom, pour que do majeur et ré majeur comptent ensemble.
+            </p>
+            <p>
+              Choisis un degré de départ (« après un V… ») : ses courants passent à l’accent et les parts s’affichent. C’est là que les
+              styles se séparent : la pop revient au I, le rock aime le IV, le jazz descend le cercle des quintes (vi → ii → V → I) et
+              traîne sur les mineurs. Deux fleuves côte à côte, c’est la même question posée à deux musiques.
+            </p>
+          </section>
+          <section id="methode">
+            <h2>La méthode</h2>
+            <ul>
+              <li>
+                <strong>Transitions.</strong> Dans chaque partie d’un morceau (intro, couplet, refrain…), la suite des accords est réduite
+                à ses degrés en <strong>classe de triade</strong> (majeur, mineur, diminué, augmenté, suspendu ; G7 compte comme G), sans
+                répétition immédiate ; chaque passage d’un degré au suivant compte une fois. On ne compte pas d’une partie à l’autre.
+              </li>
+              <li>
+                <strong>Tonalité.</strong> Les standards de l’iRb et les tubes du Billboard ont une tonalité annotée. Pour Chordonomicon,
+                elle est estimée depuis les accords, avec la méthode et la précision décrites dans
+                <a href="../progression-jouee/">Ta progression a déjà été jouée 40 000 fois</a> (86 % de toniques justes sur la pop,
+                81 % d’armures justes sur le jazz). Un morceau en la mineur est lu dans l’armure de do : son i s’appelle vi.
+              </li>
+              <li>
+                <strong>Styles.</strong> Les genres viennent du champ principal de Chordonomicon (douze catégories, la moitié des
+                tablatures en ont un). « Le jazz des standards » est l’iRb, bien mieux annoté que les tablatures de jazz ; les deux sont
+                proposés. Les décennies sont celles de la sortie du morceau.
+              </li>
+              <li>
+                <strong>Lisibilité.</strong> Dix degrés de départ et dix d’arrivée au plus par fleuve ; le reste est regroupé dans
+                « autres ». Les parts se calculent sur toutes les transitions du degré, y compris celles rangées dans « autres ».
+              </li>
+            </ul>
+          </section>
+          <section id="sources">
+            <h2>D’où viennent les chiffres</h2>
+            <ul>
+              <li><strong>Chordonomicon</strong> (Kantarelis et al., 2024) : 679 807 progressions de tablatures, genres et décennies. <a href="https://huggingface.co/datasets/ailsntua/Chordonomicon">Jeu de données</a>, CC BY-NC 4.0 (ce site est non commercial) ; <a href="https://arxiv.org/abs/2410.22046">article</a>.</li>
+              <li><strong>iRb</strong> (Broze et Shanahan, OSU) : 1 185 grilles de standards de jazz avec tonalité, pour la recherche musicale ; paquet <a href="https://www.npmjs.com/package/sharp11-irb">sharp11-irb</a>.</li>
+              <li><strong>McGill Billboard</strong> (Burgoyne, Wild, Fujinaga, ISMIR 2011) : 742 titres du Hot 100 1958–1991, annotés à la main, CC0.</li>
+              <li>Rien d’autre que des suites de symboles d’accords n’est utilisé. Le pipeline et son rapport qualité sont dans le dépôt du site.</li>
+            </ul>
+          </section>
+          <section id="limites">
+            <h2>Ce que ça ne dit pas</h2>
+            <ul>
+              <li><strong>Une occurrence, un point.</strong> Un couplet qui alterne I et V dix fois pèse dix transitions. Les fleuves décrivent ce qui se joue, pas ce que chaque morceau « choisit » une fois.</li>
+              <li><strong>La tonalité de Chordonomicon est estimée</strong> : quand elle se trompe d’une quarte, un V → I devient un I → IV. Les formes globales tiennent ; les petits courants, moins.</li>
+              <li><strong>Les genres sont grossiers</strong> et manquent pour la moitié des tablatures ; « le jazz des tablatures » est ce que des guitaristes ont tablé sous ce nom, pas le Real Book.</li>
+              <li><strong>Les septièmes et les renversements sont effacés</strong> : le fleuve parle de charpente, pas de couleur. Un ii–V–I et un ii7–V7–IΔ y font le même chemin.</li>
+              <li><strong>Deux corpus ne se comparent pas à effectif égal</strong> : 1 185 standards face à 85 000 tablatures pop. Les parts, elles, se comparent ; les épaisseurs absolues, non.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Ces fleuves en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : la phrase de comparaison et les deux fleuves." />
+        <p class="note">Aucune donnée n’est envoyée : l’image est dessinée dans ton navigateur.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -10,7 +10,7 @@ import type { Meta, TokenizedSong } from './data/contract';
 import { loadMeta, loadShard, loadSongs } from './data/load';
 import { findExamples, type Example } from './domain/examples';
 import { GENRE_LABELS, fr, lookup, pct, peakSentence, readsAsMinor, toRelativeMinor, type Lookup } from './domain/lookup';
-import { degreeFromNotes, voice } from './domain/voicing';
+import { degreeFromNotes, voice } from '@shell/music/voicing';
 import { KEY_NAMES, readStateFromUrl, stateToSearch, type VizState } from './state';
 import { friezeItems, renderFrieze, type FriezeItem } from './ui/frieze';
 import { gridCells, renderGrid, setCursor } from './ui/grid';

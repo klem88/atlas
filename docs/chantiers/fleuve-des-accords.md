@@ -33,14 +33,25 @@ D'un accord au suivant, où va-t-on ? Un diagramme de flux : les degrés en colo
 - Dix degrés de départ au plus par fleuve (les autres regroupés en « autres »), pour rester lisible.
 - Les styles viennent du champ `main_genre` de Chordonomicon (douze catégories) ; le jazz de la page est iRb, plus riche et mieux annoté, et la page le dit.
 
+## Décisions de construction (nuit du 1er octobre 2026)
+
+- **Cache commun** : `tools/lib/degrees-corpus.ts` tokenise Chordonomicon une fois (`tools/.cache/corpora/chordonomicon-degrees.*`, 54 Mo) ; le pipeline de `progression-jouee` a été refondu pour l'utiliser (sorties identiques, vérifiées par empreinte) et celui-ci tourne en une seconde.
+- **Chaque occurrence compte** (pas un morceau une fois) : c'est ce qui donne un sens à « une fois sur deux » ; la page le dit dans les limites.
+- **Deux jazz** : « le jazz des standards » (iRb, annoté) et « le jazz des tablatures » (Chordonomicon) sont proposés tous deux ; le premier est le défaut.
+- Pas de « blues » dans les genres de Chordonomicon : la comparaison « blues contre metal » de la fiche devient « country contre metal » ; « années 60 contre années 2010 » est gardée.
+- Les libellés de style portent leur article (« la pop », « le jazz des standards ») pour entrer tels quels dans les phrases.
+- La géométrie du fleuve est un module pur (`ui/river-layout.ts`) partagé par le SVG et les images ; les rubans du départ isolé passent à l'accent, les autres s'effacent ; trois parts affichées à droite, pas plus.
+- Les voix d'accords (`voice`, reconnaissance de triade) sont montées dans le socle : `src/shell/music/voicing.ts`.
+
 ## Tâches
 
-- [ ] Pipeline : agrégat des transitions par style et décennie, `REPORT.md`
-- [ ] Domaine : parts, tri, regroupement « autres », phrases de comparaison ; tests
-- [ ] Fleuve SVG, survol et sélection, comparaison, son, URL
-- [ ] Textes, image de partage, image d'aperçu
-- [ ] Vérification mobile/clair/sombre, relecture de l'auteur, publication
+- [x] Pipeline : agrégat des transitions par style et décennie, `REPORT.md` (une seconde depuis le cache commun)
+- [x] Domaine : parts, tri, regroupement « autres », phrases de comparaison ; tests
+- [x] Fleuve SVG, survol et sélection, comparaison, son, URL
+- [x] Textes, image de partage, image d'aperçu
+- [x] Vérification à 375 px (pas de débordement) et en clair dans le navigateur de l'éditeur
+- [ ] Relecture de l'auteur sur téléphone (sombre compris), publication
 
 ## Prochaine action
 
-Après la fusion de `progression-jouee` dans la chaîne : créer la branche et étendre le pipeline aux transitions.
+Relecture de l'auteur : `git checkout feat/fleuve-des-accords`, http://localhost:5173/viz/fleuve-des-accords/?de=V . Regarder la lisibilité des petits rubans sur téléphone et le ton des phrases de comparaison.

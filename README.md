@@ -51,7 +51,7 @@ tools/                      outils Node communs
   new-viz.ts                crée une visualisation depuis le modèle
   viz-task.ts               lance les tâches par convention (data, og)
   og.ts                     polices, couleurs et écriture des images d'aperçu
-  lib/                      téléchargement avec cache, journalisation
+  lib/                      téléchargement avec cache, journalisation, corpus d'accords et leur tokenisation
 viz/_template/              modèle de visualisation (ignoré au build)
 viz/<slug>/                 une visualisation = un dossier autonome
   index.html, main.ts       la page et son point d'entrée
@@ -78,3 +78,4 @@ docs/                       idées, design
 | [La gamme qui monte sans fin](viz/gamme-sans-fin/) | publiée | aucune donnée, three.js |
 | [Ce qu’une seule note contient](viz/une-seule-note/) | publiée | aucune donnée, série harmonique |
 | [Ta progression a déjà été jouée 40 000 fois](viz/progression-jouee/) | brouillon | [rapport qualité](viz/progression-jouee/pipeline/REPORT.md) · Chordonomicon, iRb, McGill Billboard |
+| [Le fleuve des enchaînements](viz/fleuve-des-accords/) | brouillon | [rapport qualité](viz/fleuve-des-accords/pipeline/REPORT.md) · mêmes corpus |
