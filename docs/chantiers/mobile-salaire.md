@@ -27,8 +27,9 @@ Sur téléphone, on voit la carte tout de suite. Aujourd'hui (375 px) elle comme
 - [x] Textes adaptés au tactile (« Clique » → « Choisis »)
 - [x] Toucher une commune : la détection lisait un seul pixel, presque toujours un bord anticrénelé à l'échelle de la France (6 % de réussite). Elle lit maintenant un carré de 9 px et confirme sur la géométrie (`map/pick.ts`, testé) : 86 %, les ratés tombant hors de France.
 - [x] Vérifié à 375 px (clair, sombre), 768 px et 1280 px (bureau inchangé) ; tests et types au vert
-- [ ] Validation de l'auteur sur son téléphone, puis fusion sur `main` (déploiement)
+- [x] Fusion sur `main` et déploiement (2026-09-30)
+- [ ] Retour de l'auteur après test en ligne sur son téléphone
 
 ## Prochaine action
 
-L'auteur teste sur son téléphone (`npm run dev -- --host`, puis l'adresse réseau affichée). Si c'est bon : fusion sur `main` et push.
+Attendre le retour de l'auteur (test sur https://klem88.github.io/atlas/viz/salaire-logement/). S'il y a des corrections, les faire sur une nouvelle branche `fix/mobile-salaire`.
