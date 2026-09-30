@@ -38,7 +38,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'Qui chante autour de chez toi',
     summary: 'Les oiseaux observés autour de ta commune, leurs chants et le chœur de l’aube.',
     tags: ['Nature', 'Oiseaux', 'France'],
-    status: 'draft',
+    status: 'published',
     published: '2026-09',
   },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
