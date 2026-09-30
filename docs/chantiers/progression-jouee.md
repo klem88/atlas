@@ -35,9 +35,16 @@ On choisit quatre accords (ou plus) en degrés, I–V–vi–IV par exemple, ou 
 - Le compteur dit « morceaux qui contiennent la suite au moins une fois », jamais « morceaux construits sur ».
 - La tonalité estimée est signalée comme telle ; en dessous de 85 % de précision mesurée, Chordonomicon ne sert plus qu'aux transitions.
 
+## Décisions de construction (nuit du 1er octobre 2026)
+
+- **Comparaison en classe de triade** : G7, Gmaj7 et G comptent tous comme V ; Dm7 et Dm comme ii. Le jeton « septième » de la fiche n'existe donc pas dans la saisie : la page le dit (« ii–V–I trouve aussi les ii7–V7–IΔ »). Six classes : majeur, mineur, diminué, augmenté, suspendu, autre ; les accords de puissance (« no3d ») comptent comme majeurs.
+- **Tonique de comparaison = relatif majeur.** Un morceau en la mineur est compté dans l'armure de do : Am–F–C–G s'écrit vi–IV–I–V. Le mode estimé est conservé à part (pour dire « dont N en mineur ») ; l'utilisateur peut saisir en mineur (i–bVI–bIII–bVII), la page convertit et l'indique.
+- Les degrés sont épelés par rapport à la gamme majeure (bIII, #IV, bVII), en minuscules pour mineur et diminué.
+- Chordonomicon écrit le dièse « s » (« Csmin ») : le lecteur d'accords le comprend, sauf devant « sus ».
+
 ## Tâches
 
-- [ ] Socle : `src/shell/music/chords.ts` (symboles, qualités, degrés, estimation de tonalité), tests
+- [x] Socle : `src/shell/music/chords.ts` (symboles des trois écritures, dix qualités, six classes de triade), `degrees.ts` (degrés, jetons d'un octet, étiquettes, rotations), `key.ts` (estimation de tonalité), 41 tests
 - [ ] Outils : `tools/lib/corpora.ts` (téléchargement avec cache, lecture des trois corpus), tests sur des extraits
 - [ ] Pipeline : nettoyage, tonalité, suites de degrés, comptages, exemples, `REPORT.md`
 - [ ] Domaine : recherche d'une progression dans les agrégats, rotations proches, phrase de résultat ; tests
@@ -47,4 +54,4 @@ On choisit quatre accords (ou plus) en degrés, I–V–vi–IV par exemple, ou 
 
 ## Prochaine action
 
-Créer la branche, `npm run new:viz -- progression-jouee`, puis le socle `chords.ts` en TDD (les fiches suivantes en dépendent).
+`tools/lib/corpora.ts` : lecture des trois corpus (CSV Chordonomicon en flux, JSON iRb, fichiers salami du Billboard) dans le format commun, tests sur extraits.

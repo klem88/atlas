@@ -81,6 +81,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'published',
     published: '2026-09',
   },
+  {
+    slug: 'progression-jouee',
+    title: 'Ta progression a déjà été jouée 40 000 fois',
+    summary: 'Choisis quatre accords et la page te dit combien de morceaux les enchaînent, dans quels styles, depuis quand, et lesquels.',
+    tags: ['Musique', 'Harmonie', 'Données'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 
