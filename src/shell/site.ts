@@ -49,6 +49,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-09',
   },
+  {
+    slug: 'forme-accord',
+    title: 'La forme d’un accord',
+    summary: 'Chaque accord dessine une courbe dans l’espace : simple quand il est pur, qui tourne sans fin quand il vient d’un piano.',
+    tags: ['Musique', 'Géométrie'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 
