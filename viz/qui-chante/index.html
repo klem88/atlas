@@ -31,8 +31,8 @@
       <header class="viz-intro">
         <p class="viz-kicker">Nature · Oiseaux · France</p>
         <h1>Qui chante autour de chez toi</h1>
-        <p class="viz-lede">Les oiseaux observés autour de ta commune, leurs chants et le chœur de l’aube.</p>
-        <!-- Affiche les éléments de classe « detail » (aides, notes de calcul) : voir src/shell/details.ts. -->
+        <p class="viz-lede">Choisis ta commune : voici les oiseaux que les naturalistes y ont observés, du plus présent au plus rare. Écoute-les un par un, ou tous ensemble.</p>
+        <!-- Affiche les éléments de classe « detail » (aides, notes de calcul) : voir src/shell/details.ts. -->
         <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
           <span class="details-toggle-label">Plus de détails</span>
@@ -40,12 +40,17 @@
       </header>
 
       <section class="viz-workspace" aria-label="Visualisation">
-        <!-- Réglages et résultat. Pour une visualisation sans panneau, supprimer ce bloc :
-             la scène prend alors toute la largeur (voir viz.css). -->
-        <div class="viz-panel" id="panel"></div>
+        <div class="viz-panel" id="panel">
+          <div class="field">
+            <div class="search" id="search"></div>
+            <p class="field-help" id="examples"></p>
+          </div>
+          <div id="result" aria-live="polite"></div>
+          <p class="note" id="status" role="status"></p>
+        </div>
 
         <div class="viz-stage">
-          <div class="stage-frame" id="stage"></div>
+          <div class="stage-frame" id="stage" aria-live="polite"></div>
         </div>
       </section>
 
@@ -61,19 +66,40 @@
         <div class="prose">
           <section id="lire">
             <h2>Comment lire</h2>
-            <p>À écrire : ce que représentent les formes, les couleurs, les interactions.</p>
+            <p>Chaque ligne est une espèce observée autour de ta commune, de la plus présente à la plus rare. Les points indiquent sa part dans toutes les observations d’oiseaux du coin : très présent (au moins 2 %), présent (au moins 0,5 %), peu présent (au moins 0,1 %), rare.</p>
+            <p>Le dessin à droite est un <strong>spectrogramme</strong> : le temps va de gauche à droite, les aigus sont en haut, les graves en bas, et plus c’est foncé, plus c’est fort. Un trait qui monte est une note qui monte ; une série de petits traits verticaux, des notes brèves répétées. L’échelle des hauteurs est la même que celle d’un piano : chaque octave prend la même place.</p>
+            <p>Le <strong>chœur de l’aube</strong> fait entrer les espèces les plus présentes l’une après l’autre, toutes les 2,5 secondes, à un volume qui dépend de leur présence. Il ne reproduit pas une aube réelle : c’est une partition pour entendre, ensemble, les voix du coin.</p>
           </section>
           <section id="methode">
             <h2>La méthode</h2>
-            <p>À écrire : le calcul, pas à pas, idéalement avec les valeurs de l’utilisateur.</p>
+            <ol>
+              <li>La France est découpée en mailles d’environ 10 km de côté (0,13° de longitude sur 0,09° de latitude).</li>
+              <li>Pour chaque maille, on compte les observations d’oiseaux de 2015 à 2025, espèce par espèce.</li>
+              <li>Ta commune est rattachée à la maille qui contient son centre. « Autour de chez toi », ce sont cette maille et ses huit voisines : un carré d’environ 30 km de côté.</li>
+              <li>Une espèce n’apparaît que si elle a été observée au moins 5 fois dans ce carré : un oiseau vu une ou deux fois est souvent de passage, ou une erreur de saisie.</li>
+              <li>Pour les 200 espèces les plus observées en France, on a choisi un enregistrement : un chant plutôt qu’un cri, bien noté, sans autre oiseau en fond si possible, enregistré en France de préférence. On en garde les 15 secondes les plus chantantes, à un volume égalisé.</li>
+              <li>Dans le spectrogramme, le bruit de fond continu (vent, circulation) est retiré, pour que le chant se détache.</li>
+            </ol>
           </section>
           <section id="sources">
             <h2>D’où viennent les chiffres</h2>
-            <p>À écrire : chaque source avec son lien, sa licence et sa période.</p>
+            <ul>
+              <li><strong>Observations</strong> : <a href="https://www.gbif.org/">GBIF</a>, le système mondial d’information sur la biodiversité, qui rassemble notamment Oiseaux des jardins, eBird, le suivi STOC-EPS du Muséum, les portails de la LPO (Faune-France) et le baguage du CRBPO. Licences CC0, CC BY et CC BY-NC selon les jeux de données. Période : 2015 à 2025.</li>
+              <li><strong>Chants</strong> : <a href="https://xeno-canto.org/">xeno-canto</a>, enregistrements partagés par des passionnés du monde entier. Chaque extrait est crédité sous sa ligne (auteur, lieu, année, licence). Les extraits sont des adaptations (coupe, volume, conversion) publiées sous la même licence que l’original ; les enregistrements qui interdisent toute modification (« ND ») ont été écartés.</li>
+              <li><strong>Noms français</strong> : <a href="https://inpn.mnhn.fr/programme/referentiel-taxonomique-taxref">TAXREF</a>, le référentiel national du Muséum, via GBIF.</li>
+              <li><strong>Communes</strong> : <a href="https://geo.api.gouv.fr/">API Découpage administratif</a> (Etalab), Licence Ouverte.</li>
+            </ul>
           </section>
           <section id="limites">
             <h2>Ce que ça ne dit pas</h2>
-            <p>À écrire : les angles morts, les approximations, les territoires manquants.</p>
+            <ul>
+              <li><strong>Observé ne veut pas dire nicheur.</strong> Un oiseau peut passer quelques jours en migration, ou hiverner sans jamais chanter ici.</li>
+              <li><strong>Les observations suivent les observateurs.</strong> Elles sont plus nombreuses près des villes, des sentiers et des sites connus. Une commune peu parcourue paraîtra plus pauvre qu’elle ne l’est : la page le signale quand il y a peu d’observations.</li>
+              <li><strong>Le chant vient d’ailleurs.</strong> Il illustre l’espèce, pas l’oiseau de ta rue : les chants varient d’une région à l’autre, comme des accents.</li>
+              <li><strong>Pas de saisons.</strong> La liste couvre toute l’année ; beaucoup d’espèces ne chantent qu’au printemps.</li>
+              <li><strong>Espèces sensibles.</strong> Certaines localisations sont floutées à la source pour protéger les nids ; la maille de 10 km évite aussi de désigner un lieu précis.</li>
+              <li>Outre-mer non couvert pour l’instant.</li>
+            </ul>
           </section>
         </div>
       </section>

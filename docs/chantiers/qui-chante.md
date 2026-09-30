@@ -54,6 +54,7 @@ Branche : `feat/qui-chante`
 
 - **Extraits réencodés** (`@breezystack/lamejs`, LGPL, pipeline seulement) plutôt que découpés : 120 Ko au lieu de 300 à 600 Ko, et volume égalisé, indispensable pour le chœur. Décodage avec `mpg123-decoder` (WebAssembly), trame par trame.
 - **Spectrogrammes en binaire brut** (48 bandes de 250 Hz à 11 kHz × 187 colonnes de 80 ms ≈ 9 Ko), un fichier par chant chargé à la demande, dessiné par la page aux couleurs du thème. Le bruit de fond stationnaire est retiré (médiane par bande).
+- **Styles de la recherche déplacés dans le socle** (`src/shell/components.css`) : le composant sert maintenant à deux visualisations.
 - **Pays en code ISO** : la page l'affiche en français avec `Intl.DisplayNames`.
 
 ## Résultats des sondes (2026-09-30)
@@ -93,11 +94,12 @@ Branche : `feat/qui-chante`
 - [x] Contrat de données + validation (`data/`), grille de mailles et agrégation (`domain/`), testés
 - [ ] Pipeline observations → `public/data/qui-chante/` + `REPORT.md` (code écrit et testé ; premier passage en cours, ≈ 1 h 30 à cause du débit limité de GBIF)
 - [x] Pipeline chants : choix de l'enregistrement, 15 s les plus chantantes, volume égalisé, MP3 mono 64 kbit/s (≈ 120 Ko), spectrogramme sans bruit de fond. Essayé sur 5 espèces.
-- [ ] `domain/` : rattachement commune → mailles, agrégation, tri, tests
-- [ ] Visualisation mobile d'abord : recherche, chiffre, partition, lecture
-- [ ] Chœur de l'aube (Web Audio : superposition et décalages)
+- [x] `domain/` : rattachement commune → mailles, agrégation, présence à seuils fixes, plan du chœur, tests
+- [x] Visualisation : recherche, chiffre, liste avec spectrogrammes et lecture, textes de méthode, sources et limites. Vérifiée sur données d'aperçu (Arles) en clair, en sombre et à 375 px.
+- [x] Chœur de l'aube (Web Audio : 6 voix décalées de 2,5 s, curseur et voix actives à l'accent)
+- [ ] Vérification sur les données complètes, et sur un vrai téléphone (iOS Safari : son au premier toucher)
 - [ ] Image de partage 4:5, image d'aperçu, publication
 
 ## Prochaine action
 
-Quand le premier passage du pipeline est fini : relire `pipeline/REPORT.md` (communes témoins plausibles ?), committer les données, puis construire la page (recherche de commune → chiffre → partition des spectrogrammes → lecture).
+Quand le premier passage du pipeline est fini : relire `pipeline/REPORT.md` (communes témoins plausibles ?), vérifier la page sur les données complètes (Paris, Saulieu, Brest, Chamonix), puis committer les données. Ensuite : image de partage 4:5, image d'aperçu, publication.

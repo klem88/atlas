@@ -1,15 +1,389 @@
 /* Styles propres à « Qui chante autour de chez toi ». Toujours dériver des jetons de src/shell/tokens.css. */
 
-.stage-frame {
-  position: relative;
-  min-height: clamp(360px, 60vh, 720px);
-  display: grid;
-  place-items: center;
-  color: var(--ink-3);
-  font-size: var(--text-sm);
+.note:empty {
+  display: none;
 }
 
-/* Sans panneau de réglages : la scène occupe toute la largeur. */
-.viz-workspace:not(:has(.viz-panel)) {
-  grid-template-columns: 1fr;
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: var(--ink);
+  text-decoration-color: currentColor;
+}
+
+/* Résultat ------------------------------------------------------------------ */
+.result {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--rule);
+}
+
+.result-eyebrow {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.result-figure {
+  font-size: clamp(2.2rem, 1.8rem + 1.5vw, 2.8rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.result-detail {
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+/* Scène --------------------------------------------------------------------- */
+.stage-frame {
+  position: relative;
+  min-height: clamp(320px, 50vh, 640px);
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-7);
+  align-content: start;
+}
+
+.stage-frame[aria-busy='true'] {
+  opacity: 0.6;
+  transition: opacity 0.2s var(--ease);
+}
+
+.stage-empty {
+  align-self: center;
+  justify-self: center;
+  max-width: 34ch;
+  margin-block: var(--space-8);
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--ink-3);
+}
+
+.stage-frame h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 300;
+}
+
+@media (max-width: 640px) {
+  .stage-frame {
+    padding: var(--space-4);
+    gap: var(--space-6);
+  }
+}
+
+/* Boutons de lecture -------------------------------------------------------- */
+.play {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.play:hover {
+  border-color: var(--ink-3);
+}
+
+.play svg,
+.chorus-play svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: currentColor;
+}
+
+.play--none {
+  border-style: dashed;
+  cursor: default;
+}
+
+.i-stop,
+[aria-pressed='true'] .i-play {
+  display: none;
+}
+
+[aria-pressed='true'] .i-stop {
+  display: inline;
+}
+
+.play[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.play[aria-busy='true'],
+.chorus-play[aria-busy='true'] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Curseur de lecture : l'accent désigne ce qui chante. */
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+/* Chœur de l'aube : la partition ------------------------------------------ */
+.chorus {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.chorus-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.chorus-play {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chorus-lede {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+
+.voices-frame {
+  --label: 11rem;
+  --label-gap: var(--space-3);
+  position: relative;
+  margin-top: var(--space-2);
+}
+
+.voices {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.voice {
+  display: grid;
+  grid-template-columns: var(--label) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--label-gap);
+}
+
+.voice-name {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.voice-name::before {
+  content: '';
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: var(--space-2);
+  border-radius: 50%;
+  background: var(--rule-strong);
+  vertical-align: 0.1em;
+  transition: background 0.2s var(--ease);
+}
+
+.voice[data-singing] .voice-name {
+  color: var(--ink);
+}
+
+.voice[data-singing] .voice-name::before {
+  background: var(--accent);
+}
+
+.voice canvas {
+  display: block;
+  width: 100%;
+  height: 3.25rem;
+  background: var(--surface-sunk);
+  border-radius: 2px;
+}
+
+.voices-axis {
+  position: relative;
+  height: 1.25rem;
+  margin-left: calc(var(--label) + var(--label-gap));
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.voices-axis span {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.voices-axis span:first-child {
+  transform: none;
+}
+
+/* Zone des spectrogrammes, où court le curseur du chœur. */
+.voices-track {
+  position: absolute;
+  top: 0;
+  bottom: calc(1.25rem + var(--space-1));
+  left: calc(var(--label) + var(--label-gap));
+  right: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .voices-frame {
+    --label: 0rem;
+    --label-gap: 0rem;
+  }
+  .voice {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .voice-name {
+    font-size: var(--text-xs);
+  }
+  .voice canvas {
+    height: 2.5rem;
+  }
+}
+
+/* Liste des espèces --------------------------------------------------------- */
+.birds {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.bird-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bird {
+  display: grid;
+  grid-template-columns: auto minmax(9rem, 14rem) minmax(0, 1fr);
+  grid-template-areas:
+    'play head spectro'
+    'play meta spectro'
+    '.    credit credit';
+  column-gap: var(--space-4);
+  row-gap: var(--space-1);
+  align-items: center;
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--rule);
+}
+
+.bird .play {
+  grid-area: play;
+}
+
+.bird-head {
+  grid-area: head;
+  display: grid;
+  min-width: 0;
+}
+
+.bird-name {
+  font-weight: 600;
+}
+
+.bird-sci {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.bird-meta {
+  grid-area: meta;
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+
+.spectro {
+  grid-area: spectro;
+  position: relative;
+  margin: 0;
+}
+
+.spectro canvas {
+  display: block;
+  width: 100%;
+  height: 3.5rem;
+}
+
+.spectro--none,
+.spectro--error {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.bird-credit {
+  grid-area: credit;
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+@media (max-width: 640px) {
+  .bird {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'play head'
+      'play meta'
+      'spectro spectro'
+      'credit credit';
+  }
+  .spectro canvas {
+    height: 3rem;
+  }
+}
+
+/* Présence : quatre points, foncés = plus présent (rampe ardoise). */
+.presence {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.presence-dots {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.presence-dots i {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--seq-1);
+}
+
+.presence-dots i[data-on] {
+  background: var(--seq-5);
 }
