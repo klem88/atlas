@@ -31,8 +31,10 @@
       <header class="viz-intro">
         <p class="viz-kicker">Musique · Harmonie · Données</p>
         <h1>Ta progression a déjà été jouée 40 000 fois</h1>
-        <p class="viz-lede">Choisis quatre accords et la page te dit combien de morceaux les enchaînent, dans quels styles, depuis quand, et lesquels.</p>
-        <!-- Affiche les éléments de classe « detail » (aides, notes de calcul) : voir src/shell/details.ts. -->
+        <p class="viz-lede">
+          Quatre accords, et tu as l’impression d’avoir trouvé quelque chose. Tu n’es pas seul : pose-les ici en degrés, ou joue-les sur
+          le clavier, et regarde combien de morceaux les enchaînent déjà, dans quels styles, depuis quand, et lesquels.
+        </p>
         <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
           <span class="details-toggle-label">Plus de détails</span>
@@ -40,12 +42,70 @@
       </header>
 
       <section class="viz-workspace" aria-label="Visualisation">
-        <!-- Réglages et résultat. Pour une visualisation sans panneau, supprimer ce bloc :
-             la scène prend alors toute la largeur (voir viz.css). -->
-        <div class="viz-panel" id="panel"></div>
+        <div class="viz-panel" id="panel">
+          <div class="field field--plain">
+            <span class="field-label">Ta progression</span>
+            <div class="tokens" id="tokens" role="list" aria-label="Accords de la progression, dans l’ordre"></div>
+            <p class="field-help detail">Touche un jeton pour le retirer. De 2 à 8 accords ; les degrés sont ceux de la gamme majeure, en minuscules pour les mineurs.</p>
+          </div>
+
+          <div class="field field--plain">
+            <span class="field-label">Ajouter un degré</span>
+            <div class="palette" id="palette-diatonic" aria-label="Degrés de la gamme"></div>
+            <div class="palette palette--borrowed" id="palette-borrowed" aria-label="Emprunts et mineur"></div>
+          </div>
+
+          <div class="field field--plain">
+            <span class="field-label">Les classiques</span>
+            <div class="chips" id="presets"></div>
+          </div>
+
+          <section class="result" id="result" aria-live="polite"><p class="result-line">Chargement des comptages…</p></section>
+
+          <div class="field field--plain field--row">
+            <label class="field-label" for="tonic">Tonalité pour l’écoute</label>
+            <select id="tonic" class="select"></select>
+          </div>
+
+          <div class="actions">
+            <button class="button button--primary" type="button" id="listen">Écouter</button>
+            <button class="button share-button" type="button" id="share-button">
+              <svg viewBox="0 0 16 16" aria-hidden="true" width="16" height="16"><path d="M8 2v8M5 5l3-3 3 3M3 9v4h10V9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              Partager
+            </button>
+          </div>
+          <p class="note detail">Le son ne part que quand tu le demandes : chaque accord un temps, deux fois de suite, synthèse simple.</p>
+        </div>
 
         <div class="viz-stage">
-          <div class="stage-frame" id="stage"></div>
+          <div class="stage-frame">
+            <div class="frieze-head">
+              <p class="figure-title" id="frieze-title">Part des morceaux de chaque décennie qui contiennent la progression</p>
+              <p class="figure-sub detail">Chordonomicon, 680 000 tablatures ; décennies à moins de 200 morceaux hachurées.</p>
+            </div>
+            <svg class="frieze" id="frieze" role="img"></svg>
+            <div class="genres" id="genres" aria-label="Part par style"></div>
+
+            <section class="examples" id="examples" aria-labelledby="examples-title">
+              <h2 class="figure-title" id="examples-title">Des morceaux qui la contiennent</h2>
+              <p class="figure-sub detail">Standards de jazz (iRb) et tubes du Billboard 1958–1991 (McGill) : les seuls corpus avec des titres. Touche un titre pour voir sa grille.</p>
+              <ol class="examples-list" id="examples-list"></ol>
+              <div class="grid" id="grid" hidden></div>
+            </section>
+
+            <section class="play" aria-labelledby="play-title">
+              <h2 class="figure-title" id="play-title">Ou joue-la sur le clavier</h2>
+              <p class="figure-sub">Pose les notes d’un accord (au moins deux), puis « Ajouter » : il devient un degré de la tonalité choisie.</p>
+              <div class="keyboard-scroll">
+                <div id="keyboard"></div>
+              </div>
+              <div class="play-actions">
+                <span class="play-heard" id="heard" aria-live="polite">Aucune note posée.</span>
+                <button class="button" type="button" id="add-chord" disabled>Ajouter cet accord</button>
+                <button class="button button--ghost" type="button" id="clear-keys">Relâcher</button>
+              </div>
+            </section>
+          </div>
         </div>
       </section>
 
@@ -61,23 +121,132 @@
         <div class="prose">
           <section id="lire">
             <h2>Comment lire</h2>
-            <p>À écrire : ce que représentent les formes, les couleurs, les interactions.</p>
+            <p>
+              Une progression est écrite en <strong>degrés</strong> : des chiffres romains qui disent la place de chaque accord dans la
+              gamme, pas sa note. En do majeur, I est do, IV est fa, V est sol, vi est la mineur. Écrire I–V–vi–IV plutôt que do–sol–la
+              mineur–fa permet de compter ensemble un morceau en do et le même en ré : c’est la même progression, jouée plus haut.
+            </p>
+            <p>
+              Le grand chiffre est le nombre de morceaux du corpus qui <strong>contiennent</strong> ta suite au moins une fois, dans une de
+              leurs parties (couplet, refrain…). Pas « construits dessus » : un morceau qui la joue une fois compte comme celui qui la répète
+              tout du long. La <strong>frise</strong> montre la part des morceaux de chaque décennie qui la contiennent : une barre haute
+              dans les années 2010 veut dire qu’elle y était courante, pas seulement qu’il y a beaucoup de tablatures récentes (il y en a
+              beaucoup). En dessous, la même part par style.
+            </p>
+            <p>
+              Les <strong>exemples</strong> viennent de deux corpus qui ont des titres : les standards de jazz de l’iRb et les tubes du
+              Billboard annotés par McGill. Touche un titre : sa grille s’ouvre, ta progression y est surlignée, et tu peux l’écouter.
+            </p>
           </section>
+
           <section id="methode">
             <h2>La méthode</h2>
-            <p>À écrire : le calcul, pas à pas, idéalement avec les valeurs de l’utilisateur.</p>
+            <ul>
+              <li>
+                <strong>Lecture des accords.</strong> Chaque symbole (« Am7 », « G:7/5 », « Cø7 ») est lu en fondamentale et qualité, puis
+                ramené à une <strong>classe de triade</strong> : majeur, mineur, diminué, augmenté, suspendu. Les septièmes se replient sur
+                leur triade : G7 compte comme G, Dm7 comme Dm. Un ii–V–I trouve donc aussi les ii7–V7–IΔ du jazz. Les accords de puissance
+                (sans tierce) comptent comme majeurs.
+              </li>
+              <li>
+                <strong>Tonalité.</strong> Le Billboard et l’iRb l’annotent ; Chordonomicon non. Elle y est <strong>estimée</strong> : pour
+                chacune des douze armures, on somme la durée des accords qui appartiennent à la gamme, avec un bonus pour le premier accord,
+                le dernier, les débuts de parties, les accords de tonique et les cadences V→I. La précision, mesurée là où la tonalité est
+                connue, est publiée dans « Ce que ça ne dit pas » (<span id="acc-inline">…</span>).
+              </li>
+              <li>
+                <strong>Relatif majeur.</strong> Les degrés sont comptés dans l’armure : un morceau en la mineur est lu en do majeur, et
+                Am–F–C–G s’écrit vi–IV–I–V. Si tu saisis en mineur (i–bVI–bIII–bVII), la page convertit et te le dit. Le nombre « dont N en
+                mineur » vient du mode estimé.
+              </li>
+              <li>
+                <strong>Comptage.</strong> Dans chaque partie d’un morceau, la suite des degrés est prise sans répétition immédiate (C C G
+                Am Am F donne I–V–vi–IV), puis toutes ses sous-suites de 2 à 8 degrés sont relevées. Un morceau compte une fois par suite.
+                Les rotations sont des suites différentes (I–V–vi–IV et vi–IV–I–V ne sonnent pas pareil) ; la page les montre à côté.
+              </li>
+              <li>
+                <strong>Seuil.</strong> Une suite n’est retenue que si assez de morceaux la contiennent (20 jusqu’à 4 accords, 30 à 5, 40 à
+                6, 50 à 7 et 8) : en dessous, la page dit « moins de », et c’est déjà une information.
+              </li>
+            </ul>
           </section>
+
           <section id="sources">
             <h2>D’où viennent les chiffres</h2>
-            <p>À écrire : chaque source avec son lien, sa licence et sa période.</p>
+            <ul>
+              <li>
+                <strong>Chordonomicon</strong> (Kantarelis, Thomas, Lyberatos, Dervakos, Stamou, 2024) : 679 807 progressions issues de
+                tablatures d’Ultimate Guitar, avec structure, genres et décennies.
+                <a href="https://huggingface.co/datasets/ailsntua/Chordonomicon">Jeu de données</a>, licence CC BY-NC 4.0 ;
+                <a href="https://arxiv.org/abs/2410.22046">article</a>. Ce site est non commercial.
+              </li>
+              <li>
+                <strong>iRb</strong> (Broze et Shanahan, Ohio State University) : 1 185 grilles de standards de jazz avec tonalité, mises à
+                disposition pour la recherche musicale ; lues depuis le paquet <a href="https://www.npmjs.com/package/sharp11-irb">sharp11-irb</a>.
+              </li>
+              <li>
+                <strong>McGill Billboard</strong> (Burgoyne, Wild, Fujinaga, ISMIR 2011) : 890 entrées du Billboard Hot 100 de 1958 à
+                1991, accords annotés à la main, 742 titres distincts. <a href="https://ddmal.music.mcgill.ca/research/The_McGill_Billboard_Project_(Chord_Analysis_Dataset)/">Projet</a>, CC0.
+              </li>
+              <li>
+                Aucun son, aucune parole, aucune mélodie n’est reproduit : seulement des suites de symboles d’accords et des titres. Le
+                code du pipeline et son rapport qualité sont dans le dépôt du site.
+              </li>
+            </ul>
           </section>
+
           <section id="limites">
             <h2>Ce que ça ne dit pas</h2>
-            <p>À écrire : les angles morts, les approximations, les territoires manquants.</p>
+            <ul id="limits">
+              <li>
+                <strong>Des tablatures, pas des partitions.</strong> Chordonomicon vient de transcriptions d’amateurs : des erreurs, des
+                simplifications (une septième oubliée, un renversement ignoré), et une population de morceaux qui reflète ce que les
+                guitaristes aiment tabler : beaucoup de rock et de pop récents, peu de jazz, peu d’avant 1960.
+              </li>
+              <li id="limit-key">
+                <strong>La tonalité est estimée</strong> pour Chordonomicon. Mesurée sur les corpus annotés : … Quand elle est fausse, le
+                morceau compte pour une autre progression (souvent la même, décalée d’une quarte : un I–bVII–IV lu comme V–IV–I).
+              </li>
+              <li>
+                <strong>Le genre et la date manquent souvent</strong> : la moitié des tablatures n’ont pas de genre principal, un tiers pas
+                d’année. Les parts par style et par décennie sont calculées sur les morceaux renseignés, et le total sur tous.
+              </li>
+              <li>
+                <strong>Les septièmes sont repliées</strong>, les renversements ignorés, les accords rares rangés dans « autre ». Un
+                musicien distinguerait ii–V–I et ii7–V7–IΔ ; la page les compte ensemble, exprès, pour parler de la charpente.
+              </li>
+              <li>
+                <strong>« Contient » n’est pas « est ».</strong> Une suite de deux degrés est dans presque tous les morceaux ; le chiffre
+                n’a de sens qu’avec sa longueur. Et un morceau qui contient I–V–vi–IV dans un pont n’est pas « une chanson à quatre accords ».
+              </li>
+              <li>
+                <strong>Les exemples sont anciens ou de jazz</strong> : les seuls corpus avec des titres s’arrêtent en 1991 (Billboard) ou
+                sont des standards (iRb). Chordonomicon n’a que des identifiants Spotify, que la page n’utilise pas.
+              </li>
+            </ul>
           </section>
         </div>
       </section>
     </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Ta progression en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : la progression, le nombre de morceaux et la frise des décennies." />
+        <p class="note">Aucune donnée n’est envoyée : l’image est dessinée dans ton navigateur.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
 
     <footer data-site-footer></footer>
     <script type="module" src="./main.ts"></script>

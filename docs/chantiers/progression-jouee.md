@@ -41,17 +41,23 @@ On choisit quatre accords (ou plus) en degrés, I–V–vi–IV par exemple, ou 
 - **Tonique de comparaison = relatif majeur.** Un morceau en la mineur est compté dans l'armure de do : Am–F–C–G s'écrit vi–IV–I–V. Le mode estimé est conservé à part (pour dire « dont N en mineur ») ; l'utilisateur peut saisir en mineur (i–bVI–bIII–bVII), la page convertit et l'indique.
 - Les degrés sont épelés par rapport à la gamme majeure (bIII, #IV, bVII), en minuscules pour mineur et diminué.
 - Chordonomicon écrit le dièse « s » (« Csmin ») : le lecteur d'accords le comprend, sauf devant « sus ».
+- **Estimation de tonalité** : accord avec la gamme majeure pondéré par la durée, plus des indices de tonique (premier et dernier accord, débuts de section, poids des accords de tonique, cadence V→I), six poids ajustés par grille sur iRb et Billboard. Résultat : **86,5 % de toniques justes sur le Billboard** (pop, comme l'essentiel de Chordonomicon), **81,5 % d'armures justes sur l'iRb** (jazz, 1 % de Chordonomicon). Le seuil de 85 % de la fiche est tenu sur la pop, pas sur le jazz : Chordonomicon reste utilisé pour les comptages, et la page publie les deux chiffres.
+- **Seuils par longueur** (20 jusqu'à 4 accords, 30 à 5, 40 à 6, 50 à 7 et 8) pour que chaque part reste sous 800 Ko gzippés ; la page ne charge que la longueur saisie.
+- **« Première fois »** : première année où au moins trois morceaux datés contiennent la suite ; les dates avant 1920 (des « 1900 » bouche-trous) sont ignorées.
+- Les jetons de degrés des morceaux nommés sont recalculés dans le navigateur (le fichier `songs.json` ne porte que les symboles et les durées).
+- Le clavier de saisie reconnaît une triade (majeure, mineure, diminuée, augmentée, suspendue, ou une quinte à vide) et la convertit en degré de la tonalité d'écoute.
 
 ## Tâches
 
 - [x] Socle : `src/shell/music/chords.ts` (symboles des trois écritures, dix qualités, six classes de triade), `degrees.ts` (degrés, jetons d'un octet, étiquettes, rotations), `key.ts` (estimation de tonalité), 41 tests
-- [ ] Outils : `tools/lib/corpora.ts` (téléchargement avec cache, lecture des trois corpus), tests sur des extraits
-- [ ] Pipeline : nettoyage, tonalité, suites de degrés, comptages, exemples, `REPORT.md`
-- [ ] Domaine : recherche d'une progression dans les agrégats, rotations proches, phrase de résultat ; tests
-- [ ] Interface : saisie des degrés, clavier, frise des décennies, exemples et grilles, son, URL
-- [ ] Textes, image de partage, image d'aperçu
-- [ ] Vérification mobile/clair/sombre, relecture de l'auteur, publication
+- [x] Outils : `tools/lib/corpora.ts` (téléchargement avec cache commun `tools/.cache/corpora/`, lecture en flux du CSV, du paquet iRb et des fichiers salami), tests sur des extraits
+- [x] Pipeline : nettoyage, tonalité, suites de degrés, comptages, exemples, `REPORT.md` (7,7 min)
+- [x] Domaine : recherche d'une progression dans les agrégats, rotations proches, phrase de résultat, exemples nommés et surlignage, voix et reconnaissance d'accord ; tests
+- [x] Interface : saisie des degrés, clavier, frise des décennies, exemples et grilles, son, URL
+- [x] Textes, image de partage, image d'aperçu
+- [x] Vérification mobile (375 px), clair et sombre dans le navigateur de l'éditeur (nuit du 1er octobre)
+- [ ] Relecture de l'auteur sur téléphone, publication
 
 ## Prochaine action
 
-`tools/lib/corpora.ts` : lecture des trois corpus (CSV Chordonomicon en flux, JSON iRb, fichiers salami du Billboard) dans le format commun, tests sur extraits.
+Relecture de l'auteur : `git checkout feat/progression-jouee`, `npm run dev`, http://localhost:5173/viz/progression-jouee/ . Points à regarder : la phrase de résultat, le seuil par longueur, le clavier de saisie. Pour publier : `status: 'published'` dans `src/shell/site.ts`, fusion sur `main`.

@@ -22,6 +22,8 @@ function pages(): Record<string, string> {
 export default defineConfig({
   // Base de déploiement : `/` en local, `/<dépôt>/` sur GitHub Pages (fournie par la CI).
   base: process.env.BASE_PATH ?? '/',
+  // Port imposé par l'environnement (aperçu de l'éditeur), sinon celui de Vite.
+  server: process.env.PORT ? { port: Number(process.env.PORT), strictPort: true } : {},
   resolve: {
     alias: { '@shell': resolve(root, 'src/shell'), '@tools': resolve(root, 'tools') },
   },

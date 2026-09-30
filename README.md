@@ -77,3 +77,4 @@ docs/                       idées, design
 | [Pourquoi une tierce sonne douce](viz/consonance/) | publiée | aucune donnée, modèle de Plomp–Levelt |
 | [La gamme qui monte sans fin](viz/gamme-sans-fin/) | publiée | aucune donnée, three.js |
 | [Ce qu’une seule note contient](viz/une-seule-note/) | publiée | aucune donnée, série harmonique |
+| [Ta progression a déjà été jouée 40 000 fois](viz/progression-jouee/) | brouillon | [rapport qualité](viz/progression-jouee/pipeline/REPORT.md) · Chordonomicon, iRb, McGill Billboard |

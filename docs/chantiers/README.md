@@ -31,7 +31,7 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | 2d | [gamme-sans-fin](gamme-sans-fin.md) : La gamme qui monte sans fin (three.js) | publiée le 1er octobre 2026 |
 | 2e | [une-seule-note](une-seule-note.md) : Ce qu’une seule note contient | publiée le 1er octobre 2026 |
 | 3 | Point de ralliement et nom du site | à décider par l'auteur |
-| 3a | [progression-jouee](progression-jouee.md) : Ta progression a déjà été jouée 40 000 fois | cadré, sondes faites ([sondes-progressions](sondes-progressions.md)) |
+| 3a | [progression-jouee](progression-jouee.md) : Ta progression a déjà été jouée 40 000 fois | construite en brouillon sur `feat/progression-jouee` (nuit du 1er octobre), en attente de relecture |
 | 3b | [fleuve-des-accords](fleuve-des-accords.md) : Le fleuve des enchaînements | cadré |
 | 3c | [voyage-sur-le-tore](voyage-sur-le-tore.md) : Le voyage sur le tore (three.js) | cadré |
 | 3d | [carte-des-styles](carte-des-styles.md) : La carte des styles | cadré, sonde de faisabilité à faire avant l'interface |

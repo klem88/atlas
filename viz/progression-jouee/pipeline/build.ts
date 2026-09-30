@@ -23,9 +23,9 @@ import {
   type CorpusSong,
 } from '@tools/lib/corpora';
 import { log } from '@tools/lib/log';
-import { MIN_SONGS, SCHEMA_VERSION, type Meta, type NamedSong, type ProgressionRow, type Shard, type SongsFile } from '../data/contract';
+import { MIN_SONGS_BY_LENGTH, SCHEMA_VERSION, type Meta, type NamedSong, type ProgressionRow, type Shard, type SongsFile } from '../data/contract';
 import { validateMeta, validateShard, validateSongs } from '../data/validate';
-import { DECADES, countNgrams, decadeIndex, packSections, tokensOfKey, type SongTokens, type Tally } from './ngrams';
+import { DECADES, FIRST_YEAR_SUPPORT, MIN_PLAUSIBLE_YEAR, countNgrams, decadeIndex, firstYear, packSections, tokensOfKey, type SongTokens, type Tally } from './ngrams';
 
 const PIPELINE = import.meta.dirname;
 const REPO = join(PIPELINE, '..', '..', '..');
@@ -92,9 +92,9 @@ export default async function buildData(args: string[] = []): Promise<void> {
   const shardSizes: Record<number, { rows: number; bytes: number; gzip: number }> = {};
   const top: Record<number, [string, Tally][]> = {};
   for (const n of LENGTHS) {
-    const counts = countNgrams(songs, n, MIN_SONGS, allowed, { genres: GENRES.length, decades: DECADES.length });
+    const counts = countNgrams(songs, n, MIN_SONGS_BY_LENGTH[n]!, allowed, { genres: GENRES.length, decades: DECADES.length });
     const rows: Record<string, ProgressionRow> = {};
-    for (const [k, t] of counts) rows[labelOfKey(k)] = [t.total, t.minor, t.firstYear ?? 0, ...t.byGenre, ...t.byDecade];
+    for (const [k, t] of counts) rows[labelOfKey(k)] = [t.total, t.minor, firstYear(t) ?? 0, ...t.byGenre, ...t.byDecade];
     const shard: Shard = { n, rows };
     const bytes = await writeJson(`p${n}.json`, shard);
     shardSizes[n] = { rows: counts.size, bytes, gzip: gzipSync(JSON.stringify(shard)).length };
@@ -107,8 +107,8 @@ export default async function buildData(args: string[] = []): Promise<void> {
   const meta: Meta = validateMeta({
     version: SCHEMA_VERSION,
     generatedAt,
-    minSongs: MIN_SONGS,
     lengths: LENGTHS,
+    minSongs: LENGTHS.map((n) => MIN_SONGS_BY_LENGTH[n]!),
     genres: GENRES,
     decades: [...DECADES],
     corpus,
@@ -128,9 +128,12 @@ export default async function buildData(args: string[] = []): Promise<void> {
 function weighted(song: CorpusSong): WeightedChord[] {
   const out: WeightedChord[] = [];
   for (const sec of song.sections) {
+    let first = true;
     for (const c of sec.chords) {
       const chord = parseChord(c.symbol);
-      if (chord) out.push({ chord, weight: c.beats });
+      if (!chord) continue;
+      out.push(first ? { chord, weight: c.beats, sectionStart: true } : { chord, weight: c.beats });
+      first = false;
     }
   }
   return out;
@@ -155,7 +158,7 @@ function toTokens(song: CorpusSong): { tokens: SongTokens; margin: number } | nu
       genre: song.genre ? GENRES.indexOf(song.genre) : -1,
       decade: decadeIndex(song.year),
       minor: key.mode === 'minor',
-      year: song.year ?? null,
+      year: song.year !== undefined && song.year >= MIN_PLAUSIBLE_YEAR ? song.year : null,
     },
     margin: key.margin,
   };
@@ -196,7 +199,6 @@ function namedSong(song: CorpusSong): NamedSong | null {
       .map((sec) => ({
         name: sec.name,
         chords: sec.chords.map((c) => [c.symbol, Math.round(c.beats * 100) / 100] as [string, number]),
-        tokens: tokensOf(sec.chords.map((c) => parseChord(c.symbol)), tonic),
       }))
       .filter((s) => s.chords.length > 0),
   };
@@ -260,7 +262,7 @@ function renderReport(r: {
   const q = (p: number) => r.margins[Math.floor(p * (r.margins.length - 1))]!.toFixed(2);
   const lines: string[] = [];
   lines.push('# Rapport qualité des données', '');
-  lines.push(`Généré le ${meta.generatedAt} en ${r.minutes.toFixed(1)} min. Seuil : une suite est retenue si au moins ${meta.minSongs} morceaux la contiennent.`, '');
+  lines.push(`Généré le ${meta.generatedAt} en ${r.minutes.toFixed(1)} min. Seuil : une suite est retenue si assez de morceaux la contiennent (${meta.lengths.map((n, i) => `${meta.minSongs[i]} pour ${n} degrés`).join(', ')}).`, '');
   lines.push('> Fichier régénéré à chaque `npm run data`. Le versionner permet de voir, dans le diff, ce qu’une mise à jour des sources a changé.', '');
   lines.push('## Corpus', '');
   lines.push(`- Chordonomicon : ${fr(r.read)} progressions lues, ${fr(r.dropped)} écartées (moins de deux degrés distincts), **${fr(meta.corpus.songs)} retenues**.`);
@@ -277,7 +279,8 @@ function renderReport(r: {
   lines.push(`- **iRb** (${fr(irb.n)} standards, tonalité et mode annotés) : armure juste **${pct(irb.signature, irb.n)}**, tonique et mode exacts ${pct(irb.exact, irb.n)}.`);
   lines.push(`- **Billboard** (${fr(billboard.n)} titres, tonique annotée) : tonique juste **${pct(billboard.tonic, billboard.n)}**, armure compatible avec la tonique ${pct(billboard.signature, billboard.n)}.`);
   lines.push(`- Marge de décision sur Chordonomicon (écart relatif entre la meilleure armure et la deuxième) : médiane ${q(0.5)}, premier décile ${q(0.1)}, dernier décile ${q(0.9)}.`, '');
-  lines.push('Les comptages se font dans l’armure (relatif majeur) : c’est la mesure « armure juste » qui compte pour la page. Le mode ne sert qu’à dire « dont N en mineur ».', '');
+  lines.push('Les comptages se font dans l’armure (relatif majeur) : c’est la mesure « armure juste » qui compte pour la page. Le mode ne sert qu’à dire « dont N en mineur ». Les six poids de l’estimateur (premier accord, dernier, débuts de section, accords de tonique, emprunts, cadence V→I) ont été choisis par une recherche en grille sur ces deux mêmes corpus ; la grille est grossière (trois à cinq valeurs par poids), ce qui limite l’optimisme de la mesure, mais elle n’est pas indépendante.', '');
+  lines.push(`« Vu dès » : la première année où au moins ${FIRST_YEAR_SUPPORT} morceaux datés contiennent la suite ; les dates antérieures à ${MIN_PLAUSIBLE_YEAR} sont tenues pour des bouche-trous et ignorées.`, '');
   lines.push('## Suites retenues', '');
   lines.push('| Longueur | Suites | JSON | gzippé |', '| --: | --: | --: | --: |');
   for (const n of meta.lengths) {
@@ -289,7 +292,7 @@ function renderReport(r: {
   lines.push('## Les suites les plus fréquentes', '');
   for (const n of meta.lengths) {
     lines.push(`### ${n} degrés`, '');
-    for (const [k, t] of r.top[n]!) lines.push(`- ${labelOfKey(k).replaceAll(',', '–')} : ${fr(t.total)} morceaux (${pct(t.total, meta.corpus.songs)}), dont ${pct(t.minor, t.total)} en mineur${t.firstYear ? `, vu dès ${t.firstYear}` : ''}`);
+    for (const [k, t] of r.top[n]!) lines.push(`- ${labelOfKey(k).replaceAll(',', '–')} : ${fr(t.total)} morceaux (${pct(t.total, meta.corpus.songs)}), dont ${pct(t.minor, t.total)} en mineur${firstYear(t) ? `, vu dès ${firstYear(t)}` : ''}`);
     lines.push('');
   }
   return lines.join('\n');

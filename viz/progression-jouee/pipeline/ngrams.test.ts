@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { countNgrams, decadeIndex, keyOf, packSections, songNgrams, tokensOfKey, type SongTokens } from './ngrams';
+import { countNgrams, decadeIndex, firstYear, keyOf, packSections, songNgrams, tokensOfKey, type SongTokens } from './ngrams';
 
 const song = (sections: number[][], extra: Partial<SongTokens> = {}): SongTokens => ({
   tokens: packSections(sections),
@@ -55,18 +55,27 @@ describe('comptage', () => {
       [1, 2],
       [2, 3],
     ]);
-    expect(counts.get(keyOf([2, 3]))).toEqual({ total: 3, minor: 1, firstYear: 1965, byGenre: [1, 2], byDecade: [0, 1, 2] });
-    expect(counts.get(keyOf([1, 2]))).toEqual({ total: 2, minor: 1, firstYear: 1965, byGenre: [1, 1], byDecade: [0, 1, 1] });
+    expect(counts.get(keyOf([2, 3]))).toEqual({ total: 3, minor: 1, earliest: [1965, 1971, 1975], byGenre: [1, 2], byDecade: [0, 1, 2] });
+    expect(firstYear(counts.get(keyOf([2, 3]))!)).toBe(1975);
+    expect(counts.get(keyOf([1, 2]))).toEqual({ total: 2, minor: 1, earliest: [1965, 1975], byGenre: [1, 1], byDecade: [0, 1, 1] });
+    expect(firstYear(counts.get(keyOf([1, 2]))!)).toBeNull();
   });
   it('ignore les genres et décennies inconnus', () => {
     const counts = countNgrams([song([[1, 2]], { genre: -1, decade: -1, year: null })], 2, 1, null, { genres: 1, decades: 1 });
-    expect(counts.get(keyOf([1, 2]))).toEqual({ total: 1, minor: 0, firstYear: null, byGenre: [0], byDecade: [0] });
+    expect(counts.get(keyOf([1, 2]))).toEqual({ total: 1, minor: 0, earliest: [], byGenre: [0], byDecade: [0] });
+  });
+  it('tient une date de 1900 pour un bouche-trou et ne garde que les trois plus anciennes', () => {
+    const songs = [1900, 1980, 1960, 1970, 1975].map((y) => song([[1, 2]], { year: y }));
+    const t = countNgrams(songs, 2, 1, null, { genres: 1, decades: 1 }).get(keyOf([1, 2]))!;
+    expect(t.earliest).toEqual([1960, 1970, 1975]);
+    expect(firstYear(t)).toBe(1975);
   });
 });
 
 describe('décennies', () => {
   it('range les années', () => {
     expect(decadeIndex(1949)).toBe(0);
+    expect(decadeIndex(1900)).toBe(-1);
     expect(decadeIndex(1950)).toBe(0);
     expect(decadeIndex(1999)).toBe(4);
     expect(decadeIndex(2024)).toBe(7);

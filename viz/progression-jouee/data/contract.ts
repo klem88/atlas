@@ -8,7 +8,9 @@
  */
 
 export const SCHEMA_VERSION = 1;
-export const MIN_SONGS = 20;
+/** Seuil de rétention d'une suite (morceaux qui la contiennent), par longueur : plus haut pour les longues, qui sont
+ *  bien plus nombreuses (rotations et extensions des boucles) et pèseraient trop lourd à charger. */
+export const MIN_SONGS_BY_LENGTH: Readonly<Record<number, number>> = { 2: 20, 3: 20, 4: 20, 5: 30, 6: 40, 7: 50, 8: 50 };
 
 /** Colonnes fixes d'une ligne de suite, avant les genres puis les décennies. */
 export const ROW = { total: 0, minor: 1, firstYear: 2, fixed: 3 } as const;
@@ -19,8 +21,9 @@ export type ProgressionRow = number[];
 export interface Meta {
   version: number;
   generatedAt: string;
-  minSongs: number;
   lengths: number[];
+  /** Seuil de rétention, aligné sur `lengths`. */
+  minSongs: number[];
   genres: string[];
   decades: number[];
   corpus: {
@@ -50,8 +53,15 @@ export interface NamedSection {
   name: string;
   /** [symbole, temps] */
   chords: [string, number][];
-  /** Degrés (jetons) de la section, sans répétition immédiate, relatifs au relatif majeur. */
+}
+
+/** Section enrichie dans le navigateur : les jetons de degrés (sans répétition immédiate) relatifs au relatif majeur. */
+export interface TokenizedSection extends NamedSection {
   tokens: number[];
+}
+
+export interface TokenizedSong extends Omit<NamedSong, 'sections'> {
+  sections: TokenizedSection[];
 }
 
 export interface NamedSong {

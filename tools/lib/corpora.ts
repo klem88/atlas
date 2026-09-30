@@ -147,7 +147,7 @@ export async function* readChordonomicon(path = join(CORPORA_CACHE, SOURCES.chor
 
 interface IrbChart {
   sections: string[];
-  content: Record<string, { chord: string; duration: { beats: number } }[]>;
+  content: Record<string, { chord: string; duration: { beats: number; subunits?: string[] } }[]>;
   info: { title: string; composer?: string; date?: string; key: string; minor: boolean };
 }
 
@@ -163,7 +163,8 @@ export function irbSong(chart: IrbChart, index: number): CorpusSong {
   const sections = chart.sections.map((name) => {
     const n = (seen.get(name) ?? 0) + 1;
     seen.set(name, n);
-    return { name, chords: (chart.content[name] ?? []).map((c) => ({ symbol: c.chord, beats: c.duration.beats })) };
+    // Les durées plus courtes qu'un temps sont en « subunits » (croches) : on les compte pour un demi-temps chacune.
+    return { name, chords: (chart.content[name] ?? []).map((c) => ({ symbol: c.chord, beats: Math.max(0.5, c.duration.beats + 0.5 * (c.duration.subunits?.length ?? 0)) })) };
   });
   const song: CorpusSong = { id: `irb:${index}`, corpus: 'irb', title: chart.info.title, genre: 'jazz', sections };
   if (chart.info.composer) song.artist = chart.info.composer;

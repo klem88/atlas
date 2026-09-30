@@ -51,7 +51,10 @@ describe('iRb', () => {
             { chord: 'Cmin7', duration: { beats: 4 } },
             { chord: 'F7', duration: { beats: 4 } },
           ],
-          B: [{ chord: 'Bbmaj7', duration: { beats: 8 } }],
+          B: [
+            { chord: 'Bbmaj7', duration: { beats: 8 } },
+            { chord: 'F7', duration: { beats: 0, subunits: ['eighth'] } },
+          ],
         },
         info: { title: 'Autumn Leaves', composer: 'Kosma, Joseph', date: '1945', key: 'G', minor: true },
       },
@@ -62,7 +65,10 @@ describe('iRb', () => {
     expect(s.year).toBe(1945);
     expect(s.key).toEqual({ tonic: 7, mode: 'minor' });
     expect(s.sections).toHaveLength(3);
-    expect(s.sections[2]!.chords).toEqual([{ symbol: 'Bbmaj7', beats: 8 }]);
+    expect(s.sections[2]!.chords).toEqual([
+      { symbol: 'Bbmaj7', beats: 8 },
+      { symbol: 'F7', beats: 0.5 },
+    ]);
   });
 });
 

@@ -52,16 +52,37 @@ export function songNgrams(song: SongTokens, n: number, allowed: ReadonlySet<str
   return out;
 }
 
+/** Nombre de morceaux datés qu'il faut pour qu'une année compte comme « première fois » (une date isolée est souvent fausse). */
+export const FIRST_YEAR_SUPPORT = 3;
+/** En deçà, une date est tenue pour un bouche-trou (Chordonomicon a des « 1900 »). */
+export const MIN_PLAUSIBLE_YEAR = 1920;
+
 export interface Tally {
   total: number;
   minor: number;
-  firstYear: number | null;
+  /** Les plus petites années vues (au plus `FIRST_YEAR_SUPPORT`), triées. */
+  earliest: number[];
   byGenre: number[];
   byDecade: number[];
 }
 
 export function emptyTally(genres: number, decades: number): Tally {
-  return { total: 0, minor: 0, firstYear: null, byGenre: new Array<number>(genres).fill(0), byDecade: new Array<number>(decades).fill(0) };
+  return { total: 0, minor: 0, earliest: [], byGenre: new Array<number>(genres).fill(0), byDecade: new Array<number>(decades).fill(0) };
+}
+
+/** Première année où au moins `FIRST_YEAR_SUPPORT` morceaux datés contiennent la suite ; `null` si trop peu de dates. */
+export function firstYear(t: Tally): number | null {
+  return t.earliest.length >= FIRST_YEAR_SUPPORT ? t.earliest[FIRST_YEAR_SUPPORT - 1]! : null;
+}
+
+function noteYear(t: Tally, year: number): void {
+  if (year < MIN_PLAUSIBLE_YEAR) return;
+  const e = t.earliest;
+  if (e.length >= FIRST_YEAR_SUPPORT && year >= e[e.length - 1]!) return;
+  let i = e.length;
+  while (i > 0 && e[i - 1]! > year) i--;
+  e.splice(i, 0, year);
+  if (e.length > FIRST_YEAR_SUPPORT) e.pop();
 }
 
 /**
@@ -92,7 +113,7 @@ export function countNgrams(
       if (song.minor) t.minor++;
       if (song.genre >= 0) t.byGenre[song.genre]!++;
       if (song.decade >= 0) t.byDecade[song.decade]!++;
-      if (song.year !== null && (t.firstYear === null || song.year < t.firstYear)) t.firstYear = song.year;
+      if (song.year !== null) noteYear(t, song.year);
     }
   }
   return kept;
@@ -101,7 +122,7 @@ export function countNgrams(
 /** Décennies couvertes : 1950 à 2020 ; avant 1950, on range dans 1950 (rares tablatures de standards). */
 export const DECADES = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020] as const;
 export function decadeIndex(year: number | null | undefined): number {
-  if (year === null || year === undefined) return -1;
+  if (year === null || year === undefined || year < MIN_PLAUSIBLE_YEAR) return -1;
   const d = Math.floor(year / 10) * 10;
   if (d < 1950) return 0;
   const i = DECADES.indexOf(d as (typeof DECADES)[number]);
