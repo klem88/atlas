@@ -325,3 +325,42 @@ dialog::backdrop {
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
 }
+
+/* Fenêtre « Partager » (src/shell/share.ts) ------------------------------ */
+.share-dialog-body {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+.share-dialog-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.share-dialog-head h2 {
+  font-size: var(--text-xl);
+}
+
+.share-preview {
+  display: block;
+  width: 100%;
+  max-height: 58dvh;
+  object-fit: contain;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--page);
+}
+
+.share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.share-status {
+  min-height: 1.4em;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}

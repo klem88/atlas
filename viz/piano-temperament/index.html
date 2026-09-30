@@ -31,7 +31,10 @@
       <header class="viz-intro">
         <p class="viz-kicker">Musique · Physique</p>
         <h1>Pourquoi ton piano est (légèrement) faux</h1>
-        <p class="viz-lede">Joue un accord et regarde les ondes battre : sur un piano, aucune quinte n’est juste, et c’est voulu.</p>
+        <p class="viz-lede">
+          Joue deux notes. Sur un piano, presque aucun intervalle n’est parfaitement juste : les ondes glissent l’une contre l’autre et
+          <em>battent</em>. C’est un compromis vieux de trois siècles, et une belle invention.
+        </p>
         <!-- Affiche les éléments de classe « detail » (aides, notes de calcul) : voir src/shell/details.ts. -->
         <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
@@ -40,12 +43,65 @@
       </header>
 
       <section class="viz-workspace" aria-label="Visualisation">
-        <!-- Réglages et résultat. Pour une visualisation sans panneau, supprimer ce bloc :
-             la scène prend alors toute la largeur (voir viz.css). -->
-        <div class="viz-panel" id="panel"></div>
+        <div class="viz-panel" id="panel">
+          <fieldset class="field field--tuning">
+            <legend class="field-label">Accordage</legend>
+            <div class="segmented" id="tuning">
+              <label><input type="radio" name="tuning" value="egal" checked />Ton piano</label>
+              <label><input type="radio" name="tuning" value="pur" />Pur</label>
+              <label><input type="radio" name="tuning" value="pythagore" />Pythagore</label>
+            </div>
+            <p class="field-help detail" id="tuning-help">
+              <strong>Ton piano</strong> : douze demi-tons égaux, tous les intervalles sont un peu faux, aucun ne l’est beaucoup.
+              <strong>Pur</strong> : des rapports simples (3/2, 5/4), l’accord ne bat plus, mais il n’est juste que par rapport à sa note la plus grave.
+              <strong>Pythagore</strong> : que des quintes pures, et des tierces très larges.
+            </p>
+          </fieldset>
+
+          <section class="result" id="result" aria-live="polite"></section>
+
+          <div class="actions">
+            <button class="button button--primary" type="button" id="listen">Écouter</button>
+            <button class="button" type="button" id="compare">Comparer avec le pur</button>
+          </div>
+          <p class="note detail">
+            Le son ne part que quand tu le demandes. Volume doux conseillé : les battements s’entendent mieux bas, ou au casque.
+          </p>
+
+          <div class="field">
+            <span class="field-label">Essaie aussi</span>
+            <div class="chips" id="presets"></div>
+          </div>
+
+          <button class="button share-button" type="button" id="share-button">
+            <svg viewBox="0 0 16 16" aria-hidden="true" width="16" height="16"><path d="M8 2v8M5 5l3-3 3 3M3 9v4h10V9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+            Partager cet accord
+          </button>
+        </div>
 
         <div class="viz-stage">
-          <div class="stage-frame" id="stage"></div>
+          <div class="stage-frame">
+            <div class="keyboard-wrap">
+              <div id="keyboard"></div>
+              <p class="stage-hint" id="stage-hint">Touche une note pour l’ajouter, touche-la encore pour l’enlever. Jusqu’à quatre notes.</p>
+            </div>
+
+            <figure class="waves">
+              <figcaption class="waves-legend" id="waves-legend"></figcaption>
+              <canvas id="waves" role="img" aria-label="Les deux harmoniques qui devraient coïncider, et leur somme qui bat"></canvas>
+              <p class="waves-caption detail">
+                En haut, les deux harmoniques sur quelques cycles ; en bas, leur somme sur quelques secondes, avec son enveloppe.
+                Quand l’enveloppe se creuse, le son faiblit : c’est un battement.
+              </p>
+            </figure>
+
+            <div class="pairs" id="pairs" role="group" aria-label="Paire de notes à regarder"></div>
+
+            <figure class="harmonics">
+              <figcaption class="figure-title">Les harmoniques de chaque note <span class="detail">— une octave par même largeur ; les deux traits reliés sont ceux qui devraient coïncider</span></figcaption>
+              <svg id="harmonics" aria-label="Harmoniques de chaque note sur un axe des fréquences"></svg>
+            </figure>
+          </div>
         </div>
       </section>
 
@@ -53,7 +109,8 @@
         <nav class="viz-notes-toc" aria-label="Sommaire des explications">
           <ol>
             <li><a href="#lire">Comment lire</a></li>
-            <li><a href="#methode">La méthode</a></li>
+            <li><a href="#virgule">La virgule qui ne se referme pas</a></li>
+            <li><a href="#calcul">Le calcul</a></li>
             <li><a href="#sources">D’où viennent les chiffres</a></li>
             <li><a href="#limites">Ce que ça ne dit pas</a></li>
           </ol>
@@ -61,23 +118,108 @@
         <div class="prose">
           <section id="lire">
             <h2>Comment lire</h2>
-            <p>À écrire : ce que représentent les formes, les couleurs, les interactions.</p>
+            <p>
+              Une note de piano n’est pas une seule onde : c’est une fondamentale et une pile d’<strong>harmoniques</strong>, à 2, 3, 4… fois sa
+              fréquence. Quand deux notes forment un intervalle simple, certaines de leurs harmoniques tombent presque au même endroit :
+              la 3ᵉ harmonique d’un do et la 2ᵉ du sol au-dessus, par exemple.
+            </p>
+            <p>
+              <strong>Presque.</strong> Sur ton piano, la quinte est un tout petit peu trop étroite (2 cents, un cinquantième de demi-ton),
+              et ces deux harmoniques diffèrent de moins d’un hertz. Leur somme gonfle et se creuse à ce rythme : c’est la vague que tu vois
+              en bas, et le <em>ouaou-ouaou</em> que tu entends. La tierce majeure, elle, est trop large de 14 cents, et bat dix fois par
+              seconde : un léger frémissement, tellement habituel qu’on ne l’entend plus.
+            </p>
+            <p>
+              Bascule sur <strong>Pur</strong> : les harmoniques coïncident exactement, l’enveloppe devient plate, le son se pose. C’est
+              ainsi que chantent un chœur ou un quatuor à cordes quand ils s’écoutent. Bascule sur <strong>Pythagore</strong> : les quintes
+              sont pures, mais la tierce s’élargit encore (22 cents) et bat davantage.
+            </p>
           </section>
-          <section id="methode">
-            <h2>La méthode</h2>
-            <p>À écrire : le calcul, pas à pas, idéalement avec les valeurs de l’utilisateur.</p>
+
+          <section id="virgule">
+            <h2>La virgule qui ne se referme pas</h2>
+            <p>
+              Pourquoi ne pas accorder le piano tout en intervalles purs ? Parce que ça ne tombe pas juste. Empile douze quintes pures depuis
+              un do : tu devrais retomber sur un do, sept octaves plus haut. Tu arrives <strong><span id="comma-value">23,46</span> cents
+              trop haut</strong>. C’est la <em>virgule pythagoricienne</em>, connue depuis l’Antiquité. Aucune répartition ne la fait
+              disparaître : il faut la cacher quelque part.
+            </p>
+            <figure class="spiral">
+              <fieldset class="segmented spiral-controls" id="spiral-controls">
+                <legend class="field-label">Douze quintes…</legend>
+                <label><input type="radio" name="spiral" value="pur" checked />pures</label>
+                <label><input type="radio" name="spiral" value="egal" />tempérées</label>
+              </fieldset>
+              <svg id="spiral" role="img" aria-label="Spirale des douze quintes empilées : pures, elles dépassent le do de 23,46 cents ; tempérées, elles retombent dessus"></svg>
+              <p class="spiral-status" id="spiral-status" role="status"></p>
+              <figcaption class="note">Un tour = une octave. Le rayon grandit d’un cran par tour, pour qu’on voie la spirale.</figcaption>
+            </figure>
+            <p>
+              Pendant des siècles, on l’a cachée dans une seule quinte inutilisable, la <em>quinte du loup</em>, puis dans quelques-unes
+              (les tempéraments <em>mésotoniques</em>, puis les <em>inégaux</em> de Bach et de ses contemporains). Le
+              <strong>tempérament égal</strong> la répartit à parts égales : chacune des douze quintes est étroite de 1,96 cent. Toutes
+              les tonalités deviennent jouables, et sonnent pareil. Ce qu’on gagne : transposer, moduler, jouer avec n’importe qui. Ce qu’on
+              perd : le repos des accords purs. Le piano moderne a choisi.
+            </p>
           </section>
+
+          <section id="calcul">
+            <h2>Le calcul</h2>
+            <p>Pour les notes affichées, voici les nombres derrière la vague :</p>
+            <div class="formula" id="formula"></div>
+            <ul class="detail">
+              <li>Tempérament égal : chaque demi-ton multiplie la fréquence par 2<sup>1/12</sup> ≈ 1,05946 ; la = 440 Hz.</li>
+              <li>Cents : 1200 · log₂(rapport). Un demi-ton tempéré fait 100 cents, l’octave 1200.</li>
+              <li>Intonation juste (à 5 limites) : rapports 16/15, 9/8, 6/5, 5/4, 4/3, 45/32, 3/2, 8/5, 5/3, 9/5, 15/8, 2 pour les douze demi-tons, mesurés depuis la note la plus grave de l’accord, qui garde sa fréquence de piano.</li>
+              <li>Pythagore : que des puissances de 2 et de 3 (9/8, 81/64, 4/3, 3/2, 27/16, 243/128…).</li>
+              <li>Battements : pour un intervalle de rapport pur n/d, on compare la n-ième harmonique de la grave à la d-ième de l’aiguë ; le nombre de battements par seconde est la différence de leurs fréquences.</li>
+              <li>Le son : chaque note est une somme de six sinusoïdes (harmoniques 1 à 6, amplitude en 1/n<sup>1,2</sup>), sans les irrégularités d’un vrai piano.</li>
+            </ul>
+          </section>
+
           <section id="sources">
             <h2>D’où viennent les chiffres</h2>
-            <p>À écrire : chaque source avec son lien, sa licence et sa période.</p>
+            <p>
+              Il n’y a pas de données ici : tout se calcule dans ton navigateur à partir de trois conventions, le la à 440 Hz (norme ISO 16),
+              le tempérament égal à douze notes, et les rapports de l’intonation juste. Les définitions suivent celles des manuels d’acoustique
+              musicale ; pour aller plus loin, <em>Physics and Psychophysics of Music</em> de Juan Roederer, ou l’article
+              <a href="https://fr.wikipedia.org/wiki/Temp%C3%A9rament_%C3%A9gal">Tempérament égal</a> et
+              <a href="https://fr.wikipedia.org/wiki/Comma_pythagoricien">Comma pythagoricien</a> de Wikipédia.
+            </p>
           </section>
+
           <section id="limites">
             <h2>Ce que ça ne dit pas</h2>
-            <p>À écrire : les angles morts, les approximations, les territoires manquants.</p>
+            <ul>
+              <li><strong>Un vrai piano est encore plus faux, et c’est voulu aussi.</strong> Ses cordes sont raides : leurs harmoniques sont un peu plus hautes que les multiples exacts. Pour que les octaves sonnent justes, l’accordeur les élargit (l’<em>accord étiré</em>, mesuré par la courbe de Railsback) : les aigus sont accordés plus haut, les graves plus bas que le calcul.</li>
+              <li><strong>Le son ici est simplifié.</strong> Six harmoniques exactes, pas de marteau, pas de résonance de table. Les battements, eux, sont les bons.</li>
+              <li><strong>« Pur » n’est pas « vrai ».</strong> L’intonation juste est calculée depuis la note la plus grave ; un vrai chœur ajuste chaque accord au contexte, et certains accords n’ont aucune solution pure.</li>
+              <li><strong>Le tempérament égal n’est pas le seul possible.</strong> Beaucoup de clavecinistes et d’organistes jouent en tempéraments inégaux ; d’autres musiques du monde n’utilisent ni douze notes, ni ces rapports.</li>
+              <li><strong>Les cents ne sont pas des sensations.</strong> L’oreille tolère plus ou moins selon le registre, le timbre et la durée.</li>
+            </ul>
           </section>
         </div>
       </section>
     </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Cet accord en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : les notes, leur écart au pur et la vague des battements." />
+        <p class="note">Aucune donnée n’est envoyée : tout est calculé dans ton navigateur.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
 
     <footer data-site-footer></footer>
     <script type="module" src="./main.ts"></script>
