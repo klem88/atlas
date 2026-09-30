@@ -22,6 +22,25 @@ describe('pickFrenchName', () => {
     ).toBe('Merle noir');
   });
 
+  it('sans TAXREF, préfère le nom le plus cité à celui d’une source isolée', () => {
+    expect(
+      pickFrenchName([
+        { vernacularName: 'Corbeau pigeon', language: 'fra', source: 'Catalogue of Life' },
+        { vernacularName: 'Corneille mantelée', language: 'fra', source: 'ITIS' },
+        { vernacularName: 'corneille mantelée', language: 'fra', source: 'Belgian Species List' },
+      ]),
+    ).toBe('Corneille mantelée');
+  });
+
+  it('garde les majuscules des noms propres', () => {
+    expect(
+      pickFrenchName([
+        { vernacularName: "Verdier d'Europe", language: 'fra', source: 'A' },
+        { vernacularName: "verdier d'Europe", language: 'fra', source: 'B' },
+      ]),
+    ).toBe("Verdier d'Europe");
+  });
+
   it('renvoie null sans nom français', () => {
     expect(pickFrenchName([{ vernacularName: 'Robin', language: 'eng' }])).toBeNull();
   });

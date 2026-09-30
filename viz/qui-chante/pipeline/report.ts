@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import type { CommunesFile, SpeciesFile } from '../data/contract';
 import type { Neighborhood } from '../domain/aggregate';
-import { MIN_COUNT, YEARS } from './sources';
+import { MIN_COUNT, NATIONAL_MIN, YEARS } from './sources';
 
 export interface Report {
   generatedAt: string;
@@ -42,7 +42,7 @@ export async function writeReport(path: string, r: Report): Promise<void> {
   const lines: string[] = [
     '# Rapport qualité des données',
     '',
-    `Généré le ${r.generatedAt} en ${r.minutes.toFixed(1)} min. Observations GBIF ${YEARS[0]} → ${YEARS[1]}, seuil de ${MIN_COUNT} observations par espèce dans le voisinage 3 × 3.`,
+    `Généré le ${r.generatedAt} en ${r.minutes.toFixed(1)} min. Observations GBIF ${YEARS[0]} → ${YEARS[1]}, seuil de ${MIN_COUNT} observations par espèce dans le voisinage 3 × 3 et de ${NATIONAL_MIN} en France.`,
     '',
     '> Fichier régénéré à chaque `npm run data`. Le versionner permet de voir, dans le diff, ce qu’une mise à jour des sources a changé.',
     '',

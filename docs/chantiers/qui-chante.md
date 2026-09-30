@@ -55,6 +55,7 @@ Branche : `feat/qui-chante`
 - **Extraits réencodés** (`@breezystack/lamejs`, LGPL, pipeline seulement) plutôt que découpés : 120 Ko au lieu de 300 à 600 Ko, et volume égalisé, indispensable pour le chœur. Décodage avec `mpg123-decoder` (WebAssembly), trame par trame.
 - **Spectrogrammes en binaire brut** (48 bandes de 250 Hz à 11 kHz × 187 colonnes de 80 ms ≈ 9 Ko), un fichier par chant chargé à la demande, dessiné par la page aux couleurs du thème. Le bruit de fond stationnaire est retiré (médiane par bande).
 - **Styles de la recherche déplacés dans le socle** (`src/shell/components.css`) : le composant sert maintenant à deux visualisations.
+- **Hybrides écartés** (pas de nom canonique) et **seuil national de 20 observations** (erreurs d'identification, oiseaux échappés). Nom français : TAXREF, sinon le plus cité entre les sources ; trois corrections à la main dans `pipeline/sources.ts`.
 - **Pays en code ISO** : la page l'affiche en français avec `Intl.DisplayNames`.
 
 ## Résultats des sondes (2026-09-30)
@@ -92,14 +93,19 @@ Branche : `feat/qui-chante`
 - [x] Sonde de faisabilité GBIF : 3 lieux tests, nombre d'espèces et temps de requête
 - [x] Sonde Xeno-canto : 198 espèces sur 200 couvertes, sans clé, via GBIF
 - [x] Contrat de données + validation (`data/`), grille de mailles et agrégation (`domain/`), testés
-- [ ] Pipeline observations → `public/data/qui-chante/` + `REPORT.md` (code écrit et testé ; premier passage en cours, ≈ 1 h 30 à cause du débit limité de GBIF)
+- [x] Pipeline observations → `public/data/qui-chante/` + `REPORT.md` : 537 espèces, 164 par voisinage en médiane (78 à 351), 33 Mo en tout. Premier passage ≈ 1 h 30 (débit limité par GBIF), les suivants ≈ 6 min depuis le cache.
 - [x] Pipeline chants : choix de l'enregistrement, 15 s les plus chantantes, volume égalisé, MP3 mono 64 kbit/s (≈ 120 Ko), spectrogramme sans bruit de fond. Essayé sur 5 espèces.
 - [x] `domain/` : rattachement commune → mailles, agrégation, présence à seuils fixes, plan du chœur, tests
 - [x] Visualisation : recherche, chiffre, liste avec spectrogrammes et lecture, textes de méthode, sources et limites. Vérifiée sur données d'aperçu (Arles) en clair, en sombre et à 375 px.
 - [x] Chœur de l'aube (Web Audio : 6 voix décalées de 2,5 s, curseur et voix actives à l'accent)
-- [ ] Vérification sur les données complètes, et sur un vrai téléphone (iOS Safari : son au premier toucher)
+- [x] Vérification sur les données complètes (Paris 239 espèces, Brest 205, Saulieu 156, Chamonix 114 avec le chocard à bec jaune en tête)
+- [ ] Vérification sur un vrai téléphone (iOS Safari : son au premier toucher)
 - [ ] Image de partage 4:5, image d'aperçu, publication
+
+## Pistes notées
+
+- Chants des espèces locales emblématiques : aujourd'hui, seules les 200 espèces les plus observées en France ont un chant. À Chamonix, le chocard à bec jaune, première espèce locale, n'en a pas. Idée : ajouter les espèces qui figurent dans le top 10 d'au moins un voisinage.
 
 ## Prochaine action
 
-Quand le premier passage du pipeline est fini : relire `pipeline/REPORT.md` (communes témoins plausibles ?), vérifier la page sur les données complètes (Paris, Saulieu, Brest, Chamonix), puis committer les données. Ensuite : image de partage 4:5, image d'aperçu, publication.
+Image de partage 4:5 (chiffre, commune, partition du chœur) générée dans le navigateur, en réutilisant le dialogue de partage de salaire-logement déplacé dans le socle (à coordonner : l'autre session travaille sur salaire-logement). Puis image d'aperçu (`npm run og -- qui-chante`) et publication.

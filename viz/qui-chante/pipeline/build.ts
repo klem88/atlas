@@ -18,7 +18,7 @@ import { mapWithConcurrency } from '@tools/lib/download';
 import { log } from '@tools/lib/log';
 import { cachedJson, facetCounts } from './lib/cached-json';
 import { writeReport } from './report';
-import { COMMUNES, GBIF, MIN_COUNT, SONG_SPECIES, YEARS, occurrenceQuery } from './sources';
+import { COMMUNES, FRENCH_NAMES, GBIF, MIN_COUNT, NATIONAL_MIN, SONG_SPECIES, YEARS, occurrenceQuery } from './sources';
 import { pickFrenchName, type VernacularName } from './steps/names';
 import { SPECTROGRAM, buildSongs } from './steps/songs';
 
@@ -82,26 +82,35 @@ export default async function buildData(args: string[] = []): Promise<void> {
   const neighborhoods = new Map(
     homeCells.map((cell) => [cell, aggregate(neighborhood(GRID, cell).map((c) => observations.get(c)), MIN_COUNT)] as const),
   );
-  const present = new Set([...neighborhoods.values()].flatMap((n) => n.species.map((s) => s.key)));
+  const present = new Set(
+    [...neighborhoods.values()].flatMap((n) => n.species.map((s) => s.key)).filter((k) => (national.counts.get(k) ?? 0) >= NATIONAL_MIN),
+  );
 
   // 4. Noms -----------------------------------------------------------------
   log.step(`Noms de ${present.size} espèces`);
   const keys = [...present].sort((a, b) => (national.counts.get(b) ?? 0) - (national.counts.get(a) ?? 0) || a - b);
-  const species: Species[] = await mapWithConcurrency(keys, GBIF.concurrency, async (key) => {
-    const info = await cachedJson<{ canonicalName: string }>(`${GBIF.api}/species/${key}`, join(CACHE, 'species', `${key}.json`));
+  const named = await mapWithConcurrency(keys, GBIF.concurrency, async (key): Promise<Species | null> => {
+    const info = await cachedJson<{ canonicalName?: string }>(`${GBIF.api}/species/${key}`, join(CACHE, 'species', `${key}.json`));
     const names = await cachedJson<{ results: VernacularName[] }>(
       `${GBIF.api}/species/${key}/vernacularNames?limit=200`,
       join(CACHE, 'species', `${key}-noms.json`),
     );
+    // Les hybrides (« Anas acuta x platyrhynchos ») n'ont pas de nom canonique : ce ne sont pas des espèces.
+    if (!info.canonicalName) return null;
     return {
       key,
       scientific: info.canonicalName,
-      french: pickFrenchName(names.results) ?? info.canonicalName,
+      french: FRENCH_NAMES[info.canonicalName] ?? pickFrenchName(names.results) ?? info.canonicalName,
       national: national.counts.get(key) ?? 0,
       song: null,
     };
   });
+  const species = named.filter((s): s is Species => s !== null);
+  log.info(`${keys.length - species.length} hybrides écartés`);
+  const unnamed = species.filter((s) => s.french === s.scientific).map((s) => s.scientific);
+  if (unnamed.length) log.warn(`sans nom français : ${unnamed.join(', ')}`);
   const indexOf = new Map(species.map((s, i) => [s.key, i]));
+  for (const n of neighborhoods.values()) n.species = n.species.filter((s) => indexOf.has(s.key));
 
   // 5. Chants ---------------------------------------------------------------
   log.step(`Chants des ${SONG_SPECIES} espèces les plus observées`);

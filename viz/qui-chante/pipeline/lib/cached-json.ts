@@ -3,10 +3,11 @@ import { downloadCached } from '@tools/lib/download';
 
 /**
  * Lit une réponse JSON d'API, mise en cache dans `path` : une relance du pipeline
- * ne refait que les requêtes manquantes. Les échecs passagers sont retentés.
+ * ne refait que les requêtes manquantes. Les échecs passagers sont retentés, longtemps :
+ * GBIF limite le débit (HTTP 429) et peut refuser plusieurs fois de suite.
  */
 export async function cachedJson<T>(url: string, path: string): Promise<T> {
-  await downloadCached(url, path, { minBytes: 2, retries: 5 });
+  await downloadCached(url, path, { minBytes: 2, retries: 8 });
   return JSON.parse(await readFile(path, 'utf8')) as T;
 }
 
