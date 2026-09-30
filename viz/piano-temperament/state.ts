@@ -1,5 +1,5 @@
 /** État de la page reflété dans l'URL : un lien partagé redonne les mêmes notes et le même accordage. */
-import type { TuningId } from './domain/tuning';
+import type { TuningId } from '@shell/music/tuning';
 
 export interface VizState {
   /** Notes MIDI jouées, sans doublon, croissantes. */

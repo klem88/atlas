@@ -364,3 +364,88 @@ dialog::backdrop {
   font-size: var(--text-sm);
   color: var(--ink-2);
 }
+
+/* Clavier de piano (src/shell/music/keyboard.ts) ------------------------ */
+:root {
+  --key-black: var(--ink);
+  --key-white: var(--surface);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) {
+    --key-black: var(--page);
+  }
+}
+
+:root[data-theme='dark'] {
+  --key-black: var(--page);
+}
+
+.keyboard {
+  position: relative;
+  display: flex;
+  height: clamp(120px, 24vw, 190px);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.key {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--rule-strong);
+  transition: background 0.12s;
+}
+
+.key--white {
+  flex: 1 1 0;
+  min-width: 0;
+  position: relative;
+  background: var(--key-white);
+  border-radius: 0 0 4px 4px;
+  margin-right: -1px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: var(--space-2);
+}
+
+.key--white:hover {
+  background: var(--surface-sunk);
+}
+
+.key--black {
+  position: absolute;
+  top: 0;
+  height: 60%;
+  z-index: 2;
+  background: var(--key-black);
+  border-color: var(--key-black);
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.key.is-on,
+.key--black.is-on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.key:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+  z-index: 3;
+}
+
+.key-label {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.key.is-on .key-label {
+  color: var(--surface);
+}
+

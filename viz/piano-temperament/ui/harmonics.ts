@@ -4,8 +4,8 @@
  * si elles coïncident, l'intervalle est pur ; si elles se décalent, il bat.
  */
 import type { PairBeats } from '../domain/beats';
-import { noteName } from '../domain/pitch';
-import { chordFrequencies, type TuningId } from '../domain/tuning';
+import { noteName } from '@shell/music/pitch';
+import { chordFrequencies, type TuningId } from '@shell/music/tuning';
 import { fmtHz, fmtOrdinal } from './strings';
 
 const N_HARMONICS = 8;

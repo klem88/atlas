@@ -2,7 +2,7 @@
  * Clavier jouable : des boutons (accessibles au clavier et au lecteur d'écran), touches blanches
  * en flex, touches noires posées par-dessus en pourcentage de la largeur.
  */
-import { noteName, pitchClass, pitchName } from '../domain/pitch';
+import { noteName, pitchClass, pitchName } from './pitch';
 
 export interface KeyRange {
   low: number;

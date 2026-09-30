@@ -3,8 +3,8 @@
  * Douze quintes pures font un peu plus que sept octaves ; c'est la virgule pythagoricienne,
  * et tout accordage à douze notes doit la cacher quelque part.
  */
-import { PITCH_NAMES, pitchClass } from './pitch';
-import { ratioCents, tuningRatio, type TuningId } from './tuning';
+import { PITCH_NAMES, pitchClass } from '@shell/music/pitch';
+import { ratioCents, tuningRatio, type TuningId } from '@shell/music/tuning';
 
 /** 3^12 / 2^19, en cents : 23,46. */
 export const PYTHAGOREAN_COMMA_CENTS = ratioCents(3 ** 12 / 2 ** 19);

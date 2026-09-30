@@ -3,7 +3,7 @@
  */
 import { canvasToBlob, wrapText } from '@shell/share';
 import type { PairBeats } from '../domain/beats';
-import type { TuningId } from '../domain/tuning';
+import type { TuningId } from '@shell/music/tuning';
 import { fmtBeats, fmtInterval, fmtNotes, pairSentence } from './strings';
 import { createWaves, readWaveTheme } from './waves';
 

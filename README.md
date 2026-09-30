@@ -41,6 +41,8 @@ src/shell/                  socle partagé par toutes les visualisations
   components.css            champs, contrôle segmenté, boutons, infobulle, fenêtre, panneau dépliable
   catalog.css               cartes du catalogue
   charts/                   petits graphiques réutilisables (ligne)
+  music/                    hauteurs, accordages, synthèse Web Audio, clavier jouable
+  share.ts                  fenêtre « Partager » (image, partage natif, lien)
   search.ts                 recherche avec suggestions (combobox accessible)
   store.ts                  état réactif minimal
   format.ts, html.ts        formats français, échappement, normalisation
@@ -69,3 +71,5 @@ docs/                       idées, design
 | Visualisation | Statut | Données |
 |---|---|---|
 | [Ce que ton salaire achète](viz/salaire-logement/) | publiée | [pipeline](viz/salaire-logement/pipeline/README.md) · [rapport qualité](viz/salaire-logement/pipeline/REPORT.md) |
+| [Qui chante autour de chez toi](viz/qui-chante/) | publiée | [rapport qualité](viz/qui-chante/pipeline/REPORT.md) |
+| [Pourquoi ton piano est (légèrement) faux](viz/piano-temperament/) | brouillon | aucune donnée, tout est calculé |

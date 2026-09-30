@@ -3,8 +3,8 @@
  * sont presque à la même fréquence. Leur somme gonfle et se creuse à la différence des deux
  * fréquences : c'est ce qu'on entend (et ce qu'on voit) sur un piano.
  */
-import { semitones } from './pitch';
-import { cents, chordFrequencies, justRatio, type TuningId } from './tuning';
+import { semitones } from '@shell/music/pitch';
+import { cents, chordFrequencies, justRatio, type TuningId } from '@shell/music/tuning';
 
 export interface PairBeats {
   /** Notes MIDI, la plus grave d'abord. */

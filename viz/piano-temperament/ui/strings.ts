@@ -2,9 +2,9 @@
  * Textes de l'interface, rassemblés ici pour préparer une version anglaise sans toucher au code.
  * Les notes de la page (comment lire, méthode…) restent dans index.html.
  */
-import { intervalName, noteName } from '../domain/pitch';
+import { intervalName, noteName } from '@shell/music/pitch';
 import type { PairBeats } from '../domain/beats';
-import type { TuningId } from '../domain/tuning';
+import type { TuningId } from '@shell/music/tuning';
 
 const oneDecimal = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const twoDecimals = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

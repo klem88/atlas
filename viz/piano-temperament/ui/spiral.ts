@@ -5,7 +5,7 @@
  * sauf si le lecteur préfère moins de mouvement.
  */
 import { PYTHAGOREAN_COMMA_CENTS, fifthsSpiral } from '../domain/comma';
-import { ratioCents, tuningRatio } from '../domain/tuning';
+import { ratioCents, tuningRatio } from '@shell/music/tuning';
 
 const NS = 'http://www.w3.org/2000/svg';
 const SIZE = 340;
