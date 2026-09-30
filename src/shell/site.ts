@@ -41,6 +41,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'published',
     published: '2026-09',
   },
+  {
+    slug: 'piano-temperament',
+    title: 'Pourquoi ton piano est (légèrement) faux',
+    summary: 'Joue un accord et regarde les ondes battre : sur un piano, aucune quinte n’est juste, et c’est voulu.',
+    tags: ['Musique', 'Physique'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 

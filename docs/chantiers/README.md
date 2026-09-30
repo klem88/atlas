@@ -25,7 +25,7 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | Ordre | Chantier | État |
 | --- | --- | --- |
 | 1 | [mobile-salaire](mobile-salaire.md) | en ligne, en attente du retour de l'auteur |
-| 2 | [piano-temperament](piano-temperament.md) : Pourquoi ton piano est (légèrement) faux | à cadrer, dans une session parallèle |
+| 2 | [piano-temperament](piano-temperament.md) : Pourquoi ton piano est (légèrement) faux | cadré, en construction |
 | 3 | Point de ralliement et nom du site | à décider par l'auteur |
 | 4 | [Qui chante autour de chez toi](qui-chante.md) | publiée (2026-09-30) ; restent l'image de partage et le test sur téléphone |
 | 5 | [Sous tes pieds](sous-tes-pieds.md) | cadrage validé, sondes faites |
