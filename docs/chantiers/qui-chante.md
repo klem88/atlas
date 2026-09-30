@@ -50,6 +50,12 @@ Branche : `feat/qui-chante`
 4. **200 espèces** avec chant (les plus observées en France).
 5. **Pas de clé Xeno-canto nécessaire** : Xeno-canto publie ses enregistrements dans GBIF (jeu `b1047888-ae52-4179-9dd5-5448ea342a24`), avec l'URL du MP3, l'auteur, la licence et la note de chaque enregistrement. Le pipeline passe par là. La clé ne servira que si un champ manque (type « song », par exemple).
 
+## Décisions techniques (2026-09-30)
+
+- **Extraits réencodés** (`@breezystack/lamejs`, LGPL, pipeline seulement) plutôt que découpés : 120 Ko au lieu de 300 à 600 Ko, et volume égalisé, indispensable pour le chœur. Décodage avec `mpg123-decoder` (WebAssembly), trame par trame.
+- **Spectrogrammes en binaire brut** (48 bandes de 250 Hz à 11 kHz × 187 colonnes de 80 ms ≈ 9 Ko), un fichier par chant chargé à la demande, dessiné par la page aux couleurs du thème. Le bruit de fond stationnaire est retiré (médiane par bande).
+- **Pays en code ISO** : la page l'affiche en français avec `Intl.DisplayNames`.
+
 ## Résultats des sondes (2026-09-30)
 
 **GBIF, observations** (Aves, France, 2015 → 2026) : 59 millions d'observations en France, donc hors de question de tout télécharger. Les facettes par maille répondent en 0,1 à 0,6 s.
@@ -85,8 +91,8 @@ Branche : `feat/qui-chante`
 - [x] Sonde de faisabilité GBIF : 3 lieux tests, nombre d'espèces et temps de requête
 - [x] Sonde Xeno-canto : 198 espèces sur 200 couvertes, sans clé, via GBIF
 - [x] Contrat de données + validation (`data/`), grille de mailles et agrégation (`domain/`), testés
-- [ ] Pipeline observations → `public/data/qui-chante/` + `REPORT.md`
-- [ ] Pipeline chants : extraits, spectrogrammes, crédits
+- [ ] Pipeline observations → `public/data/qui-chante/` + `REPORT.md` (code écrit et testé ; premier passage en cours, ≈ 1 h 30 à cause du débit limité de GBIF)
+- [x] Pipeline chants : choix de l'enregistrement, 15 s les plus chantantes, volume égalisé, MP3 mono 64 kbit/s (≈ 120 Ko), spectrogramme sans bruit de fond. Essayé sur 5 espèces.
 - [ ] `domain/` : rattachement commune → mailles, agrégation, tri, tests
 - [ ] Visualisation mobile d'abord : recherche, chiffre, partition, lecture
 - [ ] Chœur de l'aube (Web Audio : superposition et décalages)
@@ -94,4 +100,4 @@ Branche : `feat/qui-chante`
 
 ## Prochaine action
 
-Écrire le pipeline des observations (`pipeline/build.ts`) : communes (geo.api.gouv.fr), mailles à interroger, facettes GBIF par maille avec cache et nouvelles tentatives, noms français (TAXREF via GBIF), agrégation 3 × 3, fichiers `communes.json`, `species.json`, `cells/*.json` et `REPORT.md`.
+Quand le premier passage du pipeline est fini : relire `pipeline/REPORT.md` (communes témoins plausibles ?), committer les données, puis construire la page (recherche de commune → chiffre → partition des spectrogrammes → lecture).

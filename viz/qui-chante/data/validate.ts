@@ -4,7 +4,7 @@ import {
   type CellBlockFile,
   type CommunesFile,
   type SpeciesFile,
-  type SpectrogramsFile,
+  type SpectrogramSpec,
 } from './contract';
 
 export class DataValidationError extends Error {
@@ -40,6 +40,8 @@ export function validateSpecies(data: unknown): SpeciesFile {
   assert(f && typeof f === 'object', 'species: objet attendu');
   assert(f.schemaVersion === SCHEMA_VERSION, `species: schemaVersion ${String(f.schemaVersion)} ≠ ${SCHEMA_VERSION}`);
   assert(Array.isArray(f.species) && f.species.length > 100, 'species: moins de 100 espèces');
+  const sp = f.spectrogram;
+  assert(sp && sp.bins > 0 && sp.fMin > 0 && sp.fMax > sp.fMin && sp.frameSeconds > 0, 'species.spectrogram: paramètres invalides');
   assert(new Set(f.species.map((s) => s.key)).size === f.species.length, 'species: clés en double');
   f.species.forEach((s, i) => {
     assert(s.french && s.scientific, `species[${i}]: nom manquant`);
@@ -49,6 +51,7 @@ export function validateSpecies(data: unknown): SpeciesFile {
       assert(!/\bND\b/.test(s.song.licence), `species[${i}].song: licence ${s.song.licence} interdite (pas de modification)`);
       assert(s.song.author.length > 0, `species[${i}].song: auteur manquant`);
       assert(s.song.duration > 0 && s.song.duration <= 30, `species[${i}].song: durée ${s.song.duration} s`);
+      assert(Number.isInteger(s.song.frames) && s.song.frames > 0, `species[${i}].song: frames ${s.song.frames}`);
     }
   });
   return f;
@@ -72,15 +75,8 @@ export function validateCellBlock(data: unknown, speciesCount: number): CellBloc
   return f;
 }
 
-/** Vérifie les spectrogrammes : chaque entrée doit avoir exactement bins × frames octets. */
-export function validateSpectrograms(data: unknown): SpectrogramsFile {
-  const f = data as SpectrogramsFile;
-  assert(f && typeof f === 'object', 'spectrograms: objet attendu');
-  assert(f.schemaVersion === SCHEMA_VERSION, `spectrograms: schemaVersion ${String(f.schemaVersion)}`);
-  assert(f.bins > 0 && f.fMin > 0 && f.fMax > f.fMin && f.frameSeconds > 0, 'spectrograms: paramètres invalides');
-  for (const [id, item] of Object.entries(f.items)) {
-    const bytes = Math.floor((item.data.replace(/=+$/, '').length * 3) / 4);
-    assert(bytes === f.bins * item.frames, `spectrograms/${id}: ${bytes} octets ≠ ${f.bins} × ${item.frames}`);
-  }
-  return f;
+/** Vérifie la taille d'un spectrogramme binaire : exactement bins × frames octets. */
+export function validateSpectrogram(bytes: Uint8Array, spec: SpectrogramSpec, frames: number, id: string): Uint8Array {
+  assert(bytes.length === spec.bins * frames, `spectrograms/${id}: ${bytes.length} octets ≠ ${spec.bins} × ${frames}`);
+  return bytes;
 }

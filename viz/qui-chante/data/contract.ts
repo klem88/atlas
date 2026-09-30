@@ -7,7 +7,7 @@
  *   species.json             les espèces (noms, fréquence nationale, chant éventuel)
  *   cells/<bloc>.json        pour chaque maille d'un bloc, les espèces observées autour
  *   songs/<xcId>.mp3         extraits des chants
- *   spectrograms.json        spectrogrammes des extraits, en intensités quantifiées
+ *   spectrograms/<xcId>.bin  spectrogramme de chaque extrait (voir SpectrogramSpec)
  */
 
 export const SCHEMA_VERSION = 1;
@@ -59,11 +59,13 @@ export interface Song {
   licence: string;
   /** Page de l'enregistrement sur xeno-canto.org. */
   url: string;
-  /** Pays et année de l'enregistrement, pour l'afficher honnêtement. */
-  country: string;
+  /** Pays (code ISO 3166, affiché en français par Intl.DisplayNames) et année de l'enregistrement. */
+  countryCode: string;
   year: number | null;
   /** Durée de l'extrait publié (s). */
   duration: number;
+  /** Nombre de colonnes de temps du spectrogramme. */
+  frames: number;
 }
 
 export interface Species {
@@ -82,6 +84,7 @@ export interface SpeciesFile {
   generatedAt: string;
   /** Période des observations (années incluses). */
   years: [number, number];
+  spectrogram: SpectrogramSpec;
   /** Triées par nombre d'observations en France, décroissant. */
   species: Species[];
 }
@@ -106,17 +109,14 @@ export interface CellEntry {
 }
 
 /**
- * Spectrogrammes des extraits : `bins` bandes de fréquence (de fMin à fMax, échelle
- * logarithmique) × `frames` colonnes de temps. Intensités quantifiées de 0 à 255,
- * encodées en base64, colonne par colonne (fréquences basses d'abord).
+ * Forme des spectrogrammes : `bins` bandes de fréquence (de fMin à fMax, échelle
+ * logarithmique) × `frames` colonnes de temps (voir Song.frames). Fichier binaire brut,
+ * un octet d'intensité (0 à 255) par case, colonne par colonne, fréquences basses d'abord.
  */
-export interface SpectrogramsFile {
-  schemaVersion: typeof SCHEMA_VERSION;
+export interface SpectrogramSpec {
   bins: number;
   fMin: number;
   fMax: number;
   /** Durée représentée par une colonne (s). */
   frameSeconds: number;
-  /** xcId → données. */
-  items: Record<string, { frames: number; data: string }>;
 }

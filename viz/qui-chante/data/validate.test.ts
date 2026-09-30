@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { SCHEMA_VERSION, type CellBlockFile, type Species, type SpeciesFile } from './contract';
-import { DataValidationError, validateCellBlock, validateSpecies, validateSpectrograms } from './validate';
+import { DataValidationError, validateCellBlock, validateSpecies, validateSpectrogram } from './validate';
+
+const SPEC = { bins: 4, fMin: 250, fMax: 11_000, frameSeconds: 0.08 };
 
 const species = (i: number, song: Species['song'] = null): Species => ({
   key: 1000 + i,
@@ -14,11 +16,12 @@ const speciesFile = (list: Species[]): SpeciesFile => ({
   schemaVersion: SCHEMA_VERSION,
   generatedAt: '2026-09-30',
   years: [2015, 2025],
+  spectrogram: SPEC,
   species: list,
 });
 
 const many = Array.from({ length: 150 }, (_, i) => species(i));
-const song = { xcId: 'XC1', author: 'A. Auteur', licence: 'CC BY-NC-SA 4.0', url: 'https://xeno-canto.org/1', country: 'France', year: 2020, duration: 15 };
+const song = { xcId: 'XC1', author: 'A. Auteur', licence: 'CC BY-NC-SA 4.0', url: 'https://xeno-canto.org/1', countryCode: 'FR', year: 2020, duration: 15, frames: 188 };
 
 describe('validateSpecies', () => {
   it('accepte une liste valide', () => {
@@ -53,11 +56,9 @@ describe('validateCellBlock', () => {
   });
 });
 
-describe('validateSpectrograms', () => {
+describe('validateSpectrogram', () => {
   it('vérifie la taille des données', () => {
-    const data = Buffer.from(new Uint8Array(4 * 3)).toString('base64');
-    const file = { schemaVersion: SCHEMA_VERSION, bins: 4, fMin: 500, fMax: 10_000, frameSeconds: 0.05, items: { XC1: { frames: 3, data } } };
-    expect(() => validateSpectrograms(file)).not.toThrow();
-    expect(() => validateSpectrograms({ ...file, items: { XC1: { frames: 4, data } } })).toThrow(/octets/);
+    expect(() => validateSpectrogram(new Uint8Array(12), SPEC, 3, 'XC1')).not.toThrow();
+    expect(() => validateSpectrogram(new Uint8Array(12), SPEC, 4, 'XC1')).toThrow(/octets/);
   });
 });

@@ -19,6 +19,7 @@
     "new:viz": "tsx tools/new-viz.ts"
   },
   "devDependencies": {
+    "@breezystack/lamejs": "^1.2.7",
     "@napi-rs/canvas": "^1.0.9",
     "@types/d3-geo": "^3.1.1",
     "@types/d3-selection": "^3.0.12",
@@ -29,6 +30,7 @@
     "@types/topojson-client": "^3.1.5",
     "@types/topojson-specification": "^1.0.5",
     "mapshaper": "^0.7.70",
+    "mpg123-decoder": "^1.0.3",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.1",
