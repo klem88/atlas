@@ -2,7 +2,7 @@
 
 Branche : `feat/qui-chante` (à créer quand le cadrage sera validé)
 
-État : **cadrage proposé, à valider par l'auteur**
+État : **cadrage validé (2026-09-30), sondes faites, prêt pour le pipeline**
 
 ## Cadrage
 
@@ -24,7 +24,7 @@ Branche : `feat/qui-chante` (à créer quand le cadrage sera validé)
 | Besoin | Source | Accès | Licence |
 | --- | --- | --- | --- |
 | Observations d'oiseaux | GBIF, classe Aves, France, 2015 → aujourd'hui | API `occurrence/search` avec facettes (pas de clé) ou téléchargement complet (compte GBIF) | Par jeu de données : CC0, CC BY ou CC BY-NC |
-| Chants | Xeno-canto, API v3 | **Clé obligatoire** (compte vérifié), à garder dans un `.env` local jamais versionné | Par enregistrement : variantes CC BY-NC-SA, CC BY-NC-ND, etc. |
+| Chants | Xeno-canto, via son jeu de données GBIF (l'API v3 exige une clé, on s'en passe) | API GBIF, sans clé | Par enregistrement : variantes CC BY-NC-SA, CC BY-NC-ND, etc. |
 | Noms français | Taxref (INPN) ou noms vernaculaires GBIF | Fichier ouvert | Licence Ouverte |
 | Communes | Contours Etalab, déjà traités pour salaire-logement | Réutilisation | Licence Ouverte |
 
@@ -40,13 +40,34 @@ Branche : `feat/qui-chante` (à créer quand le cadrage sera validé)
 - Espèces sensibles : GBIF floute déjà certaines localisations. La maille de 10 km évite de désigner un nid. Les espèces protégées sensibles peuvent être exclues ou regroupées.
 - Un chant enregistré ailleurs illustre l'espèce, pas l'oiseau de ta rue (les dialectes régionaux existent).
 
-## À décider
+## Décisions (validées le 2026-09-30)
 
-1. **Licences acceptées.** Le site est non commercial. CC BY-NC est donc acceptable pour les observations comme pour les chants, à condition de citer. Je propose d'**exclure les enregistrements « ND »** (pas de modification) : couper un extrait et en tirer un spectrogramme, c'est déjà modifier. Et on garde le partage à l'identique (SA) sur les extraits publiés.
-2. **Entrée.** Par commune (réutilise le socle, 100 % statique) ou par adresse (API Adresse, un appel externe). Je propose la commune.
-3. **Saison.** Un curseur de mois (« en mai », « en décembre ») ou seulement l'année entière. Je propose l'année entière avec une mention du printemps en V1. Le curseur viendra si la page prend.
-4. **Nombre d'espèces avec chant.** 150, 200, ou toutes celles qui ont un enregistrement utilisable.
-5. **Clé Xeno-canto.** Tu crées le compte : la clé est personnelle et je ne peux pas créer de compte à ta place.
+1. **Licences** : CC0, CC BY et CC BY-NC acceptées, avec citation. **Enregistrements « ND » exclus** (couper un extrait et en tirer un spectrogramme, c'est modifier). Partage à l'identique (SA) conservé sur les extraits publiés.
+2. **Entrée par commune** (socle réutilisé, 100 % statique).
+3. **Année entière** en V1, avec une mention du printemps. Le curseur de mois viendra si la page prend.
+4. **200 espèces** avec chant (les plus observées en France).
+5. **Pas de clé Xeno-canto nécessaire** : Xeno-canto publie ses enregistrements dans GBIF (jeu `b1047888-ae52-4179-9dd5-5448ea342a24`), avec l'URL du MP3, l'auteur, la licence et la note de chaque enregistrement. Le pipeline passe par là. La clé ne servira que si un champ manque (type « song », par exemple).
+
+## Résultats des sondes (2026-09-30)
+
+**GBIF, observations** (Aves, France, 2015 → 2026) : 59 millions d'observations en France, donc hors de question de tout télécharger. Les facettes par maille répondent en 0,1 à 0,6 s.
+
+| Lieu | Maille 10 km | Carré 30 km (3 × 3 mailles) |
+| --- | --- | --- |
+| Paris | 236 espèces (170 avec ≥ 5 obs.) | 298 (238) |
+| Morvan | 103 espèces (50), **844 obs. seulement** | 178 (133) |
+| Baie de Somme | 273 espèces (211) | n. d. (erreur passagère de l'API) |
+
+- Le biais d'observation se confirme : une maille rurale seule est pauvre. **Le rayon de 3 × 3 mailles est indispensable**, et un seuil de 5 observations écarte les oiseaux de passage égarés.
+- Licences dans ces zones : 90 à 94 % CC BY, 6 à 17 % CC BY-NC, le reste CC0. Tout est acceptable.
+- Principaux jeux : Oiseaux des Jardins, eBird, STOC-EPS, Faune-Occitanie, LPO Franche-Comté, baguage CRBPO (tous CC BY 4.0).
+- L'API échoue parfois sans raison : le pipeline doit **réessayer** et **mettre en cache** chaque réponse. Durée estimée : environ 5 800 mailles × 0,4 s ≈ 40 min au premier passage.
+
+**Xeno-canto (via GBIF)**, pour les 200 espèces les plus observées en France, avec 100 enregistrements européens par espèce :
+- **198 espèces sur 200** ont au moins un enregistrement utilisable (sans ND, note ≥ 4).
+- Licences : 88 % CC BY-NC-SA, 10 % ND (exclus), le reste plus ouvert.
+- Les 2 « manques » (fauvette mélanocéphale, fauvette passerinette) viennent de la nomenclature : *Sylvia* dans les observations, *Curruca* chez Xeno-canto. Le pipeline doit faire correspondre les espèces par nom accepté et par synonymes, pas seulement par identifiant.
+- À vérifier : l'échelle des notes (5 = A ?) et l'endroit où trouver le type « song » ou « call » (le nom de fichier le contient parfois, par exemple « zang »).
 
 ## Critères de fin
 
@@ -58,9 +79,9 @@ Branche : `feat/qui-chante` (à créer quand le cadrage sera validé)
 
 ## Tâches
 
-- [ ] Validation du cadrage et des points « À décider »
-- [ ] Sonde de faisabilité GBIF : 3 mailles tests (Paris, Morvan, baie de Somme), nombre d'espèces et temps de requête. On en déduit la durée totale du pipeline.
-- [ ] Sonde Xeno-canto : pour les 200 espèces les plus courantes, part d'enregistrements utilisables (qualité A, pas de ND)
+- [x] Validation du cadrage (2026-09-30)
+- [x] Sonde de faisabilité GBIF : 3 lieux tests, nombre d'espèces et temps de requête
+- [x] Sonde Xeno-canto : 198 espèces sur 200 couvertes, sans clé, via GBIF
 - [ ] Contrat de données + validation (`data/`)
 - [ ] Pipeline observations → `public/data/qui-chante/` + `REPORT.md`
 - [ ] Pipeline chants : extraits, spectrogrammes, crédits
@@ -71,4 +92,4 @@ Branche : `feat/qui-chante` (à créer quand le cadrage sera validé)
 
 ## Prochaine action
 
-Faire valider le cadrage par l'auteur (section « À décider »), puis lancer les deux sondes de faisabilité (GBIF et Xeno-canto) avant d'écrire le moindre pipeline.
+Créer la branche `feat/qui-chante` (`npm run new:viz -- qui-chante --title "Qui chante autour de chez toi" …`), puis écrire le contrat de données (`data/`) : grille de mailles, espèces par maille, index des espèces, crédits des chants.

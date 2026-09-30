@@ -2,7 +2,7 @@
 
 Branche : `feat/sous-tes-pieds` (à créer quand le cadrage sera validé)
 
-État : **cadrage proposé, à valider par l'auteur**
+État : **cadrage validé (2026-09-30), sondes faites, prêt pour le pipeline**
 
 ## Cadrage
 
@@ -57,12 +57,44 @@ La BD Charm-50 est une carte **de surface** : elle dit quelle couche affleure, p
 
 - Le **mode argiles** (gisements, traditions potières, « quelle terre pourrais-tu tourner ? »). C'est un bel épisode 2, qui s'appuiera sur le dictionnaire des formations.
 
-## À décider
+## Décisions (validées le 2026-09-30)
 
-1. **Profondeur** : option A en V1 et B en bonus (proposé), ou A seule.
-2. **Entrée** : adresse via l'API Adresse (appel externe, plus personnel) ou commune + toucher sur la carte (100 % statique). Je propose l'adresse : « sous ta maison » perd son sens à l'échelle d'une commune.
-3. **Relecture scientifique** : as-tu un géologue dans ton entourage pour relire la table des milieux de dépôt ? Sinon, on reste sur des formulations prudentes.
-4. **Département pilote** pour la sonde : je propose la Côte-d'Or (calcaires jurassiques, récifs fossiles, la phrase y marche) ou la Meuse.
+1. **Profondeur** : option A (surface en 3D) en V1, option B (forage le plus proche) en bonus.
+2. **Entrée par adresse** (API Adresse), avec en plus un toucher sur la carte.
+3. **Formulations prudentes par défaut** pour les milieux de dépôt. Une relecture par un géologue reste souhaitable si l'auteur en trouve un.
+4. **Département pilote : Côte-d'Or (21).**
+
+## Résultats des sondes (2026-09-30)
+
+**BD Charm-50, Côte-d'Or.**
+- Source : miroir `http://data.cquest.org/brgm/bd_charm_50/2019/GEO050K_HARM_nnn.zip` (millésime 2019-2021, Licence Ouverte 2.0), ce qui évite le formulaire d'InfoTerre. France entière : **2,8 Go zippés** (95 fichiers). Côte-d'Or : 31 Mo zippés, 71 Mo décompressés.
+- Couche utile : `S_FGEOL` (polygones), en Lambert-93. **13 960 polygones, 62 formations distinctes.** L'aire totale calculée, 8 788 km², correspond à la surface du département : la géométrie est saine.
+- **Champs : `NOTATION`, `DESCR` (texte libre), couleurs CMJN officielles (`C_FOND`…`N_FOND`), surcharges.** Aucun champ d'âge, de lithologie ni de milieu de dépôt. Il faudra donc :
+  - **l'âge**, à partir de la notation normalisée BRGM (`j` Jurassique moyen-sup., `l` Lias, `t` Trias, `n`/`c` Crétacé inf./sup., `e` Éocène, `g` Oligocène, `h` Carbonifère, `F` alluvions…) et, plus précisément, de l'étage souvent écrit dans la description (« Bajocien sup. », « Oxfordien moyen »), traduit en Ma avec la charte ICS ;
+  - **le milieu**, à partir de mots-clés dans la description : « polypiers », « subrécifales » → récif ; « oolithique », « entroques », « Gryphées », « Ostrea » → mer chaude peu profonde ; « lacustres » → lac ; granites, rhyolites → magma…
+- La phrase marche : j4a « Dalle nacrée… à polypiers (Callovien inférieur) » et j5a « calcarénites subrécifales (Oxfordien sup.) » sont bien présentes.
+- Les notations des roches magmatiques utilisent une police de symboles grecs, mal décodée (`ã` pour γ, granite…). Il faut une table de correspondance.
+- **Formations superficielles : 31 % de la surface** (alluvions récentes Fz 9 %, colluvions, limons, éboulis…). Dans ces cas, la réponse doit aussi donner la roche en dessous, ce qui plaide pour l'option B.
+- Formations les plus étendues : Fz 9,3 %, j3a (Comblanchien, Bathonien) 8,3 %, j3O (Oolithe blanche) 7,6 %, j1-2 (calcaires à entroques) 5,7 %.
+
+**BSS (forages)**, via le WFS `geoservices.brgm.fr/geologie`, couche `ms:BSS_TOTAL_AVEC_LABEL` : chaque ouvrage a les indicateurs `coupe_geologique` (Présente/Absente) et `prof_max_coupe`.
+
+| Lieu | Forage avec coupe le plus proche | Le plus proche descendant à ≥ 30 m |
+| --- | --- | --- |
+| Paris | 1,5 km | 1,8 km (41 m) |
+| Dijon | 400 m | 420 m (110 m) |
+| Beaune | 260 m | 430 m (100 m) |
+| Saulieu (Morvan) | 230 m | 3,0 km (50 m) |
+| Clermont-Ferrand | 140 m | 530 m (36 m) |
+| Grenoble | 380 m | 440 m (34 m) |
+| Rennes | 20 m | 20 m (31 m) |
+| Plonévez-Porzay | 610 m | 610 m (70 m) |
+| Mende | 1,2 km | 1,3 km (100 m) |
+| Arcachon | 70 m | 220 m (156 m) |
+
+- Le WFS plafonne à 1 000 résultats par requête (Paris, Clermont et Rennes sont tronqués, donc les vraies distances sont encore plus courtes).
+- **Le contenu de la coupe est du texte structuré** sur la fiche InfoTerre (`ficheBss.action?id=BSS…`, en HTTP) : « Log géologique numérisé », avec pour chaque niveau la profondeur, la lithologie et parfois la stratigraphie. Par exemple, à Chenôve : remblai 0-4 m, graviers argileux (Quaternaire) 4-7 m… Ce texte est **hétérogène** (majuscules, abréviations comme « PLIOQUAT », stratigraphie souvent vide).
+- **Conclusion** : l'option B est faisable, mais seulement en précalcul. Les fiches sont en HTTP, sans CORS, et on ne peut pas les appeler depuis le navigateur. Il faut trouver un export en masse des logs, sinon récupérer les fiches poliment en ne gardant qu'un forage par kilomètre carré. C'est à trancher au moment du bonus.
 
 ## Critères de fin
 
@@ -73,9 +105,10 @@ La BD Charm-50 est une carte **de surface** : elle dit quelle couche affleure, p
 
 ## Tâches
 
-- [ ] Validation du cadrage et des points « À décider »
-- [ ] Sonde BD Charm-50 sur le département pilote : volume, champs disponibles (âge, lithologie, environnement), nombre de formations distinctes, qualité des notations
-- [ ] Sonde BSS : pour 10 adresses, distance au forage le plus proche qui a une coupe géologique, et lisibilité de cette coupe (décide l'option B)
+- [x] Validation du cadrage (2026-09-30)
+- [x] Sonde BD Charm-50 sur la Côte-d'Or : 62 formations, pas de champ d'âge ni de milieu (à déduire de la notation et de la description), 31 % de formations superficielles
+- [x] Sonde BSS : forage avec coupe à moins de 2 km dans 9 lieux sur 10 ; logs en texte structuré mais hétérogène, récupérables seulement en précalcul
+- [ ] Recenser toutes les notations et descriptions de France (95 départements), pour dimensionner les tables d'âge et de milieu
 - [ ] Table étages → âges (ICS) et table lithologie → milieu de dépôt, dans `domain/`, testées
 - [ ] Contrat de données + validation (`data/`)
 - [ ] Pipeline : fichiers shape → tuiles raster + dictionnaire, puis `REPORT.md` ; d'abord un département, ensuite la France
@@ -85,4 +118,4 @@ La BD Charm-50 est une carte **de surface** : elle dit quelle couche affleure, p
 
 ## Prochaine action
 
-Faire valider le cadrage par l'auteur (section « À décider »), puis lancer la sonde BD Charm-50 sur le département pilote.
+Recenser les notations et descriptions de toute la France : télécharger uniquement les `.dbf` de la couche `S_FGEOL` (ou les 2,8 Go une fois, en cache), compter les formations distinctes et mesurer quelle part on peut dater automatiquement par la notation ou l'étage. Ce chiffre dit si les tables d'âge et de milieu tiennent en quelques centaines de lignes ou en plusieurs milliers.
