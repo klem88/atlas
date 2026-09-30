@@ -12,7 +12,7 @@ export function readTheme(): VizTheme {
   const css = getComputedStyle(document.documentElement);
   const v = (name: string) => css.getPropertyValue(name).trim();
   return {
-    ramp: Array.from({ length: 7 }, (_, i) => v(`--seq-${i}`)),
+    ramp: Array.from({ length: 7 }, (_, i) => v(`--ramp-${i}`)),
     noData: v('--no-data'),
     noMarket: v('--no-market'),
     map: {

@@ -49,3 +49,11 @@ describe('isEstimate', () => {
     expect(isEstimate(PriceSource.EpciTriennial)).toBe(true);
   });
 });
+
+describe('PriceTable.salesVolume', () => {
+  it('additionne les ventes des deux types sur toutes les années', () => {
+    expect(table.salesVolume('44109')).toBe(900 + 950 + 3000 + 3100);
+    expect(table.salesVolume('23001')).toBe(23);
+    expect(table.salesVolume('99999')).toBe(0);
+  });
+});

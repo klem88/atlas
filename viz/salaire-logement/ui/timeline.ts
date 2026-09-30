@@ -32,7 +32,7 @@ export function createTimeline(target: HTMLElement, o: TimelineOptions) {
       <svg aria-hidden="true"></svg>
       <input class="timeline-input" type="range" min="${first}" max="${last}" step="1" aria-label="Année de la simulation" />
     </div>
-    <p class="note timeline-note">Glisse le long de la courbe pour changer d’année. Taux moyen des nouveaux crédits immobiliers, par an.</p>`;
+    <p class="note detail timeline-note">Glisse le long de la courbe pour changer d’année. Taux moyen des nouveaux crédits immobiliers, par an.</p>`;
 
   const svg = target.querySelector<SVGSVGElement>('.timeline-track svg')!;
   const input = target.querySelector<HTMLInputElement>('.timeline-input')!;
@@ -125,5 +125,7 @@ export function createTimeline(target: HTMLElement, o: TimelineOptions) {
     update(year: number) {
       set(year, false);
     },
+    /** Arrête l'animation (l'année a été choisie ailleurs). */
+    stop,
   };
 }

@@ -383,7 +383,7 @@
 }
 
 .swatch--estimate {
-  background: repeating-linear-gradient(-45deg, var(--hatch) 0 1px, transparent 1px 5px), var(--seq-3);
+  background: repeating-linear-gradient(-45deg, var(--hatch) 0 1px, transparent 1px 5px), var(--ramp-3);
 }
 
 .swatch--no-market {

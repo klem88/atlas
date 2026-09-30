@@ -11,7 +11,8 @@ Toutes les visualisations d'Atlas partagent ces règles, pour que le site se rec
 - **Rampe « ardoise »** : un bleu-gris désaturé (OKLCH, teinte ≈ 245), qui évoque les toits. Sept pas `--seq-0` à `--seq-6`, du clair au foncé. La luminosité est monotone et chaque pas contraste de 1,3 à 1,5:1 avec le précédent.
 - **Encre de la même teinte** que la rampe : l'ensemble reste calme.
 - **Un seul accent chaud** (`--accent`, orange) : la sélection, le « vous », la comparaison qui compte. Jamais décoratif.
-- **Mode sombre choisi, pas inversé** : sa propre rampe, où « plus » reste le plus contrasté (le plus clair sur fond sombre).
+- **Mode sombre choisi, pas inversé** : ses propres couleurs. Pour les graphiques (`--seq-*`), « plus » reste le plus contrasté.
+- **Cartes : foncé = plus, dans les deux thèmes** (`--ramp-*`). Une même carte doit se lire pareil sur un téléphone en mode sombre et un ordinateur en clair ; en sombre, la rampe est éclaircie pour que son pas le plus foncé se détache encore du fond.
 - Grandeur → une seule teinte, du clair au foncé. Jamais d'arc-en-ciel. Pour une polarité (au-dessus / en dessous d'un seuil) : deux teintes et un gris neutre au milieu.
 - Le texte ne prend jamais la couleur d'une série : il reste en `--ink`, `--ink-2` ou `--ink-3`.
 
@@ -46,11 +47,12 @@ Chaque visualisation a un **élément signature**, et un seul. Pour « Ce que to
 
 - Survol → infobulle ; clic ou recherche → sélection détaillée.
 - L'état est reflété dans l'URL : un lien partagé redonne exactement la même vue.
-- Sur mobile, un doigt fait défiler la page et deux doigts manipulent la carte. Sur ordinateur, Ctrl + molette zoome.
+- Sur mobile, en vue d'ensemble, un doigt fait défiler la page et deux doigts zooment ; une fois zoomé, un doigt déplace la carte (le bouton « vue d'ensemble » rend la page). Sur ordinateur, Ctrl + molette zoome.
 - Clavier, focus visible, `prefers-reduced-motion` respecté.
 
 ## Textes
 
+- **L'essentiel d'abord, le reste sur demande.** Les aides, notes de calcul et phrases de source portent la classe `detail` : cachées par défaut, elles apparaissent avec le bouton « Plus de détails » (`src/shell/details.ts`), dont le choix est retenu. Ce qui est indispensable pour lire juste (légende, estimations signalées) ne porte jamais `detail`.
 - Tutoiement, phrases courtes, verbes simples. On nomme ce que l'utilisateur voit, pas la technique.
 - Chaque chiffre affirmé dans la page est vérifié (et recalculé si possible).
 - Une erreur dit ce qui s'est passé et quoi faire, sans s'excuser.

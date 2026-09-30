@@ -43,6 +43,19 @@ export class PriceTable {
     return this.years.at(-1)!;
   }
 
+  /** Nombre total de ventes (maisons et appartements, toutes années) : sert à ordonner les noms sur la carte. */
+  salesVolume(code: string): number {
+    const ci = this.indexByCode.get(code);
+    if (ci === undefined) return 0;
+    const len = this.years.length;
+    let total = 0;
+    for (const type of ['maison', 'appartement'] as const) {
+      const n = this.file.series[type].n;
+      for (let yi = 0; yi < len; yi++) total += n[priceIndex(this.file, ci, yi)] ?? 0;
+    }
+    return total;
+  }
+
   has(code: string): boolean {
     return this.indexByCode.has(code);
   }

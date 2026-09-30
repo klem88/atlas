@@ -30,6 +30,21 @@ Sur téléphone, on voit la carte tout de suite. Aujourd'hui (375 px) elle comme
 - [x] Fusion sur `main` et déploiement (2026-09-30)
 - [ ] Retour de l'auteur après test en ligne sur son téléphone
 
+### Retours de l'auteur (2026-09-30), branche `fix/mobile-salaire`
+
+- [x] Déplacer la carte au pouce : une fois zoomé, un doigt déplace la carte (`touch-action: none`) ; en vue d'ensemble, un doigt fait défiler la page.
+- [x] Courbe du budget (et de la fiche commune) cliquable et glissable comme la frise, tout reste synchronisé (`src/shell/charts/scrub.ts`, testé).
+- [x] Afficher moins d'informations par défaut : bouton « Plus de détails » (socle, `src/shell/details.ts`), classe `detail` sur les aides, la note de la frise, la phrase de calcul et la source du prix. La légende reste toujours visible.
+- [x] Fusion sur `main` et déploiement (2026-09-30)
+
+### Deuxième retour (2026-09-30), branche `fix/legende-noms`
+
+- [x] Légende « inversée » sur mobile : le téléphone était en mode sombre, où la rampe allait du foncé au clair. Les cartes ont maintenant leur propre rampe (`--ramp-*`) : foncé = plus, dans les deux thèmes ; en sombre, elle est éclaircie pour se détacher du fond.
+- [x] Noms des communes au zoom (à partir de ×3) : les plus actives d'abord (volume de ventes 2010-2025, faute de population), sans chevauchement, une vingtaine au plus sur téléphone (`map/labels.ts`, testé).
+- [x] Fusion sur `main` et déploiement.
+
+Piste notée : ajouter la population INSEE au pipeline pour ordonner les noms (Strasbourg et Metz, sans ventes publiées, n'apparaissent qu'en zoomant davantage).
+
 ## Prochaine action
 
-Attendre le retour de l'auteur (test sur https://klem88.github.io/atlas/viz/salaire-logement/). S'il y a des corrections, les faire sur une nouvelle branche `fix/mobile-salaire`.
+Attendre le retour de l'auteur. Sans retouche : chantier clos, passer au suivant dans `docs/chantiers/README.md`.

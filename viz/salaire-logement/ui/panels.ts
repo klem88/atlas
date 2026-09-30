@@ -1,4 +1,4 @@
-import { renderLineChart } from '@shell/charts/line-chart';
+import { renderLineChart, type ChartScales } from '@shell/charts/line-chart';
 import { fmtEuros, fmtEurosRounded, fmtInt, fmtPct } from '@shell/format';
 import { escapeHtml } from '@shell/html';
 import { PriceSource } from '../data/contract';
@@ -9,8 +9,8 @@ import type { VizState } from '../state';
 
 const TYPE_LABEL = { maison: 'Maison', appartement: 'Appartement' } as const;
 
-/** Bloc « résultat » : le budget de l'année et son évolution. */
-export function renderResult(target: HTMLElement, model: Model, state: VizState): void {
+/** Bloc « résultat » : le budget de l'année et son évolution. Renvoie les échelles du graphique (pour le rendre glissable). */
+export function renderResult(target: HTMLElement, model: Model, state: VizState): ChartScales {
   const c = model.capacity(state);
   const rate = model.rateFor(state.year);
   const years = model.years;
@@ -21,7 +21,7 @@ export function renderResult(target: HTMLElement, model: Model, state: VizState)
   target.innerHTML = `
     <p class="result-eyebrow">En ${state.year}, ton budget d’achat</p>
     <p class="result-figure">${fmtEurosRounded(c.maxPrice)}</p>
-    <p class="result-detail">
+    <p class="result-detail detail">
       ${fmtEuros(Math.round(c.monthlyPayment))} de mensualité pendant ${state.assumptions.loanYears} ans à ${fmtPct(rate)},
       ${state.assumptions.downPayment > 0 ? `plus ${fmtEurosRounded(state.assumptions.downPayment)} d’apport, ` : ''}frais de notaire déduits.
     </p>
@@ -29,10 +29,10 @@ export function renderResult(target: HTMLElement, model: Model, state: VizState)
       <figcaption>Ton budget selon l’année${
         best.x !== state.year ? ` <span>· ${fmtInt(Math.round(Math.abs(delta) * 100))} % sous son pic de ${best.x}</span>` : ' <span>· au plus haut</span>'
       }</figcaption>
-      <svg></svg>
+      <svg class="lc-scrub"></svg>
     </figure>`;
 
-  renderLineChart(target.querySelector('svg')!, series, {
+  return renderLineChart(target.querySelector('svg')!, series, {
     width: 320,
     height: 92,
     current: state.year,
@@ -43,17 +43,17 @@ export function renderResult(target: HTMLElement, model: Model, state: VizState)
   });
 }
 
-/** Fiche de la commune sélectionnée, ou invitation à en choisir une. */
+/** Fiche de la commune sélectionnée, ou invitation à en choisir une. Renvoie les échelles de son graphique, s'il y en a un. */
 export function renderCommuneCard(
   target: HTMLElement,
   model: Model,
   state: VizState,
   commune: { code: string; nom: string } | null,
   onClear: () => void,
-): void {
+): ChartScales | null {
   if (!commune) {
     target.innerHTML = `<p class="commune-empty">Choisis une commune sur la carte, ou cherche-la par son nom, pour voir son détail et son évolution.</p>`;
-    return;
+    return null;
   }
 
   const r = model.communeAt(state, commune.code);
@@ -62,6 +62,7 @@ export function renderCommuneCard(
       <button type="button" class="commune-clear" aria-label="Désélectionner ${escapeHtml(commune.nom)}">Retirer</button>
     </header>`;
 
+  let scales: ChartScales | null = null;
   if (r.status.kind !== 'ok') {
     target.innerHTML = `${title}<p class="commune-empty">${statusSentence(r)}</p>`;
   } else {
@@ -76,13 +77,13 @@ export function renderCommuneCard(
         ${TYPE_LABEL[p.type]} au prix médian de <strong>${fmtEuros(p.pxm2)}/m²</strong> en ${state.year}
         — ${AREA_CLASSES[r.classIndex!]!.hint}.
       </p>
-      <p class="note">${sourceSentence(p.src, p.n, state.year)}</p>
+      <p class="note detail">${sourceSentence(p.src, p.n, state.year)}</p>
       <figure class="result-chart">
         <figcaption>Surface achetable selon l’année${peak && peak.x !== state.year ? ` <span>· ${fmtInt(Math.round(peak.y))} m² en ${peak.x}</span>` : ''}</figcaption>
-        <svg></svg>
+        <svg class="lc-scrub"></svg>
       </figure>`;
 
-    renderLineChart(target.querySelector('svg')!, series, {
+    scales = renderLineChart(target.querySelector('svg')!, series, {
       width: 320,
       height: 92,
       current: state.year,
@@ -93,6 +94,7 @@ export function renderCommuneCard(
     });
   }
   target.querySelector('.commune-clear')?.addEventListener('click', onClear);
+  return scales;
 }
 
 /** Contenu de l'infobulle au survol d'une commune. */
