@@ -49,11 +49,10 @@ export interface Shard {
   rows: Record<string, ProgressionRow>;
 }
 
-export interface NamedSection {
-  name: string;
-  /** [symbole, temps] */
-  chords: [string, number][];
-}
+import type { NamedSection, NamedSongRecord } from '@tools/lib/named-songs';
+
+export type { NamedSection };
+export type NamedSong = NamedSongRecord;
 
 /** Section enrichie dans le navigateur : les jetons de degrés (sans répétition immédiate) relatifs au relatif majeur. */
 export interface TokenizedSection extends NamedSection {
@@ -64,17 +63,6 @@ export interface TokenizedSong extends Omit<NamedSong, 'sections'> {
   sections: TokenizedSection[];
 }
 
-export interface NamedSong {
-  id: string;
-  corpus: 'irb' | 'billboard';
-  title: string;
-  artist: string;
-  year: number | null;
-  /** Tonique du relatif majeur (celle des jetons). */
-  tonic: number;
-  mode: 'major' | 'minor';
-  sections: NamedSection[];
-}
 
 export interface SongsFile {
   version: number;

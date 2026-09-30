@@ -1,6 +1,6 @@
 /** Lecture d'une suite d'accords : un accord après l'autre, avec rappel à chaque pas (curseur), arrêtable. */
-import { equalFrequency } from '@shell/music/pitch';
-import type { Synth } from '@shell/music/synth';
+import { equalFrequency } from './pitch';
+import type { Synth } from './synth';
 
 export interface Step {
   /** Notes MIDI ; vide pour un silence. */

@@ -79,3 +79,4 @@ docs/                       idées, design
 | [Ce qu’une seule note contient](viz/une-seule-note/) | publiée | aucune donnée, série harmonique |
 | [Ta progression a déjà été jouée 40 000 fois](viz/progression-jouee/) | brouillon | [rapport qualité](viz/progression-jouee/pipeline/REPORT.md) · Chordonomicon, iRb, McGill Billboard |
 | [Le fleuve des enchaînements](viz/fleuve-des-accords/) | brouillon | [rapport qualité](viz/fleuve-des-accords/pipeline/REPORT.md) · mêmes corpus |
+| [Le voyage sur le tore](viz/voyage-sur-le-tore/) | brouillon | [rapport qualité](viz/voyage-sur-le-tore/pipeline/REPORT.md) · iRb, Billboard, three.js |

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Le voyage sur le tore — Atlas</title>
+    <meta name="description" content="Chaque accord est une case sur un tore ; un morceau y trace un chemin. Surprise : « Giant Steps » y avance à plus petits pas qu’« Autumn Leaves »." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/voyage-sur-le-tore/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="Le voyage sur le tore" />
+    <meta property="og:description" content="Chaque accord est une case sur un tore ; un morceau y trace un chemin. Surprise : « Giant Steps » y avance à plus petits pas qu’« Autumn Leaves »." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/voyage-sur-le-tore/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/voyage-sur-le-tore.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Musique · Géométrie · three.js</p>
+        <h1>Le voyage sur le tore</h1>
+        <p class="viz-lede">
+          Pose les vingt-quatre accords majeurs et mineurs sur un plan où les voisins partagent deux notes, replie ce plan : c’est un
+          tore. Un morceau y devient un chemin, et le tore ne mesure pas ce que l’oreille croit : « Giant Steps », qui sonne comme une
+          suite de bonds, y avance à plus petits pas qu’« Autumn Leaves ». Lance un morceau et regarde-le voyager, en l’écoutant.
+        </p>
+        <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+          <span class="details-toggle-label">Plus de détails</span>
+        </button>
+      </header>
+
+      <section class="viz-workspace" aria-label="Visualisation">
+        <div class="viz-panel" id="panel">
+          <div class="search" id="search"></div>
+          <div class="field field--plain">
+            <span class="field-label">Quelques voyages</span>
+            <div class="chips" id="presets"></div>
+          </div>
+
+          <section class="result" id="result" aria-live="polite"><p class="result-line">Chargement des morceaux…</p></section>
+
+          <fieldset class="field field--plain">
+            <legend class="field-label">Vitesse</legend>
+            <div class="segmented" id="speed">
+              <label><input type="radio" name="speed" value="lente" />lente</label>
+              <label><input type="radio" name="speed" value="normale" checked />normale</label>
+              <label><input type="radio" name="speed" value="rapide" />rapide</label>
+            </div>
+          </fieldset>
+
+          <div class="actions">
+            <button class="button button--primary" type="button" id="play">Jouer</button>
+            <button class="button share-button" type="button" id="share-button">
+              <svg viewBox="0 0 16 16" aria-hidden="true" width="16" height="16"><path d="M8 2v8M5 5l3-3 3 3M3 9v4h10V9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              Partager
+            </button>
+          </div>
+          <p class="note detail">Le son ne part que quand tu le demandes : un accord par case de la grille, tenu le temps indiqué, synthèse simple.</p>
+
+          <section class="styles" id="styles">
+            <p class="field-label">Longueur moyenne d’un pas, par style</p>
+            <ul class="style-list" id="style-list"></ul>
+            <p class="field-help detail">Un pas de 1 change une seule note (do majeur → la mineur) ; la quinte vaut 2 ; le ton, 4. Moyennes sur les trois corpus, voir le rapport.</p>
+          </section>
+        </div>
+
+        <div class="viz-stage">
+          <div class="stage-frame">
+            <div class="scene" id="scene" role="img" aria-label="Le tore des accords et le chemin du morceau"></div>
+            <p class="scene-hint" id="scene-hint">Glisse pour tourner le tore (deux doigts sur téléphone). MAJUSCULES : majeurs ; minuscules : mineurs ; un anneau marque un accord ramené à sa triade voisine.</p>
+            <div class="grid" id="grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#methode">La méthode</a></li>
+            <li><a href="#sources">D’où viennent les chiffres</a></li>
+            <li><a href="#limites">Ce que ça ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>
+              Le <strong>Tonnetz</strong> (« réseau de tons », Euler, 1739) place les notes sur un quadrillage : vers la droite, une
+              quinte ; vers le haut, une tierce majeure. Trois notes voisines forment un triangle, et ce triangle est un accord :
+              pointe en haut, majeur ; pointe en bas, mineur. Deux triangles qui se touchent par un côté partagent deux notes : passer
+              de l’un à l’autre, c’est ne bouger qu’une seule note. Comme les notes reviennent toutes les douze, le quadrillage se
+              referme sur lui-même : c’est un <strong>tore</strong>, avec quatre colonnes autour du grand cercle et trois rangées
+              autour du tube.
+            </p>
+            <p>
+              Le <strong>chemin</strong> relie les accords du morceau dans l’ordre. Une traîne foncée derrière la tête à l’accent, le
+              reste du trajet en filigrane. Des pas courts (une case) : des enchaînements doux ; des bonds à travers le tore : des
+              surprises. Et le tore réserve une surprise : « Autumn Leaves » enchaîne des ii–V–I, dont chaque ii → V coûte trois pas
+              (un mineur vers un majeur à la quarte, une seule note commune) ; « Giant Steps » saute de tierce majeure en tierce
+              majeure, et sur le tore ces accords-là sont voisins de voisins : deux pas. Ce qu’on entend comme un bond est, en
+              conduite des voix, un petit déplacement. C’est exactement ce que Coltrane exploitait.
+            </p>
+          </section>
+          <section id="methode">
+            <h2>La méthode</h2>
+            <ul>
+              <li>
+                <strong>Le tore.</strong> Une note de classe de hauteur p est en (a, b) avec 7a + 4b ≡ p ; on identifie (a, b) et
+                (a + 4, b + 2), et (a, b) et (a, b + 3). Le grand cercle du tore suit le vecteur (4, 2), le tube suit (0, 3) ; le cycle
+                des quintes y court en hélice. Un accord est placé au centre de son triangle.
+              </li>
+              <li>
+                <strong>La distance d’un pas</strong> est le nombre minimal de transformations néo-riemanniennes P (parallèle : do
+                majeur ↔ do mineur), L (échange de sensible : do majeur ↔ mi mineur) et R (relative : do majeur ↔ la mineur) pour
+                passer d’un accord à l’autre, calculé une fois pour les 24 × 24 paires. C’est une longueur sur le tore, pas dans
+                l’espace.
+              </li>
+              <li>
+                <strong>Les accords hors triades</strong> sont ramenés à la triade la plus proche pour le tracé : septièmes sur leur
+                triade (G7 sur sol majeur), diminués et demi-diminués sur le mineur de même fondamentale, augmentés et suspendus sur le
+                majeur. Un anneau marque ces cases ; les répétitions et les silences ne font pas de pas.
+              </li>
+              <li>
+                <strong>Les moyennes par style</strong> viennent des trois corpus (Chordonomicon lu dans l’armure estimée, iRb,
+                Billboard) : chaque changement d’accord à l’intérieur d’une partie compte pour un pas.
+              </li>
+            </ul>
+          </section>
+          <section id="sources">
+            <h2>D’où viennent les chiffres</h2>
+            <ul>
+              <li><strong>iRb</strong> (Broze et Shanahan, OSU) : 1 185 grilles de standards de jazz avec tonalité ; paquet <a href="https://www.npmjs.com/package/sharp11-irb">sharp11-irb</a>.</li>
+              <li><strong>McGill Billboard</strong> (Burgoyne, Wild, Fujinaga, ISMIR 2011) : 742 titres du Hot 100 1958–1991, annotés à la main, CC0.</li>
+              <li><strong>Chordonomicon</strong> (Kantarelis et al., 2024, CC BY-NC 4.0) : 679 807 tablatures, pour les moyennes par genre et décennie.</li>
+              <li>Le Tonnetz et les transformations P, L, R : Hugo Riemann (1880), puis Richard Cohn, <em>Audacious Euphony</em> (2012). Aucun son, aucune mélodie n’est reproduit : seulement des suites de symboles d’accords.</li>
+            </ul>
+          </section>
+          <section id="limites">
+            <h2>Ce que ça ne dit pas</h2>
+            <ul>
+              <li><strong>Le tore ne connaît que les triades.</strong> Une septième, une neuvième, un accord suspendu changent la couleur sans bouger la case : le voyage est celui de la charpente.</li>
+              <li><strong>La distance PLR n’est pas la seule possible.</strong> Elle compte les notes qui bougent d’un demi-ton ou d’un ton, pas la conduite des voix réelle du pianiste ; deux accords « loin » sur le tore peuvent s’enchaîner en douceur au clavier.</li>
+              <li><strong>Un tore, c’est une projection</strong> : le plan de Riemann est infini et sans courbure ; le replier est une commodité pour le regard, et la droite « quintes » y devient une hélice.</li>
+              <li><strong>Les tablatures</strong> apportent leurs approximations (tonalité estimée, accords simplifiés) aux moyennes par style ; la distance PLR ne dépend pas de la tonalité, seulement de l’intervalle et du mode entre deux accords.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Ce voyage en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : le tore et le chemin du morceau." />
+        <p class="note">Aucune donnée n’est envoyée : l’image est dessinée dans ton navigateur.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

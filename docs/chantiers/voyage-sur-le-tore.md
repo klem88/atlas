@@ -33,14 +33,25 @@ Le Tonnetz est le plan des accords : chaque triangle est un accord majeur ou min
 - Un pas = un changement d'accord ; les répétitions ne comptent pas.
 - Distance = plus court chemin en transformations P, L, R (tableau précalculé 24 × 24, testé).
 
+## Décisions de construction (nuit du 1er octobre 2026)
+
+- **La phrase partageable a changé, parce que les données l'ont contredite.** Mesurée en transformations P, L, R, « Autumn Leaves » fait 29 pas de 2,8 en moyenne, « Giant Steps » 25 pas de 2,6 : le cycle de tierces majeures de Coltrane est *court* sur le Tonnetz (deux pas), alors qu'un ii → V (mineur vers majeur à la quarte, une note commune) en coûte trois. La page en fait sa surprise : « les bonds qu'on entend ne sont pas ceux qu'on mesure ». À valider par l'auteur : c'est un renversement du cadrage.
+- **Tore** : domaine fondamental engendré par (4, 2) et (0, 3) dans le réseau (quintes, tierces majeures) : quatre colonnes autour du grand cercle, trois rangées autour du tube, le cycle des quintes en hélice. Chaque triade au centre de son triangle ; facettes courbes subdivisées ; étiquettes MAJUSCULES/minuscules.
+- Distance d'un pas = plus court chemin PLR (table 24 × 24 par parcours en largeur) ; quinte = 2, ton = 4, relatif = 1.
+- Accords hors triades : septièmes sur leur triade, diminués et demi-diminués sur le mineur, augmentés et suspendus sur le majeur, marqués d'un anneau ; silences et répétitions ne font pas de pas.
+- Le morceau se choisit dans les 1 927 titres nommés (recherche du socle) ; sept préréglages. `songs.json` est propre à la page (même contenu que celui de progression-jouee, produit par le module commun `tools/lib/named-songs.ts`).
+- Moyennes par style dans le panneau (barres) ; les tablatures font 2,4 par pas, les standards 2,7.
+- Le lecteur d'accords (`Player`) et les symboles lisibles ont été montés dans le socle.
+
 ## Tâches
 
-- [ ] Domaine : positions sur le tore, distance PLR, réduction à la triade ; tests
-- [ ] Pipeline : distances moyennes par style, grilles exportées pour la recherche (titres iRb et Billboard)
-- [ ] Scène three.js (tore, facettes, chemin, tête, orbite), grille à plat, son, recherche
-- [ ] Textes, image de partage, image d'aperçu
-- [ ] Vérification mobile/clair/sombre, relecture de l'auteur, publication
+- [x] Domaine : positions sur le tore, distance PLR, réduction à la triade ; tests
+- [x] Pipeline : distances moyennes par style, grilles exportées pour la recherche (titres iRb et Billboard)
+- [x] Scène three.js (tore, facettes, chemin, tête, orbite), grille à plat, son, recherche
+- [x] Textes, image de partage, image d'aperçu
+- [x] Vérification dans le navigateur de l'éditeur (rendu WebGL, lecture, 375 px)
+- [ ] Relecture de l'auteur sur téléphone (fluidité, sombre), publication
 
 ## Prochaine action
 
-Après `fleuve-des-accords` : créer la branche, écrire le domaine du tore en TDD.
+Relecture de l'auteur : `git checkout feat/voyage-sur-le-tore`, http://localhost:5173/viz/voyage-sur-le-tore/?morceau=irb:362 . Trancher le renversement de la phrase (Giant Steps à petits pas) ; vérifier la fluidité du tore sur téléphone.

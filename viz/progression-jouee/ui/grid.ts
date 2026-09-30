@@ -2,7 +2,7 @@
  * La grille d'un morceau nommé : ses parties, ses accords en cases (largeur selon la durée), la progression
  * surlignée, et un curseur pendant l'écoute.
  */
-import { parseChord } from '@shell/music/chords';
+import { parseChord, prettySymbol } from '@shell/music/chords';
 import { degreeLabel, degreeOf, degreeToken, type Degree } from '@shell/music/degrees';
 import { escapeHtml } from '@shell/html';
 import type { NamedSong } from '../data/contract';
@@ -17,18 +17,6 @@ export interface GridCell {
   highlighted: boolean;
   /** Notes jouables (classes de hauteur + basse), `null` pour un silence. */
   chord: ReturnType<typeof parseChord>;
-}
-
-/** Symbole lisible : « C:maj/3 » → « C/3 », « A:min7 » → « Am7 », « B:hdim7 » → « Bø7 », « Dmin7 » → « Dm7 ». */
-export function prettySymbol(symbol: string): string {
-  return symbol
-    .replace(':', '')
-    .replace(/^([A-G][#b]?)maj(?=$|\/|\()/, '$1')
-    .replace(/^([A-G][#b]?)min/, '$1m')
-    .replace('hdim7', 'ø7')
-    .replace('hdim', 'ø')
-    .replace(/^([A-G][#b]?)dim/, '$1°')
-    .replace(/\(([^)]*)\)/, '$1');
 }
 
 export function gridCells(song: NamedSong, p: readonly Degree[]): GridCell[][] {

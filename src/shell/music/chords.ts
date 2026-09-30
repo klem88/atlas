@@ -172,3 +172,15 @@ export function triadClass(q: Quality): TriadClass {
       return q;
   }
 }
+
+/** Symbole lisible : « C:maj/3 » → « C/3 », « A:min7 » → « Am7 », « B:hdim7 » → « Bø7 », « Dmin7 » → « Dm7 ». */
+export function prettySymbol(symbol: string): string {
+  return symbol
+    .replace(':', '')
+    .replace(/^([A-G][#b]?)maj(?=$|\/|\()/, '$1')
+    .replace(/^([A-G][#b]?)min/, '$1m')
+    .replace('hdim7', 'ø7')
+    .replace('hdim', 'ø')
+    .replace(/^([A-G][#b]?)dim/, '$1°')
+    .replace(/\(([^)]*)\)/, '$1');
+}

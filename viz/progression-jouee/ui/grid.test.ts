@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { prettySymbol } from './grid';
+import { prettySymbol } from '@shell/music/chords';
 
 describe('symboles lisibles', () => {
   it('allège les trois écritures', () => {

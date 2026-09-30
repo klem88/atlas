@@ -12,10 +12,11 @@ import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { degreeLabel, tokenToDegree } from '@shell/music/degrees';
 import { estimateKey, relativeMajor } from '@shell/music/key';
-import { CORPORA_CACHE, dedupeBillboard, ensureCorpora, readBillboard, readIrb, type CorpusSong } from '@tools/lib/corpora';
-import { DECADES, GENRES, knownKey, loadChordonomiconDegrees, weightedChords, type SongTokens } from '@tools/lib/degrees-corpus';
+import { CORPORA_CACHE, ensureCorpora, type CorpusSong } from '@tools/lib/corpora';
+import { DECADES, GENRES, loadChordonomiconDegrees, weightedChords, type SongTokens } from '@tools/lib/degrees-corpus';
+import { loadNamedSongs } from '@tools/lib/named-songs';
 import { log } from '@tools/lib/log';
-import { MIN_SONGS_BY_LENGTH, SCHEMA_VERSION, type Meta, type NamedSong, type ProgressionRow, type Shard, type SongsFile } from '../data/contract';
+import { MIN_SONGS_BY_LENGTH, SCHEMA_VERSION, type Meta, type ProgressionRow, type Shard, type SongsFile } from '../data/contract';
 import { validateMeta, validateShard, validateSongs } from '../data/validate';
 import { FIRST_YEAR_SUPPORT, MIN_PLAUSIBLE_YEAR, countNgrams, firstYear, tokensOfKey, type Tally } from './ngrams';
 
@@ -36,13 +37,11 @@ export default async function buildData(args: string[] = []): Promise<void> {
 
   // 1. Morceaux nommés et précision de l'estimation de tonalité -----------------------------------------
   log.step('Morceaux nommés (iRb, Billboard)');
-  const irb = await readIrb();
-  const billboard = dedupeBillboard(await readBillboard());
+  const { irb, billboard, named } = await loadNamedSongs();
   const irbAcc = measureIrb(irb);
   const bbAcc = measureBillboard(billboard);
   log.info(`iRb : ${irb.length} standards, armure juste ${pct(irbAcc.signature, irbAcc.n)}, tonalité exacte ${pct(irbAcc.exact, irbAcc.n)}`);
   log.info(`Billboard : ${billboard.length} titres, tonique juste ${pct(bbAcc.tonic, bbAcc.n)}, armure compatible ${pct(bbAcc.signature, bbAcc.n)}`);
-  const named: NamedSong[] = [...irb.map(namedSong), ...billboard.map(namedSong)].filter((s): s is NamedSong => s !== null);
   const songsFile = validateSongs({ version: SCHEMA_VERSION, songs: named });
   await writeJson('songs.json', songsFile);
 
@@ -104,27 +103,6 @@ export default async function buildData(args: string[] = []): Promise<void> {
 }
 
 /* Morceaux nommés et mesure de l'estimation ------------------------------------------------------------ */
-
-function namedSong(song: CorpusSong): NamedSong | null {
-  const key = knownKey(song);
-  if (!key || !song.title) return null;
-  const tonic = key.relativeMajor;
-  return {
-    id: song.id,
-    corpus: song.corpus as 'irb' | 'billboard',
-    title: song.title,
-    artist: song.artist ?? '',
-    year: song.year ?? null,
-    tonic,
-    mode: key.mode,
-    sections: song.sections
-      .map((sec) => ({
-        name: sec.name,
-        chords: sec.chords.map((c) => [c.symbol, Math.round(c.beats * 100) / 100] as [string, number]),
-      }))
-      .filter((s) => s.chords.length > 0),
-  };
-}
 
 function measureIrb(songs: readonly CorpusSong[]) {
   let n = 0;
@@ -220,4 +198,3 @@ function renderReport(r: {
   return lines.join('\n');
 }
 
-export { namedSong as toNamedSong };

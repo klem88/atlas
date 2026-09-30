@@ -14,7 +14,7 @@ import { degreeFromNotes, voice } from '@shell/music/voicing';
 import { KEY_NAMES, readStateFromUrl, stateToSearch, type VizState } from './state';
 import { friezeItems, renderFrieze, type FriezeItem } from './ui/frieze';
 import { gridCells, renderGrid, setCursor } from './ui/grid';
-import { Player } from './ui/player';
+import { Player } from '@shell/music/player';
 import { renderShareCard, sharePhrase } from './ui/share-card';
 import './viz.css';
 
@@ -237,8 +237,8 @@ els.listen.addEventListener('click', () => {
     prev = midis;
     return { midis, seconds: 0.75, tag: { token: i % p.length } };
   });
-  els.listen.textContent = 'Arrêter';
   player.play(steps);
+  els.listen.textContent = 'Arrêter';
 });
 
 /* Clavier ------------------------------------------------------------------------------------------------- */

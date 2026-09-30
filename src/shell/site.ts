@@ -97,6 +97,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-09',
   },
+  {
+    slug: 'voyage-sur-le-tore',
+    title: 'Le voyage sur le tore',
+    summary: 'Chaque accord est une case sur un tore ; un morceau y trace un chemin. Surprise : « Giant Steps » y avance à plus petits pas qu’« Autumn Leaves ».',
+    tags: ['Musique', 'Géométrie', 'three.js'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 
