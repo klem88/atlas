@@ -2,17 +2,16 @@
  * Génère l'image d'aperçu des liens (Open Graph, 1200×630) à partir des vraies données :
  * la carte nationale pour un revenu de référence, et le titre.
  *
- *   npm run og:salaire-logement
+ *   npm run og -- salaire-logement
  *
  * À relancer après une mise à jour des données ou du design.
  */
-import { GlobalFonts, createCanvas } from '@napi-rs/canvas';
+import { OG_FONTS, OG_HEIGHT as H, OG_WIDTH as W, REPO_ROOT, createOgCanvas, readLightTokens, registerSiteFonts, writeOgImage } from '@tools/og';
 import { geoConicConformal, geoPath } from 'd3-geo';
 import type { FeatureCollection } from 'geojson';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Topology } from 'topojson-specification';
-import { downloadCached } from '../pipeline/lib/download';
 import { PriceTable } from '../data/prices';
 import { validatePrices, validateRates } from '../data/validate';
 import { affordableArea } from '../domain/affordability';
@@ -21,31 +20,12 @@ import { decodeTopology } from '../map/geo';
 import { Model } from '../model';
 import { readStateFromUrl } from '../state';
 
-const HERE = import.meta.dirname;
-const REPO = join(HERE, '..', '..', '..');
-const DATA = join(REPO, 'public', 'data', 'salaire-logement');
-const OUT = join(REPO, 'public', 'og', 'salaire-logement.png');
-const FONTS = join(HERE, '..', 'pipeline', '.cache', 'fonts');
-const W = 1200;
-const H = 630;
+const SLUG = 'salaire-logement';
+const DATA = join(REPO_ROOT, 'public', 'data', SLUG);
 
-const FONT_FILES = {
-  'Spectral-Light.ttf': 'https://raw.githubusercontent.com/google/fonts/main/ofl/spectral/Spectral-Light.ttf',
-  'AtkinsonHyperlegibleNext.ttf': 'https://raw.githubusercontent.com/google/fonts/main/ofl/atkinsonhyperlegiblenext/AtkinsonHyperlegibleNext%5Bwght%5D.ttf',
-};
-
-/** Lit les jetons de couleur du thème clair dans tokens.css (source unique des couleurs). */
-async function readTokens(): Promise<Record<string, string>> {
-  const css = await readFile(join(REPO, 'src', 'shell', 'tokens.css'), 'utf8');
-  const light = css.slice(0, css.indexOf('@media'));
-  return Object.fromEntries([...light.matchAll(/--([\w-]+):\s*([^;]+);/g)].map(([, k, v]) => [k!, v!.trim()]));
-}
-
-async function main() {
-  for (const [name, url] of Object.entries(FONT_FILES)) {
-    GlobalFonts.registerFromPath(await downloadCached(url, join(FONTS, name), { minBytes: 10_000 }));
-  }
-  const t = await readTokens();
+export default async function buildOg(): Promise<void> {
+  await registerSiteFonts();
+  const t = await readLightTokens();
   const json = async (f: string) => JSON.parse(await readFile(join(DATA, f), 'utf8')) as unknown;
 
   const prices = new PriceTable(validatePrices(await json('prices.json')));
@@ -55,7 +35,7 @@ async function main() {
   const maxPrice = model.capacity(state).maxPrice;
   const ramp = Array.from({ length: 7 }, (_, i) => t[`seq-${i}`]!);
 
-  const canvas = createCanvas(W, H);
+  const canvas = createOgCanvas();
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = t.page!;
   ctx.fillRect(0, 0, W, H);
@@ -101,14 +81,14 @@ async function main() {
   // Texte, à gauche.
   const pad = 64;
   ctx.fillStyle = t['ink-3']!;
-  ctx.font = `600 20px "Atkinson Hyperlegible Next"`;
+  ctx.font = `600 20px ${OG_FONTS.ui}`;
   ctx.fillText('LOGEMENT · FRANCE · 2010 – 2025', pad, 110);
   ctx.fillStyle = t.ink!;
-  ctx.font = `300 76px Spectral`;
+  ctx.font = `300 76px ${OG_FONTS.display}`;
   ctx.fillText('Ce que ton', pad, 210);
   ctx.fillText('salaire achète', pad, 292);
   ctx.fillStyle = t['ink-2']!;
-  ctx.font = `400 26px "Atkinson Hyperlegible Next"`;
+  ctx.font = `400 26px ${OG_FONTS.ui}`;
   ['Commune par commune, la surface', 'que tes revenus permettent d’acheter,', 'et comment elle a changé depuis 2010.'].forEach((line, i) =>
     ctx.fillText(line, pad, 360 + i * 38),
   );
@@ -122,15 +102,8 @@ async function main() {
     ctx.fillRect(lx + i * (cw + 2), ly, cw, 12);
   });
   ctx.fillStyle = t['ink-3']!;
-  ctx.font = `400 17px "Atkinson Hyperlegible Next"`;
+  ctx.font = `400 17px ${OG_FONTS.ui}`;
   ctx.fillText(`m² achetables avec ${state.netMonthlyIncome.toLocaleString('fr-FR')} €/mois en ${state.year}`, lx, ly + 40);
 
-  await mkdir(join(REPO, 'public', 'og'), { recursive: true });
-  await writeFile(OUT, canvas.toBuffer('image/png'));
-  console.log(`écrit ${OUT}`);
+  console.log(`écrit ${await writeOgImage(SLUG, canvas)}`);
 }
-
-main().catch((err: unknown) => {
-  console.error(err);
-  process.exitCode = 1;
-});

@@ -1,6 +1,7 @@
 node_modules/
 dist/
-# Téléchargements bruts du pipeline (≈1,3 Go, reproductibles via `npm run data:<viz>`)
+# Téléchargements bruts du pipeline (≈1,3 Go, reproductibles via `npm run data -- <slug>`)
 viz/*/pipeline/.cache/
 *.log
 .DS_Store
+tools/.cache/

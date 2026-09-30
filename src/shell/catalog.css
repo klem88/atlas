@@ -38,3 +38,8 @@
   color: var(--ink-2);
   font-size: var(--text-sm);
 }
+
+/* Brouillon (visible en développement uniquement). */
+.catalog-item[data-draft] a {
+  border-style: dashed;
+}

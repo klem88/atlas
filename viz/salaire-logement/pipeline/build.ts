@@ -1,8 +1,8 @@
 /**
  * Pipeline de données : sources publiques → fichiers statiques dans public/data/salaire-logement/.
  *
- *   npm run data:salaire-logement         # utilise le cache local (pipeline/.cache)
- *   npm run data:salaire-logement:clean   # vide le cache et retélécharge tout
+ *   npm run data -- salaire-logement                 # utilise le cache local (pipeline/.cache)
+ *   npm run data -- salaire-logement --clean-cache   # vide le cache et retélécharge tout
  *
  * Étapes : taux (BCE) → contours (Etalab) → prix (Cerema) → validation → rapport qualité.
  */
@@ -19,8 +19,8 @@ import {
 } from '../data/contract';
 import { validatePrices, validateRates } from '../data/validate';
 import { boxDownloadUrl, listBoxFolder } from './lib/box';
-import { downloadCached, fetchText, mapWithConcurrency } from './lib/download';
-import { log } from './lib/log';
+import { downloadCached, fetchText, mapWithConcurrency } from '@tools/lib/download';
+import { log } from '@tools/lib/log';
 import { writeReport, type Report } from './report';
 import { CEREMA, CONTOURS, RATES, YEARS, triennialWindow, type YearWindow } from './sources';
 import { buildTopology, filterCommunes } from './steps/geo';
@@ -34,8 +34,8 @@ const CACHE = join(PIPELINE, '.cache');
 const OUT = join(REPO, 'public', 'data', 'salaire-logement');
 const DOWNLOAD_CONCURRENCY = 3;
 
-async function main() {
-  if (process.argv.includes('--clean-cache')) await rm(CACHE, { recursive: true, force: true });
+export default async function buildData(args: string[] = []): Promise<void> {
+  if (args.includes('--clean-cache')) await rm(CACHE, { recursive: true, force: true });
   await mkdir(OUT, { recursive: true });
   const generatedAt = new Date().toISOString();
 
@@ -175,7 +175,3 @@ async function writeJson(name: string, data: unknown) {
   log.info(`écrit public/data/salaire-logement/${name} (${(json.length / 1e6).toFixed(1)} Mo)`);
 }
 
-main().catch((err: unknown) => {
-  console.error(`\n✖ ${(err as Error).stack ?? String(err)}`);
-  process.exitCode = 1;
-});

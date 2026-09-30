@@ -11,12 +11,12 @@
     "dev": "vite",
     "build": "npm run typecheck && vite build",
     "preview": "vite preview",
-    "data:salaire-logement": "tsx viz/salaire-logement/pipeline/build.ts",
-    "data:salaire-logement:clean": "tsx viz/salaire-logement/pipeline/build.ts --clean-cache",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "og:salaire-logement": "tsx viz/salaire-logement/og/build-og.ts"
+    "data": "tsx tools/viz-task.ts data",
+    "og": "tsx tools/viz-task.ts og",
+    "new:viz": "tsx tools/new-viz.ts"
   },
   "devDependencies": {
     "@napi-rs/canvas": "^1.0.9",

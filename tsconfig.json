@@ -15,7 +15,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "paths": { "@shell/*": ["./src/shell/*"] }
+    "paths": { "@shell/*": ["./src/shell/*"], "@tools/*": ["./tools/*"] }
   },
-  "include": ["src", "viz", "vite.config.ts"]
+  "include": ["src", "viz", "tools", "vite.config.ts"]
 }

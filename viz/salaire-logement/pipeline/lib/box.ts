@@ -1,4 +1,4 @@
-import { fetchText } from './download';
+import { fetchText } from '@tools/lib/download';
 
 export interface BoxFile {
   id: string;

@@ -4,7 +4,7 @@ import './page.css';
 import './components.css';
 import './charts/charts.css';
 import { escapeHtml } from './html';
-import { SITE, VISUALIZATIONS, homeUrl, vizUrl } from './site';
+import { SITE, VISUALIZATIONS, homeUrl, listedVisualizations, vizUrl } from './site';
 
 /**
  * Monte l'en-tête et le pied de page communs dans les éléments
@@ -33,17 +33,16 @@ export function mountShell(options: { currentSlug?: string } = {}): void {
   }
 }
 
-/** Rend la liste des visualisations (page d'accueil). */
+/** Rend la liste des visualisations (page d'accueil). Les brouillons n'apparaissent qu'en développement. */
 export function renderCatalog(target: HTMLElement): void {
-  target.innerHTML = VISUALIZATIONS.map(
+  target.innerHTML = listedVisualizations(import.meta.env.DEV).map(
     (v) => `
-    <li class="catalog-item">
+    <li class="catalog-item"${v.status === 'draft' ? ' data-draft' : ''}>
       <a href="${vizUrl(v.slug)}">
-        <p class="viz-kicker">${v.tags.map(escapeHtml).join(' · ')}</p>
+        <p class="viz-kicker">${v.status === 'draft' ? 'Brouillon · ' : ''}${v.tags.map(escapeHtml).join(' · ')}</p>
         <h2>${escapeHtml(v.title)}</h2>
         <p>${escapeHtml(v.summary)}</p>
       </a>
     </li>`,
   ).join('');
 }
-

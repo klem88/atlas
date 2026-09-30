@@ -13,8 +13,8 @@ Le format de sortie est défini dans [`data/contract.ts`](../data/contract.ts) e
 ## Utilisation
 
 ```bash
-npm run data:salaire-logement          # utilise le cache local (pipeline/.cache, ≈1,3 Go)
-npm run data:salaire-logement:clean    # vide le cache et retélécharge tout
+npm run data -- salaire-logement                 # utilise le cache local (pipeline/.cache, ≈1,3 Go)
+npm run data -- salaire-logement --clean-cache   # vide le cache et retélécharge tout
 ```
 
 Chaque exécution régénère [`REPORT.md`](REPORT.md) : la provenance des prix par année, les contrôles effectués et des communes témoins. Le rapport est versionné, pour que le diff montre ce qu'une mise à jour des sources a changé.
@@ -48,5 +48,5 @@ Toutes les URL et tous les paramètres se trouvent dans [`sources.ts`](sources.t
 ## Mettre à jour vers un nouveau millésime
 
 1. Dans `sources.ts`, ajuster `LAST_YEAR` (et `CONTOURS.url` si le COG change).
-2. `npm run data:salaire-logement`. Si un fichier manque sur Box, le pipeline échoue en listant exactement lequel.
+2. `npm run data -- salaire-logement`. Si un fichier manque sur Box, le pipeline échoue en listant exactement lequel.
 3. Relire le diff de `REPORT.md`.
