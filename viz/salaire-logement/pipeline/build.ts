@@ -1,8 +1,8 @@
 /**
- * Pipeline de données : sources publiques → fichiers statiques dans public/data/.
+ * Pipeline de données : sources publiques → fichiers statiques dans public/data/salaire-logement/.
  *
- *   npm run data              # utilise le cache local (pipeline/.cache)
- *   npm run data:clean        # vide le cache et retélécharge tout
+ *   npm run data:salaire-logement         # utilise le cache local (pipeline/.cache)
+ *   npm run data:salaire-logement:clean   # vide le cache et retélécharge tout
  *
  * Étapes : taux (BCE) → contours (Etalab) → prix (Cerema) → validation → rapport qualité.
  */
@@ -16,8 +16,8 @@ import {
   priceIndex,
   type PricesFile,
   type PropertyType,
-} from '../src/data/contract';
-import { validatePrices, validateRates } from '../src/data/validate';
+} from '../data/contract';
+import { validatePrices, validateRates } from '../data/validate';
 import { boxDownloadUrl, listBoxFolder } from './lib/box';
 import { downloadCached, fetchText, mapWithConcurrency } from './lib/download';
 import { log } from './lib/log';
@@ -28,9 +28,10 @@ import { readCeremaFile, type CeremaTable } from './steps/prices';
 import { buildRates } from './steps/rates';
 import { resolvePrice } from './steps/resolve';
 
-const ROOT = join(import.meta.dirname, '..');
-const CACHE = join(ROOT, 'pipeline', '.cache');
-const OUT = join(ROOT, 'public', 'data');
+const PIPELINE = import.meta.dirname;
+const REPO = join(PIPELINE, '..', '..', '..');
+const CACHE = join(PIPELINE, '.cache');
+const OUT = join(REPO, 'public', 'data', 'salaire-logement');
 const DOWNLOAD_CONCURRENCY = 3;
 
 async function main() {
@@ -63,7 +64,7 @@ async function main() {
   await writeJson('prices.json', prices);
 
   // 4. Rapport ------------------------------------------------------------
-  const reportPath = join(ROOT, 'pipeline', 'REPORT.md');
+  const reportPath = join(PIPELINE, 'REPORT.md');
   await writeReport(reportPath, { ...report, rates });
   log.step(`Terminé. Rapport qualité : ${reportPath}`);
 }
@@ -171,7 +172,7 @@ function assemblePrices(
 async function writeJson(name: string, data: unknown) {
   const json = JSON.stringify(data);
   await writeFile(join(OUT, name), json);
-  log.info(`écrit public/data/${name} (${(json.length / 1e6).toFixed(1)} Mo)`);
+  log.info(`écrit public/data/salaire-logement/${name} (${(json.length / 1e6).toFixed(1)} Mo)`);
 }
 
 main().catch((err: unknown) => {

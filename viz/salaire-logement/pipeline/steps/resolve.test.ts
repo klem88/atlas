@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PriceSource } from '../../src/data/contract';
+import { PriceSource } from '../../data/contract';
 import { resolvePrice } from './resolve';
 
 const obs = (pxm2: number | null, n = 20) => ({ pxm2, n });

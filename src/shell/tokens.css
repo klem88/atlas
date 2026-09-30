@@ -1,0 +1,123 @@
+/*
+ * Jetons de design du site. Toute couleur ou taille utilisée ailleurs en dérive.
+ *
+ * Palette « ardoise » : bleu-gris désaturé (OKLCH h≈245), l'encre et la carte
+ * partagent la même teinte pour un ensemble calme. Un seul accent chaud,
+ * réservé à ce qu'on veut désigner (sélection, repère « vous »).
+ */
+:root {
+  color-scheme: light;
+
+  /* Surfaces & encres */
+  --page: #f8fafd;
+  --surface: #ffffff;
+  --surface-sunk: #eef2f6;
+  --ink: #13212d;
+  --ink-2: #3f4d5a;
+  --ink-3: #6b7885;
+  --rule: #dde4eb;
+  --rule-strong: #c2ccd6;
+  --focus: #1c5f99;
+
+  /* Accent unique (≥3:1 sur la surface) */
+  --accent: #d0602a;
+  --accent-soft: #f7e3d8;
+
+  /* Rampe séquentielle ardoise (clair → foncé) */
+  --seq-0: #e5f0fa;
+  --seq-1: #bfd4e7;
+  --seq-2: #97b5cf;
+  --seq-3: #7197b8;
+  --seq-4: #4d799e;
+  --seq-5: #315c7f;
+  --seq-6: #1c405d;
+
+  /* États sans valeur */
+  --no-data: #dedfe0;
+  --no-market: #f1f3f5;
+  --hatch: rgba(255, 255, 255, 0.55);
+  --hatch-ink: rgba(19, 33, 45, 0.28);
+
+  /* Typographie */
+  --font-display: 'Spectral', 'Iowan Old Style', Georgia, serif;
+  --font-ui: 'Atkinson Hyperlegible Next', 'Segoe UI', system-ui, sans-serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --text-display: clamp(2.1rem, 1.4rem + 3vw, 3.6rem);
+
+  /* Espacements (échelle 4 px) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  --radius: 6px;
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --measure: 64ch;
+  --shadow-float: 0 1px 2px rgba(19, 33, 45, 0.06), 0 8px 24px rgba(19, 33, 45, 0.1);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) {
+    color-scheme: dark;
+    --page: #0f1418;
+    --surface: #151c22;
+    --surface-sunk: #1b242c;
+    --ink: #e8eef3;
+    --ink-2: #b7c3ce;
+    --ink-3: #8593a0;
+    --rule: #26313a;
+    --rule-strong: #34424e;
+    --focus: #8fbfe8;
+    --accent: #ee8350;
+    --accent-soft: #3a2518;
+    --seq-0: #21303c;
+    --seq-1: #2e4559;
+    --seq-2: #3d5e7a;
+    --seq-3: #537c9e;
+    --seq-4: #719abe;
+    --seq-5: #9bbcd9;
+    --seq-6: #cee1f1;
+    --no-data: #2a2f34;
+    --no-market: #1b2127;
+    --hatch: rgba(15, 20, 24, 0.5);
+    --hatch-ink: rgba(232, 238, 243, 0.25);
+    --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --page: #0f1418;
+  --surface: #151c22;
+  --surface-sunk: #1b242c;
+  --ink: #e8eef3;
+  --ink-2: #b7c3ce;
+  --ink-3: #8593a0;
+  --rule: #26313a;
+  --rule-strong: #34424e;
+  --focus: #8fbfe8;
+  --accent: #ee8350;
+  --accent-soft: #3a2518;
+  --seq-0: #21303c;
+  --seq-1: #2e4559;
+  --seq-2: #3d5e7a;
+  --seq-3: #537c9e;
+  --seq-4: #719abe;
+  --seq-5: #9bbcd9;
+  --seq-6: #cee1f1;
+  --no-data: #2a2f34;
+  --no-market: #1b2127;
+  --hatch: rgba(15, 20, 24, 0.5);
+  --hatch-ink: rgba(232, 238, 243, 0.25);
+  --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.45);
+}

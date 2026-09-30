@@ -1,0 +1,40 @@
+/* Page d'accueil : catalogue des visualisations. */
+.catalog {
+  list-style: none;
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+}
+
+.catalog-item a {
+  display: grid;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.catalog-item a:hover {
+  border-color: var(--ink-3);
+  transform: translateY(-2px);
+}
+
+.catalog-item .viz-kicker {
+  margin: 0;
+}
+
+.catalog-item h2 {
+  font-size: var(--text-xl);
+  font-weight: 300;
+}
+
+.catalog-item p:last-child {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}

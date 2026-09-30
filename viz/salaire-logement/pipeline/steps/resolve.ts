@@ -1,5 +1,5 @@
-import { PriceSource } from '../../src/data/contract';
-import { PXM2_MAX, PXM2_MIN } from '../../src/data/validate';
+import { PriceSource } from '../../data/contract';
+import { PXM2_MAX, PXM2_MIN } from '../../data/validate';
 
 export interface Observation {
   /** Prix médian au m² (€), null si masqué par le secret statistique. */

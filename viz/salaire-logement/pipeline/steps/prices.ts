@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as XLSX from 'xlsx';
-import { PROPERTY_TYPES, type PropertyType } from '../../src/data/contract';
+import { PROPERTY_TYPES, type PropertyType } from '../../data/contract';
 import { CEREMA } from '../sources';
 import type { Observation } from './resolve';
 

@@ -1,25 +1,43 @@
 {
-  "name": "ce-que-ton-salaire-achete",
+  "name": "atlas",
   "version": "0.1.0",
   "private": true,
-  "description": "Carte de France : ce que ton salaire permet d'acheter, commune par commune, de 2010 à aujourd'hui.",
+  "description": "Visualisations de données : un atelier de cartes et de simulations.",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "data": "tsx pipeline/build.ts",
-    "data:clean": "tsx pipeline/build.ts --clean-cache",
+    "dev": "vite",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview",
+    "data:salaire-logement": "tsx viz/salaire-logement/pipeline/build.ts",
+    "data:salaire-logement:clean": "tsx viz/salaire-logement/pipeline/build.ts --clean-cache",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@types/d3-geo": "^3.1.1",
+    "@types/d3-selection": "^3.0.12",
+    "@types/d3-transition": "^3.0.9",
+    "@types/d3-zoom": "^3.0.9",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^26.6.3",
+    "@types/topojson-client": "^3.1.5",
+    "@types/topojson-specification": "^1.0.5",
     "mapshaper": "^0.7.70",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
+    "vite": "^8.3.1",
     "vitest": "^5.0.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "dependencies": {
+    "d3-geo": "^3.1.1",
+    "d3-selection": "^3.0.0",
+    "d3-transition": "^3.0.1",
+    "d3-zoom": "^3.0.0",
+    "topojson-client": "^3.1.0"
   }
 }

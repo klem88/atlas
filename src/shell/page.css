@@ -1,0 +1,249 @@
+/*
+ * Gabarit d'une page de visualisation :
+ *
+ *   .site-header
+ *   main.viz
+ *     .viz-intro        surtitre, titre, chapeau
+ *     .viz-workspace    .viz-panel (réglages, résultat) | .viz-stage (la visualisation)
+ *     .viz-notes        comment lire, méthode, sources, limites
+ *   .site-footer
+ */
+
+.site-header,
+.site-footer,
+.viz {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* En-tête du site ------------------------------------------------------- */
+.site-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--text-sm);
+}
+
+.site-mark {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.site-mark span {
+  color: var(--ink-3);
+  font-style: italic;
+}
+
+.site-nav {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.site-nav a {
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  color: var(--ink);
+}
+
+/* Introduction ------------------------------------------------------------ */
+.viz-intro {
+  padding-block: var(--space-7) var(--space-6);
+  max-width: 52rem;
+}
+
+.viz-kicker {
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: var(--space-4);
+}
+
+.viz-intro h1 {
+  font-size: var(--text-display);
+  font-weight: 300;
+  max-width: 20ch;
+}
+
+.viz-lede {
+  margin-top: var(--space-5);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+
+/* Espace de travail : panneau + scène ----------------------------------- */
+.viz-workspace {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 1000px) {
+  .viz-workspace {
+    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .viz-panel {
+    position: sticky;
+    top: var(--space-4);
+  }
+}
+
+.viz-panel {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.viz-stage {
+  position: relative;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+/* Notes : explications et transparence ---------------------------------- */
+.viz-notes {
+  display: grid;
+  gap: var(--space-6) var(--space-7);
+  grid-template-columns: 1fr;
+  padding-block: var(--space-8);
+  margin-top: var(--space-7);
+  border-top: 1px solid var(--rule);
+}
+
+@media (min-width: 900px) {
+  .viz-notes {
+    grid-template-columns: 12rem minmax(0, var(--measure));
+  }
+
+  .viz-notes-toc {
+    position: sticky;
+    top: var(--space-5);
+    align-self: start;
+  }
+}
+
+.viz-notes-toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.viz-notes-toc a {
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.viz-notes-toc a:hover {
+  color: var(--ink);
+}
+
+.prose {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.prose section {
+  display: grid;
+  gap: var(--space-4);
+  scroll-margin-top: var(--space-5);
+}
+
+.prose section + section {
+  margin-top: var(--space-6);
+}
+
+.prose h2 {
+  font-size: var(--text-xl);
+}
+
+.prose h3 {
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  font-weight: 700;
+  margin-top: var(--space-3);
+}
+
+.prose p,
+.prose li {
+  color: var(--ink-2);
+}
+
+.prose ul {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.prose strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.prose code,
+.prose .formula {
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-sunk);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.92em;
+}
+
+.prose .formula {
+  display: block;
+  padding: var(--space-4);
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+
+.prose table {
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.prose th,
+.prose td {
+  text-align: left;
+  padding: var(--space-2) var(--space-4) var(--space-2) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.prose th {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+/* Pied de page --------------------------------------------------------- */
+.site-footer {
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--rule);
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-4);
+}

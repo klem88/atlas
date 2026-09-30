@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ce que ton salaire achète — Atlas</title>
+    <meta
+      name="description"
+      content="Entre ton revenu et découvre, commune par commune, la surface que tu pourrais acheter en France, de 2010 à aujourd’hui."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+    <link rel="preload" href="/data/salaire-logement/prices.json" as="fetch" crossorigin />
+    <link rel="preload" href="/data/salaire-logement/communes.topo.json" as="fetch" crossorigin />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Logement · France · 2010 – 2025</p>
+        <h1>Ce que ton salaire achète</h1>
+        <p class="viz-lede">
+          Indique tes revenus : la carte montre, commune par commune, la surface que tu pourrais acheter. Remonte le temps
+          pour voir ce qui a changé, et surtout pourquoi.
+        </p>
+      </header>
+
+      <section class="viz-workspace" aria-label="Simulation">
+        <div class="viz-panel">
+          <form class="panel-form" id="settings" novalidate>
+            <label class="field">
+              <span class="field-label">Revenus nets du foyer</span>
+              <span class="input-affix input-affix--large">
+                <input id="income" name="income" inputmode="numeric" autocomplete="off" aria-describedby="income-help" />
+                <span>€ / mois</span>
+              </span>
+              <span class="field-help" id="income-help">Avant impôt sur le revenu, salaires et revenus réguliers de tout le foyer.</span>
+            </label>
+
+            <fieldset class="field">
+              <legend class="field-label">Type de logement</legend>
+              <div class="segmented" id="mode">
+                <label><input type="radio" name="mode" value="moins-cher" />Le moins cher</label>
+                <label><input type="radio" name="mode" value="maison" />Maison</label>
+                <label><input type="radio" name="mode" value="appartement" />Appartement</label>
+              </div>
+            </fieldset>
+
+            <div class="field search" id="search"></div>
+          </form>
+
+          <section class="result" aria-live="polite" id="result"></section>
+
+          <section class="commune-card" id="commune-card" aria-live="polite"></section>
+
+          <details class="disclosure" id="assumptions">
+            <summary>Hypothèses du calcul</summary>
+            <div class="disclosure-body">
+              <label class="field">
+                <span class="field-label">Apport personnel</span>
+                <span class="input-affix">
+                  <input id="down-payment" inputmode="numeric" autocomplete="off" />
+                  <span>€</span>
+                </span>
+              </label>
+              <label class="field">
+                <span class="field-label">Durée du prêt</span>
+                <span class="input-affix">
+                  <input id="loan-years" type="number" min="5" max="25" step="1" />
+                  <span>ans</span>
+                </span>
+                <span class="field-help">25 ans au maximum depuis 2022 (règle du HCSF).</span>
+              </label>
+              <dl class="assumption-list" id="assumption-list"></dl>
+            </div>
+          </details>
+        </div>
+
+        <div class="viz-stage">
+          <div class="map-frame" id="map" role="img" aria-label="Carte des communes de France colorées selon la surface achetable">
+            <div class="map-loading" id="map-loading">Chargement des 35 000 communes…</div>
+            <div class="map-controls">
+              <button class="button button--icon" type="button" id="zoom-in" aria-label="Zoomer">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              </button>
+              <button class="button button--icon" type="button" id="zoom-out" aria-label="Dézoomer">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              </button>
+              <button class="button button--icon" type="button" id="zoom-reset" aria-label="Revenir à la vue d’ensemble">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              </button>
+            </div>
+            <p class="map-hint" id="map-hint" role="status">Ctrl + molette pour zoomer · deux doigts sur mobile</p>
+            <div class="tooltip" id="tooltip" role="tooltip"></div>
+          </div>
+          <div class="map-legend" id="legend"></div>
+          <div class="timeline" id="timeline"></div>
+        </div>
+      </section>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire la carte</a></li>
+            <li><a href="#calcul">Le calcul, étape par étape</a></li>
+            <li><a href="#sources">D’où viennent les chiffres</a></li>
+            <li><a href="#limites">Ce que la carte ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire la carte</h2>
+            <p>
+              Chaque commune est colorée selon la <strong>surface que ton budget permet d’acheter</strong> au prix médian
+              local : plus la teinte est foncée, plus tu aurais d’espace. Les classes sont fixes, pour qu’une même couleur
+              garde le même sens d’une année à l’autre.
+            </p>
+            <p>
+              Les communes <strong>hachurées</strong> n’ont pas assez de ventes pour qu’on publie un prix fiable (moins de
+              11 dans l’année et sur trois ans). Leur prix est alors celui de leur intercommunalité : c’est une estimation,
+              souvent tirée vers le haut par la ville-centre.
+            </p>
+            <p>
+              Le curseur des années suit la <strong>courbe des taux d’emprunt</strong>. C’est elle qui explique l’essentiel
+              des variations récentes : entre 2021 et 2023, le taux moyen annuel est passé de 1,15 % à 3,01 %, et la somme
+              qu’un même revenu permet d’emprunter sur 25 ans a baissé de près d’un cinquième.
+            </p>
+          </section>
+
+          <section id="calcul">
+            <h2>Le calcul, étape par étape</h2>
+            <p>Voici le calcul exact effectué pour ta situation, avec tes valeurs actuelles :</p>
+            <div class="formula" id="formula"></div>
+            <p>
+              C’est le raisonnement d’une banque, en simplifié : on ne tient compte ni de ton épargne restante, ni de ton
+              reste à vivre, ni des aides (prêt à taux zéro, prêts employeurs). Le résultat est un <strong>ordre de
+              grandeur</strong>, pas une offre de prêt.
+            </p>
+          </section>
+
+          <section id="sources">
+            <h2>D’où viennent les chiffres</h2>
+            <table>
+              <thead>
+                <tr><th>Donnée</th><th>Source</th><th>Période</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Prix médian au m²</td>
+                  <td><a href="https://datafoncier.cerema.fr/donnees/autres-donnees-foncieres/indicateurs-prix">Cerema, indicateurs DV3F</a>, issus des ventes enregistrées par l’administration fiscale</td>
+                  <td>2010 – 2025</td>
+                </tr>
+                <tr>
+                  <td>Taux d’emprunt</td>
+                  <td><a href="https://data.ecb.europa.eu/data/datasets/MIR">BCE / Banque de France</a>, taux moyen des nouveaux crédits à l’habitat des ménages</td>
+                  <td>2010 – 2026</td>
+                </tr>
+                <tr>
+                  <td>Contours des communes</td>
+                  <td><a href="https://www.data.gouv.fr/datasets/contours-administratifs">Etalab</a>, découpage 2025</td>
+                  <td>2025</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Toutes les communes sont exprimées dans le découpage de 2025, y compris pour les années passées : une commune
+              issue d’une fusion a donc un historique complet.
+            </p>
+          </section>
+
+          <section id="limites">
+            <h2>Ce que la carte ne dit pas</h2>
+            <ul>
+              <li>
+                <strong>Un prix médian n’est pas ton logement.</strong> La moitié des ventes s’est faite plus cher, l’autre
+                moitié moins cher. L’état, l’étage ou le quartier font varier le prix bien au-delà.
+              </li>
+              <li>
+                <strong>L’Alsace et la Moselle n’apparaissent pas</strong> : leurs ventes relèvent du livre foncier local et
+                ne figurent pas dans les données publiques de l’administration fiscale. Il en va de même pour Mayotte.
+              </li>
+              <li>
+                <strong>Le salaire est le même pour toutes les années.</strong> La carte répond à la question « avec ce
+                revenu, qu’aurais-je pu acheter en 2015 ? », pas « qu’achetait quelqu’un de ma profession en 2015 ? ».
+              </li>
+              <li>
+                <strong>Le taux est une moyenne nationale</strong>, renégociations comprises. Ton taux réel dépend de ton
+                profil et de ta banque.
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

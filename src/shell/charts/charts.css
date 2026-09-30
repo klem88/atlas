@@ -1,0 +1,45 @@
+/* Styles des graphiques partagés (line-chart.ts). */
+.lc-grid line {
+  stroke: var(--rule);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.lc-grid text,
+.lc-axis text {
+  fill: var(--ink-3);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lc-line {
+  fill: none;
+  stroke: var(--seq-5);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.lc-cursor {
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  stroke-dasharray: none;
+  opacity: 0.5;
+}
+
+.lc-dot {
+  fill: var(--seq-5);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.lc-value {
+  fill: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}

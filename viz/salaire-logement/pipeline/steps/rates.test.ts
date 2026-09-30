@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateRates } from '../../src/data/validate';
+import { validateRates } from '../../data/validate';
 import { buildRates, parseCsv } from './rates';
 
 describe('parseCsv', () => {

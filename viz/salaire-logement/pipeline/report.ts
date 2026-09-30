@@ -1,5 +1,5 @@
 import { writeFile } from 'node:fs/promises';
-import { PROPERTY_TYPES, PriceSource, priceIndex, type PricesFile, type RatesFile } from '../src/data/contract';
+import { PROPERTY_TYPES, PriceSource, priceIndex, type PricesFile, type RatesFile } from '../data/contract';
 
 export interface Report {
   generatedAt: string;

@@ -1,4 +1,4 @@
-import { SCHEMA_VERSION, type RatesFile } from '../../src/data/contract';
+import { SCHEMA_VERSION, type RatesFile } from '../../data/contract';
 import { RATES } from '../sources';
 
 /** Parse un CSV RFC 4180 (guillemets, virgules et guillemets échappés dans les champs). */
