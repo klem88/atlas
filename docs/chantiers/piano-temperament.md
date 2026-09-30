@@ -52,15 +52,20 @@ Une explication interactive du tempérament égal, pour tout le monde : les harm
 
 - [x] Cadrage d'une page, validé par l'auteur
 - [x] `npm run new:viz -- piano-temperament`
-- [ ] Domaine : fréquences (égal, pur, pythagoricien), écarts en cents, fréquence des battements, virgule pythagoricienne ; tests
-- [ ] Son : moteur Web Audio (notes, accords, comparaison pur/tempéré)
-- [ ] Clavier jouable et vague des battements (canvas), échelle des harmoniques
-- [ ] Panneau, résultat, préréglages, état dans l'URL
-- [ ] Spirale des quintes
-- [ ] Textes : comment lire, le calcul, sources, limites
-- [ ] Image de partage, image d'aperçu
-- [ ] Vérification mobile/clair/sombre, publication (geste de l'auteur)
+- [x] Domaine : fréquences (égal, pur, pythagoricien), écarts en cents, fréquence des battements, virgule pythagoricienne ; tests
+- [x] Son : moteur Web Audio (notes, accords, comparaison pur/tempéré)
+- [x] Clavier jouable et vague des battements (canvas), échelle des harmoniques
+- [x] Panneau, résultat, préréglages, état dans l'URL
+- [x] Spirale des quintes
+- [x] Textes : comment lire, la virgule, le calcul, sources, limites
+- [x] Image de partage, image d'aperçu
+- [x] Vérification mobile/clair/sombre dans le navigateur de développement
+- [ ] Relecture de l'auteur (téléphone, casque), puis `status: 'published'` et fusion sur `main`
+
+## Socle touché
+
+- Nouveau `src/shell/share.ts` (fenêtre « Partager » générique) et ses styles dans `components.css`. « Ce que ton salaire achète » garde sa propre copie pour l'instant : à rebrancher sur le socle dans un chantier de nettoyage.
 
 ## Prochaine action
 
-Le domaine (`viz/piano-temperament/domain/`), en TDD.
+Relecture de l'auteur : `git checkout feat/piano-temperament`, `npm run dev`, ouvrir la page sur téléphone au casque. Si ça convient : passer `status` à `published` (mois `2026-10`) dans `src/shell/site.ts` et fusionner.
