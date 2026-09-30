@@ -51,6 +51,7 @@ Chaque visualisation a un **élément signature**, et un seul. Pour « Ce que to
 
 ## Textes
 
+- **L'essentiel d'abord, le reste sur demande.** Les aides, notes de calcul et phrases de source portent la classe `detail` : cachées par défaut, elles apparaissent avec le bouton « Plus de détails » (`src/shell/details.ts`), dont le choix est retenu. Ce qui est indispensable pour lire juste (légende, estimations signalées) ne porte jamais `detail`.
 - Tutoiement, phrases courtes, verbes simples. On nomme ce que l'utilisateur voit, pas la technique.
 - Chaque chiffre affirmé dans la page est vérifié (et recalculé si possible).
 - Une erreur dit ce qui s'est passé et quoi faire, sans s'excuser.

@@ -3,6 +3,7 @@ import './base.css';
 import './page.css';
 import './components.css';
 import './charts/charts.css';
+import { setupDetails } from './details';
 import { escapeHtml } from './html';
 import { SITE, VISUALIZATIONS, homeUrl, listedVisualizations, vizUrl } from './site';
 
@@ -31,6 +32,8 @@ export function mountShell(options: { currentSlug?: string } = {}): void {
       <span>${SITE.name} — ${SITE.tagline}</span>
       <span>Données publiques, code ouvert, calculs expliqués.</span>`;
   }
+
+  setupDetails();
 }
 
 /** Rend la liste des visualisations (page d'accueil). Les brouillons n'apparaissent qu'en développement. */

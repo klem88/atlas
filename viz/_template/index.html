@@ -32,6 +32,11 @@
         <p class="viz-kicker">__TAGS__</p>
         <h1>__TITLE__</h1>
         <p class="viz-lede">__SUMMARY__</p>
+        <!-- Affiche les éléments de classe « detail » (aides, notes de calcul) : voir src/shell/details.ts. -->
+        <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+          <span class="details-toggle-label">Plus de détails</span>
+        </button>
       </header>
 
       <section class="viz-workspace" aria-label="Visualisation">

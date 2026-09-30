@@ -21,7 +21,7 @@ export function renderResult(target: HTMLElement, model: Model, state: VizState)
   target.innerHTML = `
     <p class="result-eyebrow">En ${state.year}, ton budget d’achat</p>
     <p class="result-figure">${fmtEurosRounded(c.maxPrice)}</p>
-    <p class="result-detail">
+    <p class="result-detail detail">
       ${fmtEuros(Math.round(c.monthlyPayment))} de mensualité pendant ${state.assumptions.loanYears} ans à ${fmtPct(rate)},
       ${state.assumptions.downPayment > 0 ? `plus ${fmtEurosRounded(state.assumptions.downPayment)} d’apport, ` : ''}frais de notaire déduits.
     </p>
@@ -77,7 +77,7 @@ export function renderCommuneCard(
         ${TYPE_LABEL[p.type]} au prix médian de <strong>${fmtEuros(p.pxm2)}/m²</strong> en ${state.year}
         — ${AREA_CLASSES[r.classIndex!]!.hint}.
       </p>
-      <p class="note">${sourceSentence(p.src, p.n, state.year)}</p>
+      <p class="note detail">${sourceSentence(p.src, p.n, state.year)}</p>
       <figure class="result-chart">
         <figcaption>Surface achetable selon l’année${peak && peak.x !== state.year ? ` <span>· ${fmtInt(Math.round(peak.y))} m² en ${peak.x}</span>` : ''}</figcaption>
         <svg class="lc-scrub"></svg>

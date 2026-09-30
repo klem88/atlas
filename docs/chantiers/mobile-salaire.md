@@ -34,8 +34,9 @@ Sur téléphone, on voit la carte tout de suite. Aujourd'hui (375 px) elle comme
 
 - [x] Déplacer la carte au pouce : une fois zoomé, un doigt déplace la carte (`touch-action: none`) ; en vue d'ensemble, un doigt fait défiler la page.
 - [x] Courbe du budget (et de la fiche commune) cliquable et glissable comme la frise, tout reste synchronisé (`src/shell/charts/scrub.ts`, testé).
-- [ ] Afficher moins d'informations par défaut, le reste sur demande : proposition faite à l'auteur, en attente de son choix.
+- [x] Afficher moins d'informations par défaut : bouton « Plus de détails » (socle, `src/shell/details.ts`), classe `detail` sur les aides, la note de la frise, la phrase de calcul et la source du prix. La légende reste toujours visible.
+- [x] Fusion sur `main` et déploiement (2026-09-30)
 
 ## Prochaine action
 
-Attendre le choix de l'auteur sur l'allègement, puis l'implémenter, et fusionner `fix/mobile-salaire` sur `main`.
+Attendre le retour de l'auteur sur son téléphone (déplacement au doigt, courbes cliquables, « Plus de détails »). Sans retouche : chantier clos, passer au suivant dans `docs/chantiers/README.md`.
