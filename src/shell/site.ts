@@ -57,6 +57,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-09',
   },
+  {
+    slug: 'consonance',
+    title: 'Pourquoi une tierce sonne douce',
+    summary: 'Glisse d’une note à l’autre et écoute la rugosité monter et descendre : les intervalles doux sont des vallées, et ton piano n’en atteint aucune tout à fait.',
+    tags: ['Musique', 'Psychoacoustique'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 

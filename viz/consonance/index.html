@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pourquoi une tierce sonne douce — Atlas</title>
+    <meta name="description" content="Glisse d’une note à l’autre et écoute la rugosité monter et descendre : les intervalles doux sont des vallées, et ton piano n’en atteint aucune tout à fait." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/consonance/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="Pourquoi une tierce sonne douce" />
+    <meta property="og:description" content="Glisse d’une note à l’autre et écoute la rugosité monter et descendre : les intervalles doux sont des vallées, et ton piano n’en atteint aucune tout à fait." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/consonance/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/consonance.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Musique · Psychoacoustique</p>
+        <h1>Pourquoi une tierce sonne douce</h1>
+        <p class="viz-lede">
+          Tiens une note, et fais glisser l’autre de l’unisson à l’octave. Le son râpe, puis se calme, puis râpe encore : la rugosité
+          dessine un paysage, et les intervalles doux en sont les vallées. Enlève les harmoniques : les vallées disparaissent.
+        </p>
+        <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+          <span class="details-toggle-label">Plus de détails</span>
+        </button>
+      </header>
+
+      <section class="viz-workspace" aria-label="Visualisation">
+        <div class="viz-panel" id="panel">
+          <label class="field">
+            <span class="field-label">Écart entre les deux notes</span>
+            <input class="slider" type="range" id="cents" min="0" max="1200" step="1" value="386" aria-describedby="cents-help" />
+            <span class="field-help detail" id="cents-help">Glisse aussi directement sur le paysage. 100 cents = un demi-ton du piano.</span>
+          </label>
+
+          <section class="result" id="result" aria-live="polite"></section>
+
+          <div class="actions">
+            <button class="button button--primary" type="button" id="listen">Écouter</button>
+            <button class="button share-button" type="button" id="share-button">
+              <svg viewBox="0 0 16 16" aria-hidden="true" width="16" height="16"><path d="M8 2v8M5 5l3-3 3 3M3 9v4h10V9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              Partager
+            </button>
+          </div>
+          <p class="note detail">Le son ne part que quand tu le demandes, et suit le curseur tant qu’il joue. Volume doux conseillé.</p>
+
+          <fieldset class="field field--plain">
+            <legend class="field-label">Timbre : harmoniques par note</legend>
+            <div class="segmented" id="harmonics">
+              <label><input type="radio" name="harmonics" value="1" />1</label>
+              <label><input type="radio" name="harmonics" value="3" />3</label>
+              <label><input type="radio" name="harmonics" value="6" checked />6</label>
+              <label><input type="radio" name="harmonics" value="10" />10</label>
+            </div>
+            <p class="field-help detail">1 : une sinusoïde pure, comme un diapason. 6 : proche d’une voix ou d’un piano. 10 : un timbre riche, comme une anche.</p>
+          </fieldset>
+
+          <fieldset class="field field--plain">
+            <legend class="field-label">Note grave</legend>
+            <div class="segmented" id="root">
+              <label><input type="radio" name="root" value="36" />do2</label>
+              <label><input type="radio" name="root" value="48" />do3</label>
+              <label><input type="radio" name="root" value="60" checked />do4</label>
+            </div>
+            <p class="field-help detail">Dans le grave, les vallées se resserrent : une tierce basse est rugueuse.</p>
+          </fieldset>
+
+          <div class="field">
+            <span class="field-label">Va directement à</span>
+            <div class="chips" id="presets"></div>
+          </div>
+        </div>
+
+        <div class="viz-stage">
+          <div class="stage-frame">
+            <figure class="landscape">
+              <figcaption class="figure-title">La rugosité de l’intervalle, de l’unisson à l’octave <span class="detail">— plus c’est haut, plus ça râpe ; les vallées portent le rapport de fréquences qui les creuse</span></figcaption>
+              <svg id="landscape" role="img" aria-label="Courbe de rugosité de 0 à 1 200 cents, avec ses vallées et le curseur"></svg>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#methode">La méthode</a></li>
+            <li><a href="#sources">D’où viennent les chiffres</a></li>
+            <li><a href="#limites">Ce que ça ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>
+              De gauche à droite, l’écart entre les deux notes grandit, de l’unisson (0 cent) à l’octave (1 200 cents). La hauteur de la
+              courbe est la <strong>rugosité</strong> : la gêne que produisent deux sons dont les composantes sont trop proches pour que
+              l’oreille les sépare, et trop éloignées pour qu’elle les confonde. Ça bat, ça râpe.
+            </p>
+            <p>
+              Une note n’est pas une seule fréquence : elle porte des <strong>harmoniques</strong>, à 2, 3, 4… fois sa fondamentale. Quand
+              deux notes forment un rapport simple, leurs harmoniques se superposent au lieu de se frôler : la rugosité tombe. C’est une
+              <strong>vallée</strong>, étiquetée par le rapport qui la creuse : 3/2 pour la quinte, 5/4 pour la tierce majeure.
+            </p>
+            <p>
+              Passe le timbre à <strong>1 harmonique</strong> : plus de vallées, une seule colline qui redescend lentement. Deux sinusoïdes
+              pures n’ont aucune raison de préférer la tierce au triton. La consonance n’est pas dans les notes : elle est dans le timbre.
+            </p>
+            <p>
+              Les traits verticaux sont les <strong>douze notes du piano</strong>. Regarde où elles tombent : l’octave au fond de sa vallée,
+              la quinte presque (2 cents), la tierce majeure à 14 cents du fond, à mi-pente. Ton piano vit sur les versants.
+            </p>
+          </section>
+
+          <section id="methode">
+            <h2>La méthode</h2>
+            <p>
+              La courbe est celle de Plomp et Levelt (1965), mesurée sur des auditeurs à qui l’on faisait juger la « rugosité » de deux
+              sinusoïdes : nulle à l’unisson, maximale vers un quart de la <em>bande critique</em> (la largeur de fréquences que l’oreille
+              analyse ensemble), puis décroissante. Sethares (1993) en donne une formule :
+            </p>
+            <div class="formula">d(f₁, f₂) = a₁ a₂ · ( e<sup>−3,5 s x</sup> − e<sup>−5,75 s x</sup> )
+x = |f₂ − f₁|      s = 0,24 / (0,021 · min(f₁, f₂) + 19)</div>
+            <p>
+              La rugosité de deux notes est la somme de d sur toutes les paires de partiels (un partiel de la première note, un de la
+              seconde). Chaque note a n harmoniques d’amplitude 0,88<sup>k</sup>. La courbe est recalculée cent par cent pour la note
+              grave et le timbre choisis ; les vallées sont ses minimums locaux, rapprochées du rapport simple le plus proche (à 25 cents).
+            </p>
+            <div class="formula" id="formula"></div>
+          </section>
+
+          <section id="sources">
+            <h2>D’où viennent les chiffres</h2>
+            <ul>
+              <li>R. Plomp et W. J. M. Levelt, « Tonal consonance and critical bandwidth », <em>Journal of the Acoustical Society of America</em>, 38, 1965.</li>
+              <li>W. A. Sethares, « Local consonance and the relationship between timbre and scale », <em>JASA</em>, 94, 1993 ; et <em>Tuning, Timbre, Spectrum, Scale</em>, Springer, 1998 (paramètres de la formule).</li>
+              <li>Le la à 440 Hz, le tempérament égal pour les repères du piano. Aucune donnée téléchargée : tout se calcule dans ton navigateur.</li>
+            </ul>
+          </section>
+
+          <section id="limites">
+            <h2>Ce que ça ne dit pas</h2>
+            <ul>
+              <li><strong>La rugosité n’est pas toute la consonance.</strong> L’habitude, la culture, le contexte (ce qui précède, ce qui suit) et la hauteur des sons comptent aussi. Le modèle prédit bien les vallées ; il ne dit pas ce que tu aimes.</li>
+              <li><strong>Un vrai timbre n’a pas des harmoniques exactes</strong> ni des amplitudes en 0,88<sup>k</sup> : chaque instrument a son paysage. Les cloches et les gongs, aux partiels inharmoniques, ont des vallées ailleurs, et d’autres gammes leur vont mieux (c’est la thèse de Sethares).</li>
+              <li><strong>Les valeurs sont relatives</strong> : la courbe est ramenée à son maximum. Comparer deux registres ou deux timbres se fait à la forme, pas à la hauteur absolue.</li>
+              <li><strong>Deux notes seulement.</strong> Un accord de trois notes ajoute d’autres paires ; un accompagnement, d’autres encore.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Ce paysage en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : le paysage de la rugosité et la position du curseur." />
+        <p class="note">Aucune donnée n’est envoyée : tout est calculé dans ton navigateur.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

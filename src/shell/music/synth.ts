@@ -97,4 +97,73 @@ export class Synth {
   get playing(): Playback | null {
     return this.current;
   }
+
+  /**
+   * Son tenu : des notes qui durent jusqu'à `stop()` et dont les fréquences se modifient en continu
+   * (glissando). Même timbre que `play`, mêmes précautions de volume.
+   */
+  hold(freqs: readonly number[], harmonics = HARMONICS): Held {
+    this.stop();
+    const ctx = this.context();
+    const t0 = ctx.currentTime + 0.02;
+    const level = MASTER / Math.sqrt(Math.max(1, freqs.length));
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0, t0);
+    master.gain.linearRampToValueAtTime(level, t0 + ATTACK * 2);
+    master.connect(ctx.destination);
+
+    const voices = freqs.map((f) => {
+      const oscs: OscillatorNode[] = [];
+      for (let k = 1; k <= harmonics; k++) {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = f * k;
+        const g = ctx.createGain();
+        g.gain.value = 1 / k ** 1.2;
+        osc.connect(g).connect(master);
+        osc.start(t0);
+        oscs.push(osc);
+      }
+      return oscs;
+    });
+
+    let stopped = false;
+    let resolve!: () => void;
+    const finished = new Promise<void>((r) => (resolve = r));
+    const held: Held = {
+      elapsed: () => Math.max(0, ctx.currentTime - t0),
+      setFrequencies(next) {
+        const now = ctx.currentTime;
+        voices.forEach((oscs, i) => {
+          const f = next[i];
+          if (f === undefined) return;
+          oscs.forEach((o, k) => {
+            o.frequency.cancelScheduledValues(now);
+            o.frequency.setTargetAtTime(f * (k + 1), now, 0.02);
+          });
+        });
+      },
+      stop: () => {
+        if (stopped) return;
+        stopped = true;
+        const now = ctx.currentTime;
+        master.gain.cancelScheduledValues(now);
+        master.gain.setValueAtTime(master.gain.value, now);
+        master.gain.linearRampToValueAtTime(0, now + RELEASE);
+        for (const oscs of voices) for (const o of oscs) o.stop(now + RELEASE + 0.05);
+        resolve();
+      },
+      finished,
+    };
+    void finished.then(() => {
+      if (this.current === held) this.current = null;
+    });
+    this.current = held;
+    return held;
+  }
+}
+
+export interface Held extends Playback {
+  /** Nouvelles fréquences des notes, dans l'ordre de `hold` ; le passage est lissé sur 20 ms. */
+  setFrequencies(freqs: readonly number[]): void;
 }

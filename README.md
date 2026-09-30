@@ -74,3 +74,4 @@ docs/                       idées, design
 | [Qui chante autour de chez toi](viz/qui-chante/) | publiée | [rapport qualité](viz/qui-chante/pipeline/REPORT.md) |
 | [Pourquoi ton piano est (légèrement) faux](viz/piano-temperament/) | brouillon | aucune donnée, tout est calculé |
 | [La forme d’un accord](viz/forme-accord/) | brouillon | aucune donnée, three.js |
+| [Pourquoi une tierce sonne douce](viz/consonance/) | brouillon | aucune donnée, modèle de Plomp–Levelt |
