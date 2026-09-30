@@ -1,0 +1,192 @@
+/* Styles propres à « Ce qu’une seule note contient ». Toujours dériver des jetons de src/shell/tokens.css. */
+
+.field--plain {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.result {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-5);
+  border-block: 1px solid var(--rule);
+}
+
+.result-eyebrow {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.result-figure {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 1.5rem + 1.5vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.result-line {
+  font-size: var(--text-md);
+}
+
+.result-line strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.result-detail {
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+/* Scène --------------------------------------------------------------------- */
+.stage-frame {
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+}
+
+.figure-title {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.keyboard-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--space-2);
+}
+
+.keyboard-stack {
+  min-width: 720px;
+  display: grid;
+  gap: 0;
+}
+
+.keyboard-stack .keyboard {
+  height: clamp(110px, 16vw, 150px);
+}
+
+.rail {
+  position: relative;
+  height: 40px;
+}
+
+.rail-token {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border: 1.5px solid var(--seq-5);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--seq-6);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.12s, color 0.12s;
+}
+
+.rail-token.is-on {
+  background: var(--seq-5);
+  color: var(--surface);
+}
+
+.rail-token.is-off-key {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.rail-token.is-off-key.is-on {
+  background: var(--accent);
+  color: var(--surface);
+}
+
+.rail-token:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.rail-line {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  background: var(--seq-3);
+  z-index: 1;
+}
+
+.rail-line.is-off-key {
+  background: var(--accent);
+}
+
+.stage-hint {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.wave {
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.wave canvas {
+  display: block;
+  width: 100%;
+  height: clamp(120px, 18vw, 180px);
+}
+
+@media (max-width: 999px) {
+  .viz-stage {
+    order: -1;
+  }
+
+  .stage-frame {
+    padding: var(--space-4);
+  }
+
+  .result {
+    border-top: 0;
+    padding-top: 0;
+  }
+}

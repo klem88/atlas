@@ -101,8 +101,9 @@ export class Synth {
   /**
    * Son tenu : des notes qui durent jusqu'à `stop()` et dont les fréquences se modifient en continu
    * (glissando). Même timbre que `play`, mêmes précautions de volume.
+   * `harmonics` : un nombre (amplitudes en 1/k^1,2) ou les amplitudes de chaque harmonique, modifiables ensuite.
    */
-  hold(freqs: readonly number[], harmonics = HARMONICS): Held {
+  hold(freqs: readonly number[], harmonics: number | readonly number[] = HARMONICS): Held {
     this.stop();
     const ctx = this.context();
     const t0 = ctx.currentTime + 0.02;
@@ -112,18 +113,23 @@ export class Synth {
     master.gain.linearRampToValueAtTime(level, t0 + ATTACK * 2);
     master.connect(ctx.destination);
 
+    const amplitudes = typeof harmonics === 'number' ? Array.from({ length: harmonics }, (_, i) => 1 / (i + 1) ** 1.2) : [...harmonics];
+    const gains: GainNode[][] = [];
     const voices = freqs.map((f) => {
       const oscs: OscillatorNode[] = [];
-      for (let k = 1; k <= harmonics; k++) {
+      const gs: GainNode[] = [];
+      amplitudes.forEach((a, i) => {
         const osc = ctx.createOscillator();
         osc.type = 'sine';
-        osc.frequency.value = f * k;
+        osc.frequency.value = f * (i + 1);
         const g = ctx.createGain();
-        g.gain.value = 1 / k ** 1.2;
+        g.gain.value = a;
         osc.connect(g).connect(master);
         osc.start(t0);
         oscs.push(osc);
-      }
+        gs.push(g);
+      });
+      gains.push(gs);
       return oscs;
     });
 
@@ -142,6 +148,17 @@ export class Synth {
             o.frequency.setTargetAtTime(f * (k + 1), now, 0.02);
           });
         });
+      },
+      setAmplitudes(next) {
+        const now = ctx.currentTime;
+        for (const gs of gains) {
+          gs.forEach((g, k) => {
+            const a = next[k];
+            if (a === undefined) return;
+            g.gain.cancelScheduledValues(now);
+            g.gain.setTargetAtTime(a, now, 0.03);
+          });
+        }
       },
       stop: () => {
         if (stopped) return;
@@ -166,4 +183,6 @@ export class Synth {
 export interface Held extends Playback {
   /** Nouvelles fréquences des notes, dans l'ordre de `hold` ; le passage est lissé sur 20 ms. */
   setFrequencies(freqs: readonly number[]): void;
+  /** Nouvelles amplitudes des harmoniques (rang 1 en premier), lissées sur 30 ms. */
+  setAmplitudes(amplitudes: readonly number[]): void;
 }

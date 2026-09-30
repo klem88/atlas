@@ -29,9 +29,14 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | 2b | [forme-accord](forme-accord.md) : La forme d’un accord (three.js) | construit, en attente de relecture (branche `feat/forme-accord`) |
 | 2c | [consonance](consonance.md) : Pourquoi une tierce sonne douce | construit, en attente de relecture (branche `feat/consonance`) |
 | 2d | [gamme-sans-fin](gamme-sans-fin.md) : La gamme qui monte sans fin (three.js) | construit, en attente de relecture (branche `feat/gamme-sans-fin`) |
+| 2e | [une-seule-note](une-seule-note.md) : Ce qu’une seule note contient | construit, en attente de relecture (branche `feat/une-seule-note`, contient toutes les précédentes) |
 | 3 | Point de ralliement et nom du site | à décider par l'auteur |
 | 4 | [Qui chante autour de chez toi](qui-chante.md) | publiée (2026-09-30) ; restent l'image de partage et le test sur téléphone |
 | 5 | [Sous tes pieds](sous-tes-pieds.md) | cadrage validé, sondes faites |
+
+### Cycle « harmonies » (nuit du 30 septembre 2026)
+
+Cinq visualisations musicales construites en autonomie, chacune en brouillon sur sa branche, en chaîne : `feat/piano-temperament` → `feat/forme-accord` → `feat/consonance` → `feat/gamme-sans-fin` → `feat/une-seule-note`. La dernière contient tout ; on fusionne dans cet ordre, après relecture. Aucune n'est poussée.
 
 ### Sessions parallèles
 

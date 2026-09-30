@@ -73,6 +73,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-09',
   },
+  {
+    slug: 'une-seule-note',
+    title: 'Ce qu’une seule note contient',
+    summary: 'Joue un do : tu entends déjà un accord majeur. Allume et éteins ses harmoniques une à une, et découvre celles que ton piano ne sait pas jouer.',
+    tags: ['Musique', 'Acoustique'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 

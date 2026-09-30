@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ce qu’une seule note contient — Atlas</title>
+    <meta name="description" content="Joue un do : tu entends déjà un accord majeur. Allume et éteins ses harmoniques une à une, et découvre celles que ton piano ne sait pas jouer." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/une-seule-note/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="Ce qu’une seule note contient" />
+    <meta property="og:description" content="Joue un do : tu entends déjà un accord majeur. Allume et éteins ses harmoniques une à une, et découvre celles que ton piano ne sait pas jouer." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/une-seule-note/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/une-seule-note.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Musique · Acoustique</p>
+        <h1>Ce qu’une seule note contient</h1>
+        <p class="viz-lede">
+          Une note n’est pas une hauteur, c’est une pile : la fondamentale et ses harmoniques, à 2, 3, 4… fois sa fréquence. Pose-les
+          sur le clavier : l’accord majeur est déjà là, dans un seul do. Et quelques marches plus haut, une note que ton piano ne sait
+          pas jouer.
+        </p>
+        <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+          <span class="details-toggle-label">Plus de détails</span>
+        </button>
+      </header>
+
+      <section class="viz-workspace" aria-label="Visualisation">
+        <div class="viz-panel" id="panel">
+          <fieldset class="field field--plain">
+            <legend class="field-label">La note</legend>
+            <div class="segmented" id="fundamental">
+              <label><input type="radio" name="fundamental" value="24" />do1</label>
+              <label><input type="radio" name="fundamental" value="36" checked />do2</label>
+              <label><input type="radio" name="fundamental" value="48" />do3</label>
+            </div>
+            <p class="field-help detail">Plus la note est grave, plus ses harmoniques s’étalent sur le clavier.</p>
+          </fieldset>
+
+          <section class="result" id="result" aria-live="polite"></section>
+
+          <div class="actions">
+            <button class="button button--primary" type="button" id="listen">Écouter</button>
+            <button class="button share-button" type="button" id="share-button">
+              <svg viewBox="0 0 16 16" aria-hidden="true" width="16" height="16"><path d="M8 2v8M5 5l3-3 3 3M3 9v4h10V9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              Partager
+            </button>
+          </div>
+          <p class="note detail">Le son ne part que quand tu le demandes ; il suit les jetons tant qu’il joue. Au casque, les graves comptent.</p>
+
+          <div class="field">
+            <span class="field-label">Écoute</span>
+            <div class="chips" id="presets"></div>
+          </div>
+        </div>
+
+        <div class="viz-stage">
+          <div class="stage-frame">
+            <p class="figure-title">Les seize premières harmoniques, posées sur le clavier <span class="detail">— un jeton par rang, décalé de son écart à la touche ; à l’accent quand il tombe entre deux touches</span></p>
+            <div class="keyboard-scroll" id="scroll">
+              <div class="keyboard-stack" id="stack">
+                <div id="rail"></div>
+                <div id="keyboard"></div>
+              </div>
+            </div>
+            <p class="stage-hint">Touche un jeton pour allumer ou éteindre son harmonique. Sur téléphone, fais défiler le clavier.</p>
+            <figure class="wave">
+              <figcaption class="figure-title">L’onde qui en résulte, sur deux périodes <span class="detail">— le timbre, c’est cette forme</span></figcaption>
+              <canvas id="wave" role="img" aria-label="Forme de l’onde résultante"></canvas>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#calcul">Le calcul</a></li>
+            <li><a href="#sources">D’où viennent les chiffres</a></li>
+            <li><a href="#limites">Ce que ça ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>
+              Quand une corde vibre, elle ne vibre pas seulement en entier : elle vibre aussi en deux moitiés, trois tiers, quatre quarts…
+              en même temps. Chaque manière de vibrer sonne à un multiple de la fréquence de base : ce sont les <strong>harmoniques</strong>,
+              numérotées par leur rang. Le rang 1 est la note que tu nommes ; les autres sont plus faibles (ici, en 1/rang) et se fondent
+              en un seul son. Tu ne les entends pas séparément : tu les entends comme un <strong>timbre</strong>.
+            </p>
+            <p>
+              Sur le clavier, chaque jeton est posé sur la touche la plus proche de son rang. Les rangs 2, 4, 8, 16 sont des <em>do</em> :
+              des octaves. Le rang 3 est un <em>sol</em>, le 5 un <em>mi</em>. Les rangs <strong>4, 5, 6 forment do–mi–sol</strong> :
+              l’accord majeur est dans la note, avant qu’on l’ait joué. Écoute-les seuls avec le préréglage « l’accord caché ».
+            </p>
+            <p>
+              Regarde les jetons à l’accent : ils tombent <strong>entre les touches</strong>. Le rang 7 est 31 cents (presque un tiers de
+              demi-ton) sous le si♭ : c’est la septième « naturelle », ou « bleue », que les chanteurs de blues et les cuivres jouent
+              d’instinct, et que le piano ne peut qu’approcher. Le rang 11 tombe pile entre fa et fa♯. À partir du rang 8, la série se
+              resserre : un demi-ton, puis moins, et le clavier ne suit plus.
+            </p>
+          </section>
+
+          <section id="calcul">
+            <h2>Le calcul</h2>
+            <div class="formula" id="formula"></div>
+            <ul class="detail">
+              <li>Fréquence du rang k : f<sub>k</sub> = k · f₁ ; f₁ est la fréquence tempérée de la note (la = 440 Hz).</li>
+              <li>Touche la plus proche : la note MIDI m = 69 + 12 · log₂(f<sub>k</sub> / 440), arrondie ; l’écart en cents est 100 fois le reste.</li>
+              <li>« Sur une touche » : à moins de 15 cents, ce que la plupart des oreilles ne relèvent pas dans un accord.</li>
+              <li>Le son : une sinusoïde par rang allumé, amplitude 1/k, volume global bas. L’onde dessinée est la même somme, sur deux périodes, à l’échelle de son maximum.</li>
+            </ul>
+          </section>
+
+          <section id="sources">
+            <h2>D’où viennent les chiffres</h2>
+            <p>
+              Aucune donnée : la série harmonique est de l’arithmétique (Pythagore, Mersenne, Sauveur, qui la nomma en 1701), et les écarts
+              en cents découlent du tempérament égal. Pour aller plus loin : Hermann von Helmholtz, <em>Théorie physiologique de la
+              musique</em> (1863), et l’article <a href="https://fr.wikipedia.org/wiki/Harmonique_(musique)">Harmonique</a> de Wikipédia.
+            </p>
+          </section>
+
+          <section id="limites">
+            <h2>Ce que ça ne dit pas</h2>
+            <ul>
+              <li><strong>Les vrais instruments ne suivent pas 1/k.</strong> Une clarinette a peu de rangs pairs, un piano des rangs un peu trop hauts (ses cordes sont raides), une cloche des partiels qui ne sont pas des multiples. Ici, c’est la série idéale.</li>
+              <li><strong>Les amplitudes changent dans le temps</strong> : l’attaque d’une note contient bien plus que ce qui reste ensuite. L’onde dessinée est un instantané stable.</li>
+              <li><strong>Seize rangs, c’est un choix.</strong> La série continue ; au-delà, tout tombe entre les touches et l’oreille ne les sépare plus.</li>
+              <li><strong>« Entre les touches » ne veut pas dire faux.</strong> C’est le clavier qui est un compromis, pas la série. Voir <a href="../piano-temperament/">Pourquoi ton piano est (légèrement) faux</a>.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Cette note en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : les harmoniques sur le clavier et l’onde résultante." />
+        <p class="note">Aucune donnée n’est envoyée : tout est calculé dans ton navigateur.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
