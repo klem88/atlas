@@ -105,6 +105,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-09',
   },
+  {
+    slug: 'carte-des-styles',
+    title: 'La boussole des styles',
+    summary: 'Une rose par style, dessinée avec ses enchaînements d’accords préférés ; et pour ton morceau, le style auquel il ressemble le plus.',
+    tags: ['Musique', 'Harmonie', 'Cartographie'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 

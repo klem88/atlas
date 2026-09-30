@@ -29,15 +29,25 @@ Un point par morceau, placé selon sa manière d'enchaîner les accords ; les st
 - Pas de carte tant que la sonde n'a pas montré des continents lisibles : une carte floue ne serait qu'un joli nuage.
 - La réduction se fait une fois, dans le pipeline, avec graine fixée ; le rapport publie les paramètres.
 
+## Résultat de la sonde et décisions de construction (nuit du 1er octobre 2026)
+
+- **Sonde** (31 877 morceaux, 2 500 par genre plus iRb et Billboard, 576 transitions en racine de fréquence, ACP à 10 composantes) : silhouette par style **−0,15 en 2D, −0,09 en 10D, −0,03 sans réduction** ; précision des dix plus proches voisins 20 % (hasard 7 %). Il y a un signal de style, mais aucun amas, sauf un : **les standards de l'iRb ont une silhouette de 0,36**, ils forment bien une île ; tout le reste est un seul continent sans frontières. Une carte ne montrerait qu'un nuage avec un îlot. Détail dans `viz/carte-des-styles/pipeline/PROBE.md`.
+- **Décision : la boussole des styles**, comme prévu par la fiche. Le slug et le titre du dossier restent `carte-des-styles` (le nom du chantier), la page s'appelle « La boussole des styles » ; à renommer si l'auteur préfère.
+- Une **rose par style** (élément signature), toutes sur les mêmes douze axes : les douze transitions les plus fréquentes du corpus ; la longueur d'un rayon est le rapport entre la part de la transition dans le style et sa part dans l'ensemble (échelle logarithmique bornée). Mêmes axes partout : les formes se comparent.
+- **Transitions signatures** d'un style : les cinq plus sur-représentées parmi celles qui pèsent au moins 0,5 % de ses transitions.
+- **« À quel style ressemble mon morceau ? »** remplace « où est mon morceau ? » : similarité cosinus entre le vecteur du morceau et le centre de chaque style ; on affiche les trois plus proches. C'est honnête avec la sonde : un classement, pas une position.
+- La question de la teinte par style (exception à DESIGN.md) ne se pose plus : tout reste dans la rampe ardoise, le style choisi à l'accent.
+
 ## Tâches
 
-- [ ] Sonde (script dans `pipeline/probe.ts`, résultats dans `REPORT.md`) et décision carte / boussole
-- [ ] Pipeline : vecteurs, réduction, export binaire
-- [ ] Domaine : recherche des voisins, agrégats par région ; tests
-- [ ] Carte canvas (zoom, survol, sélection) ou boussole en petits multiples, son, URL
-- [ ] Textes, image de partage, image d'aperçu
-- [ ] Vérification mobile/clair/sombre, relecture de l'auteur, publication
+- [x] Sonde (`pipeline/probe.ts`, résultats dans `pipeline/PROBE.md`) : **carte abandonnée, boussole construite** (voir décisions)
+- [x] Pipeline : vecteurs, parts par style, roses, signatures, centres (`styles.json`, 13 Ko gzippés)
+- [x] Domaine : rayons, signatures, ressemblance cosinus ; tests
+- [x] Boussole en petits multiples (SVG), rose du morceau cherché, styles proches, son, URL
+- [x] Textes (dont « Pourquoi pas une carte »), image de partage, image d'aperçu
+- [x] Vérification dans le navigateur de l'éditeur (375 px)
+- [ ] Relecture de l'auteur (dont le nom du slug), publication
 
 ## Prochaine action
 
-Après `voyage-sur-le-tore` : la sonde, avant toute ligne d'interface.
+Relecture de l'auteur : `git checkout feat/carte-des-styles`, http://localhost:5173/viz/carte-des-styles/ . Valider le repli (boussole plutôt que carte) et le titre ; décider si le dossier est renommé `boussole-des-styles`.

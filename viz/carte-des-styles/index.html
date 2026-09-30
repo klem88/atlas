@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>La boussole des styles — Atlas</title>
+    <meta name="description" content="Une rose par style, dessinée avec ses enchaînements d’accords préférés ; et pour ton morceau, le style auquel il ressemble le plus." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/carte-des-styles/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="La boussole des styles" />
+    <meta property="og:description" content="Une rose par style, dessinée avec ses enchaînements d’accords préférés ; et pour ton morceau, le style auquel il ressemble le plus." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/carte-des-styles/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/carte-des-styles.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Musique · Harmonie · Données</p>
+        <h1>La boussole des styles</h1>
+        <p class="viz-lede">
+          On voulait une carte où chaque morceau serait un point et chaque style un continent. On l’a essayée : les styles ne font
+          pas d’îles, sauf un. Alors voici des boussoles : une rose par style, tracée sur les mêmes douze enchaînements d’accords,
+          qui montre ce que chacun aime plus que les autres. Et pour ton morceau, le style auquel il ressemble le plus.
+        </p>
+        <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+          <span class="details-toggle-label">Plus de détails</span>
+        </button>
+      </header>
+
+      <section class="viz-workspace" aria-label="Visualisation">
+        <div class="viz-panel" id="panel">
+          <div class="search" id="search"></div>
+          <p class="field-help detail">Un standard de jazz (iRb) ou un tube du Billboard 1958–1991 : ses enchaînements sont comparés au centre de chaque style.</p>
+          <section class="result" id="result" aria-live="polite"><p class="result-line">Chargement des styles…</p></section>
+          <div class="actions">
+            <button class="button button--primary" type="button" id="listen">Écouter les signatures</button>
+            <button class="button share-button" type="button" id="share-button">
+              <svg viewBox="0 0 16 16" aria-hidden="true" width="16" height="16"><path d="M8 2v8M5 5l3-3 3 3M3 9v4h10V9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              Partager
+            </button>
+          </div>
+          <p class="note detail">Le son ne part que quand tu le demandes : les cinq enchaînements signatures du style, l’un après l’autre, en do majeur.</p>
+        </div>
+
+        <div class="viz-stage">
+          <div class="stage-frame">
+            <p class="figure-title">Une rose par style <span class="detail">— même douze axes partout ; le cercle pointillé vaut « comme la moyenne des tablatures », le bord « quatre fois plus »</span></p>
+            <div class="roses" id="roses" role="list"></div>
+            <section class="focus" id="focus" aria-live="polite"></section>
+          </div>
+        </div>
+      </section>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#carte">Pourquoi pas une carte</a></li>
+            <li><a href="#methode">La méthode</a></li>
+            <li><a href="#sources">D’où viennent les chiffres</a></li>
+            <li><a href="#limites">Ce que ça ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>
+              Chaque rose a douze rayons, un par enchaînement : les douze passages d’un accord à l’autre les plus fréquents de tout le
+              corpus (V → I, I → V, IV → I, vi → IV…). La longueur d’un rayon dit si le style joue cet enchaînement <strong>plus ou moins
+              que la moyenne</strong> : sur le cercle pointillé, autant que tout le monde ; au bord, quatre fois plus ; au centre, quatre
+              fois moins. Comme toutes les roses ont les mêmes axes, leurs formes se comparent d’un coup d’œil : la country gonfle vers
+              V → I et I → V, le metal vers les mineurs, le jazz des standards fuit presque tous les axes de la pop.
+            </p>
+            <p>
+              Touche une rose : ses cinq <strong>enchaînements signatures</strong> s’affichent, ceux qu’elle joue le plus par rapport
+              aux autres, avec leur part. Cherche un morceau : sa propre rose apparaît, et la page dit à quels styles il ressemble le
+              plus.
+            </p>
+          </section>
+          <section id="carte">
+            <h2>Pourquoi pas une carte</h2>
+            <p>
+              L’idée de départ était une carte : un point par morceau, placé selon sa manière d’enchaîner les accords, et des styles
+              qui formeraient des continents. Avant de la dessiner, on l’a mise à l’épreuve sur 31 877 morceaux : les styles se
+              séparent-ils vraiment ? La réponse est non. La <strong>silhouette</strong> par style (une mesure de netteté des amas,
+              1 = des îles, 0 = un mélange) est <strong>négative</strong> pour tous les genres des tablatures ; les dix plus proches
+              voisins d’un morceau sont du même genre une fois sur cinq (une sur quatorze au hasard). Une seule exception : les
+              standards de jazz de l’iRb, silhouette 0,36, forment bien une île. Le reste est un continent sans frontières, et une carte
+              n’aurait montré qu’un joli nuage. Le détail de cette sonde est dans le dépôt du site.
+            </p>
+          </section>
+          <section id="methode">
+            <h2>La méthode</h2>
+            <ul>
+              <li><strong>Enchaînements.</strong> Dans chaque partie d’un morceau, la suite des accords est réduite à 24 classes (degré × majeur ou mineur ; diminués comptés mineurs, augmentés et suspendus majeurs), sans répétition immédiate ; chaque passage compte une fois. Les tablatures sont lues dans l’armure estimée (voir <a href="../progression-jouee/">Ta progression a déjà été jouée 40 000 fois</a>), l’iRb et le Billboard dans leur tonalité annotée.</li>
+              <li><strong>Roses.</strong> Les douze axes sont les enchaînements les plus fréquents de l’ensemble des tablatures. Rayon = part dans le style ÷ part dans l’ensemble, en échelle logarithmique de ¼ à 4.</li>
+              <li><strong>Signatures.</strong> Les cinq enchaînements les plus sur-représentés dans le style, parmi ceux qui y pèsent au moins 0,5 % des passages.</li>
+              <li><strong>Ressemblance.</strong> Chaque morceau devient un vecteur de 576 fréquences (en racine carrée) ; chaque style, le centre de ses morceaux ; la ressemblance est le cosinus entre les deux. On affiche les trois styles les plus proches.</li>
+            </ul>
+          </section>
+          <section id="sources">
+            <h2>D’où viennent les chiffres</h2>
+            <ul>
+              <li><strong>Chordonomicon</strong> (Kantarelis et al., 2024, CC BY-NC 4.0) : 679 807 tablatures, dont 351 981 avec un genre principal. <a href="https://huggingface.co/datasets/ailsntua/Chordonomicon">Jeu de données</a>, <a href="https://arxiv.org/abs/2410.22046">article</a>.</li>
+              <li><strong>iRb</strong> (Broze et Shanahan, OSU) : 1 185 standards de jazz ; <strong>McGill Billboard</strong> (Burgoyne, Wild, Fujinaga, 2011, CC0) : 742 titres du Hot 100.</li>
+              <li>Aucun son, aucune parole : seulement des suites de symboles d’accords et des titres. Pipeline, rapport qualité et sonde dans le dépôt.</li>
+            </ul>
+          </section>
+          <section id="limites">
+            <h2>Ce que ça ne dit pas</h2>
+            <ul>
+              <li><strong>Les genres sont ceux des tablatures</strong> : grossiers, absents pour la moitié d’entre elles, et « jazz » y désigne ce que des guitaristes ont tablé sous ce nom. Le « jazz des standards » (iRb) est autre chose, et la page les montre tous deux.</li>
+              <li><strong>Une rose ne dit pas ce qui est fréquent, mais ce qui l’est plus qu’ailleurs.</strong> V → I reste l’enchaînement le plus joué de presque tous les styles, même quand son rayon est court.</li>
+              <li><strong>La ressemblance est un classement, pas une position</strong> : un morceau peut ressembler « le plus » à la soul avec un cosinus modeste. La valeur est affichée.</li>
+              <li><strong>Septièmes, renversements, rythme, timbre</strong> : rien de tout cela n’entre dans les roses. Ce sont des boussoles de charpente harmonique.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Cette rose en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : la rose du style ou du morceau et ses signatures." />
+        <p class="note">Aucune donnée n’est envoyée : l’image est dessinée dans ton navigateur.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

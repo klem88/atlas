@@ -34,7 +34,7 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | 3a | [progression-jouee](progression-jouee.md) : Ta progression a déjà été jouée 40 000 fois | construite en brouillon sur `feat/progression-jouee` (nuit du 1er octobre), en attente de relecture |
 | 3b | [fleuve-des-accords](fleuve-des-accords.md) : Le fleuve des enchaînements | construite en brouillon sur `feat/fleuve-des-accords`, en attente de relecture |
 | 3c | [voyage-sur-le-tore](voyage-sur-le-tore.md) : Le voyage sur le tore (three.js) | construite en brouillon sur `feat/voyage-sur-le-tore` ; la phrase partageable s'est retournée (à trancher) |
-| 3d | [carte-des-styles](carte-des-styles.md) : La carte des styles | cadré, sonde de faisabilité à faire avant l'interface |
+| 3d | [carte-des-styles](carte-des-styles.md) : La boussole des styles | sonde négative (pas d'îles sauf le jazz), repli « boussole » construit en brouillon sur `feat/carte-des-styles` |
 | 3e | [cinquante-ans-de-refrains](cinquante-ans-de-refrains.md) : Cinquante ans de refrains | cadré |
 | 3f | [ou-le-solo-respire](ou-le-solo-respire.md) : Où le solo respire | cadré, conditions d'usage Weimar à confirmer |
 | 4 | [Qui chante autour de chez toi](qui-chante.md) | publiée (2026-09-30) ; restent l'image de partage et le test sur téléphone |

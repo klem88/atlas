@@ -1,0 +1,288 @@
+/* Styles propres à « La boussole des styles ». Toujours dériver des jetons de src/shell/tokens.css. */
+
+.result {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  border-block: 1px solid var(--rule);
+}
+
+.result-eyebrow {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.result-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 300;
+  line-height: 1.15;
+}
+
+.result-line {
+  font-size: var(--text-md);
+}
+
+.result-line strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.rank {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 3px;
+  font-size: var(--text-sm);
+}
+
+.rank li {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr 2.6rem;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.rank-name {
+  color: var(--ink-2);
+}
+
+.rank-bar {
+  height: 8px;
+  background: var(--surface-sunk);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rank-bar span {
+  display: block;
+  height: 100%;
+  background: var(--seq-4);
+}
+
+.rank li:first-child .rank-bar span {
+  background: var(--accent);
+}
+
+.rank-value {
+  text-align: right;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.link {
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Scène ----------------------------------------------------------------------------------------- */
+.stage-frame {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+.figure-title {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.roses {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: var(--space-2);
+}
+
+.rose-card {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: center;
+}
+
+.rose-card:hover {
+  background: var(--surface-sunk);
+}
+
+.rose-card[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.rose-card--song {
+  border-style: dashed;
+  border-color: var(--rule-strong);
+}
+
+.rose-card svg {
+  width: 100%;
+  height: auto;
+}
+
+.rose-name {
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+
+.rose-card[aria-pressed='true'] .rose-name {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.rose-ring {
+  fill: none;
+  stroke: var(--rule);
+}
+
+.rose-ring--one {
+  stroke: var(--rule-strong);
+  stroke-dasharray: 3 3;
+}
+
+.rose-spoke {
+  stroke: var(--rule);
+}
+
+.rose-shape {
+  fill: var(--seq-3);
+  fill-opacity: 0.35;
+  stroke: var(--seq-5);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.rose-shape.is-accent {
+  fill: var(--accent);
+  fill-opacity: 0.3;
+  stroke: var(--accent);
+}
+
+.rose-dot {
+  fill: var(--seq-5);
+}
+
+.rose-dot.is-accent {
+  fill: var(--accent);
+}
+
+.rose-label {
+  fill: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: 11px;
+}
+
+/* Le style choisi, en grand */
+.focus {
+  display: grid;
+  grid-template-columns: minmax(200px, 300px) 1fr;
+  gap: var(--space-5);
+  align-items: start;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--rule);
+}
+
+.focus-rose svg {
+  width: 100%;
+  height: auto;
+}
+
+.focus-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.focus-sub {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  margin-bottom: var(--space-3);
+}
+
+.signatures {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.signatures li {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: var(--text-sm);
+}
+
+.sig-label {
+  font-weight: 600;
+}
+
+.sig-bars {
+  display: grid;
+  gap: 2px;
+}
+
+.sig-bar {
+  display: grid;
+  grid-template-columns: 1fr 3rem;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.sig-bar span:first-child {
+  height: 7px;
+  border-radius: 2px;
+  background: var(--seq-2);
+}
+
+.sig-bar.is-style span:first-child {
+  background: var(--accent);
+}
+
+.sig-bar span:last-child {
+  font-variant-numeric: tabular-nums;
+}
+
+.sig-lift {
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+
+@media (max-width: 640px) {
+  .stage-frame {
+    padding: var(--space-4);
+  }
+
+  .roses {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .focus {
+    grid-template-columns: 1fr;
+  }
+
+  .rank li {
+    grid-template-columns: 6rem 1fr 2.6rem;
+  }
+}
