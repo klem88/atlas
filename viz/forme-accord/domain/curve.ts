@@ -47,7 +47,7 @@ export function precession(midis: readonly number[], tuning: TuningId): number[]
  * Points (x, y, z) de la courbe entre t0 et t0 + duration (en tours de la grave), `samples` segments.
  * Deux notes : z vaut 0.
  */
-export function curvePoints(ratios: readonly number[], t0: number, duration: number, samples: number): Float32Array {
+export function curvePoints(ratios: readonly number[], t0: number, duration: number, samples: number): Float32Array<ArrayBuffer> {
   const out = new Float32Array((samples + 1) * 3);
   const [rx = 1, ry = 0, rz = 0] = ratios;
   for (let i = 0; i <= samples; i++) {

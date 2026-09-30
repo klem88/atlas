@@ -31,8 +31,10 @@
       <header class="viz-intro">
         <p class="viz-kicker">Musique · Géométrie</p>
         <h1>La forme d’un accord</h1>
-        <p class="viz-lede">Chaque accord dessine une courbe dans l’espace : simple quand il est pur, qui tourne sans fin quand il vient d’un piano.</p>
-        <!-- Affiche les éléments de classe « detail » (aides, notes de calcul) : voir src/shell/details.ts. -->
+        <p class="viz-lede">
+          Porte une note sur la largeur, une autre sur la hauteur, une troisième sur la profondeur : l’accord dessine une courbe.
+          Pur, c’est un nœud qui se referme. Sur un piano, il ne se referme jamais et tourne sans fin.
+        </p>
         <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
           <span class="details-toggle-label">Plus de détails</span>
@@ -40,12 +42,50 @@
       </header>
 
       <section class="viz-workspace" aria-label="Visualisation">
-        <!-- Réglages et résultat. Pour une visualisation sans panneau, supprimer ce bloc :
-             la scène prend alors toute la largeur (voir viz.css). -->
-        <div class="viz-panel" id="panel"></div>
+        <div class="viz-panel" id="panel">
+          <fieldset class="field field--plain">
+            <legend class="field-label">Accordage</legend>
+            <div class="segmented" id="tuning">
+              <label><input type="radio" name="tuning" value="pur" checked />Pur</label>
+              <label><input type="radio" name="tuning" value="egal" />Ton piano</label>
+            </div>
+            <p class="field-help detail">Pur : rapports entiers de fréquences, mesurés depuis la note la plus grave. Ton piano : tempérament égal, chaque demi-ton vaut 2<sup>1/12</sup>.</p>
+          </fieldset>
+
+          <section class="result" id="result" aria-live="polite"></section>
+
+          <fieldset class="field field--plain">
+            <legend class="field-label">Temps</legend>
+            <div class="segmented" id="mode">
+              <label><input type="radio" name="mode" value="normal" checked />Le temps file</label>
+              <label><input type="radio" name="mode" value="dessin" />Au ralenti</label>
+            </div>
+            <p class="field-help detail">Au ralenti, la courbe se trace sous tes yeux (un tiers de tour de la note grave par seconde). Quand le temps file, trente tours par seconde : la forme tourne si l’accord n’est pas pur.</p>
+          </fieldset>
+
+          <div class="actions">
+            <button class="button button--primary" type="button" id="listen">Écouter</button>
+            <button class="button share-button" type="button" id="share-button">
+              <svg viewBox="0 0 16 16" aria-hidden="true" width="16" height="16"><path d="M8 2v8M5 5l3-3 3 3M3 9v4h10V9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+              Partager
+            </button>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Essaie aussi</span>
+            <div class="chips" id="presets"></div>
+          </div>
+        </div>
 
         <div class="viz-stage">
-          <div class="stage-frame" id="stage"></div>
+          <div class="stage-frame">
+            <div class="scene" id="scene" role="img" aria-label="Courbe tridimensionnelle dessinée par l’accord"></div>
+            <p class="scene-hint" id="scene-hint"></p>
+            <div class="keyboard-wrap">
+              <div id="keyboard"></div>
+              <p class="stage-hint">Touche une note pour l’ajouter, touche-la encore pour l’enlever. Jusqu’à trois notes : une par axe.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -53,7 +93,7 @@
         <nav class="viz-notes-toc" aria-label="Sommaire des explications">
           <ol>
             <li><a href="#lire">Comment lire</a></li>
-            <li><a href="#methode">La méthode</a></li>
+            <li><a href="#calcul">Le calcul</a></li>
             <li><a href="#sources">D’où viennent les chiffres</a></li>
             <li><a href="#limites">Ce que ça ne dit pas</a></li>
           </ol>
@@ -61,23 +101,78 @@
         <div class="prose">
           <section id="lire">
             <h2>Comment lire</h2>
-            <p>À écrire : ce que représentent les formes, les couleurs, les interactions.</p>
+            <p>
+              Une note qui sonne, c’est une pression qui monte et descend, des centaines de fois par seconde. Ici, on ne l’écoute pas :
+              on la <em>porte sur un axe</em>. La note la plus grave va de gauche à droite, la deuxième de bas en haut, la troisième
+              d’avant en arrière. À chaque instant, l’accord est un point ; au fil du temps, ce point trace une courbe. C’est la figure
+              de <strong>Lissajous</strong> de l’accord, en trois dimensions.
+            </p>
+            <p>
+              Quand les fréquences sont dans des <strong>rapports entiers simples</strong> (4:5:6 pour do–mi–sol pur), la courbe
+              revient exactement à son point de départ au bout de quelques tours de la note grave, et s’y superpose à jamais : un
+              nœud net, immobile. Plus les entiers sont petits, plus le nœud est simple. L’octave (1:2) est un huit, la quinte (2:3) un
+              bretzel ; le triton (32:45) est un enchevêtrement.
+            </p>
+            <p>
+              Sur ton piano, les rapports ne sont pas entiers : la tierce vaut 1,2599 au lieu de 1,25. À chaque tour de la grave, la
+              courbe rate son départ d’un centième de tour. Elle ne se referme jamais et <strong>tourne sur elle-même</strong>, au rythme
+              exact des battements de <a href="../piano-temperament/">Pourquoi ton piano est (légèrement) faux</a>. La couleur va du
+              plus ancien (clair) au plus récent (foncé) ; le point orange est l’instant présent.
+            </p>
           </section>
-          <section id="methode">
-            <h2>La méthode</h2>
-            <p>À écrire : le calcul, pas à pas, idéalement avec les valeurs de l’utilisateur.</p>
+
+          <section id="calcul">
+            <h2>Le calcul</h2>
+            <div class="formula" id="formula"></div>
+            <ul class="detail">
+              <li>Chaque note i a une fréquence relative r<sub>i</sub> à la note grave (r = 1 pour elle). Le point au temps t (en tours de la grave) est (sin 2πt, sin 2πr₂t, sin 2πr₃t).</li>
+              <li>Accord pur : les r<sub>i</sub> sont des fractions (5/4, 3/2…). On les réduit au même dénominateur pour obtenir les entiers a:b:c ; la courbe se referme après a tours de la grave.</li>
+              <li>Tempérament égal : r<sub>i</sub> = 2<sup>n/12</sup>, jamais entier sauf à l’octave. L’écart r − r<sub>pur</sub>, en cycles par tour, est la vitesse de précession : la courbe fait un tour sur elle-même tous les 1/|écart| tours de la grave.</li>
+              <li>Les phases partent toutes de zéro : d’autres phases donneraient d’autres nœuds pour les mêmes rapports.</li>
+              <li>La courbe affichée couvre les derniers tours ; elle est recalculée à chaque image.</li>
+            </ul>
           </section>
+
           <section id="sources">
             <h2>D’où viennent les chiffres</h2>
-            <p>À écrire : chaque source avec son lien, sa licence et sa période.</p>
+            <p>
+              Aucune donnée : tout se calcule dans ton navigateur. Les rapports purs sont ceux de l’intonation juste à 5 limites, les
+              fréquences tempérées celles du la à 440 Hz. Les figures de Lissajous sont décrites par Jules Antoine Lissajous en 1857 ;
+              voir <a href="https://fr.wikipedia.org/wiki/Courbe_de_Lissajous">Courbe de Lissajous</a>.
+            </p>
           </section>
+
           <section id="limites">
             <h2>Ce que ça ne dit pas</h2>
-            <p>À écrire : les angles morts, les approximations, les territoires manquants.</p>
+            <ul>
+              <li><strong>Ce n’est pas ce que l’oreille entend.</strong> L’oreille sépare les fréquences ; elle ne trace pas de courbes. La figure est une autre manière de voir les mêmes rapports.</li>
+              <li><strong>Une note réelle a des harmoniques</strong> et un timbre qui change : ici, chaque note est une sinusoïde parfaite.</li>
+              <li><strong>Trois notes au plus</strong> : il n’y a que trois dimensions à dessiner.</li>
+              <li><strong>La vitesse de rotation est celle du calcul, pas celle du son.</strong> Quand « le temps file », trente tours de la grave passent chaque seconde ; en vrai, il en passe deux cent soixante. La précession réelle d’une tierce tempérée fait un tour en un dixième de seconde : ce que tu entends comme un battement.</li>
+            </ul>
           </section>
         </div>
       </section>
     </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Cet accord en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : la courbe de l’accord et ses rapports." />
+        <p class="note">L’image reprend la vue actuelle : tourne la courbe avant de la générer. Aucune donnée n’est envoyée.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
 
     <footer data-site-footer></footer>
     <script type="module" src="./main.ts"></script>

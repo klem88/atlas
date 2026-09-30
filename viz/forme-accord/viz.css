@@ -1,15 +1,140 @@
 /* Styles propres à « La forme d’un accord ». Toujours dériver des jetons de src/shell/tokens.css. */
 
-.stage-frame {
-  position: relative;
-  min-height: clamp(360px, 60vh, 720px);
-  display: grid;
-  place-items: center;
-  color: var(--ink-3);
-  font-size: var(--text-sm);
+.field--plain {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
 }
 
-/* Sans panneau de réglages : la scène occupe toute la largeur. */
-.viz-workspace:not(:has(.viz-panel)) {
-  grid-template-columns: 1fr;
+.result {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-5);
+  border-block: 1px solid var(--rule);
+}
+
+.result-eyebrow {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.result-figure {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.5rem + 1.8vw, 2.8rem);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-line {
+  font-size: var(--text-md);
+  color: var(--ink);
+}
+
+.result-line strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.result-detail {
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+/* Scène --------------------------------------------------------------------- */
+.stage-frame {
+  position: relative;
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 70vh;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.scene canvas:active {
+  cursor: grabbing;
+}
+
+.scene-hint {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+}
+
+.keyboard-wrap {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.stage-hint {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+@media (max-width: 999px) {
+  .viz-stage {
+    order: -1;
+  }
+
+  .scene {
+    aspect-ratio: 1;
+  }
+
+  .result {
+    border-top: 0;
+    padding-top: 0;
+  }
 }

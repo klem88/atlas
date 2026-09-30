@@ -39,12 +39,17 @@ Chaque accord dessine une courbe : on porte l'onde de la première note sur un a
 
 - [x] Cadrage
 - [x] `npm run new:viz -- forme-accord`, three.js installé
-- [ ] Domaine : rapports entiers, points de la courbe, précession, fermeture ; tests
-- [ ] Scène three.js (ligne, dégradé, tête, orbite, rotation auto, thème)
-- [ ] Panneau, clavier, son, état dans l'URL
-- [ ] Textes, image de partage, image d'aperçu
-- [ ] Vérification mobile/clair/sombre, relecture de l'auteur, publication
+- [x] Domaine : rapports entiers, points de la courbe, précession, fermeture ; tests
+- [x] Scène three.js (ligne, dégradé, tête, orbite, rotation auto, thème)
+- [x] Panneau, clavier, son, état dans l'URL
+- [x] Textes, image de partage, image d'aperçu
+- [x] Vérification mobile/clair/sombre dans le navigateur de développement
+- [ ] Relecture de l'auteur (téléphone, deux doigts pour tourner), puis `status: 'published'` et fusion
+
+## Leçon
+
+- three.js fige le nombre maximal de segments d'une `LineGeometry` au premier rendu : les tampons sont alloués une fois (12 tours) et remplis en place à chaque image.
 
 ## Prochaine action
 
-Le domaine, en TDD.
+Relecture de l'auteur : `git checkout feat/forme-accord`, `npm run dev`, page `/viz/forme-accord/`.
