@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>La gamme qui monte sans fin — Atlas</title>
+    <meta name="description" content="Un son qui monte, monte, monte… et ne va nulle part. L’illusion de Shepard, vue de l’intérieur : une hélice de hauteurs qui tourne sur elle-même." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/gamme-sans-fin/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="La gamme qui monte sans fin" />
+    <meta property="og:description" content="Un son qui monte, monte, monte… et ne va nulle part. L’illusion de Shepard, vue de l’intérieur : une hélice de hauteurs qui tourne sur elle-même." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/gamme-sans-fin/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/gamme-sans-fin.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Musique · Illusion</p>
+        <h1>La gamme qui monte sans fin</h1>
+        <p class="viz-lede">
+          Appuie sur Jouer. Le son monte, monte, monte… et ne va nulle part. Regarde l’hélice : la hauteur y fait un tour par
+          octave, et ce son tourne en rond en faisant semblant de grimper.
+        </p>
+        <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+          <span class="details-toggle-label">Plus de détails</span>
+        </button>
+      </header>
+
+      <section class="viz-workspace" aria-label="Visualisation">
+        <div class="viz-panel" id="panel">
+          <div class="actions">
+            <button class="button button--primary" type="button" id="play">Jouer</button>
+            <button class="button" type="button" id="reset">Remettre à zéro</button>
+          </div>
+          <p class="note detail">Le son ne part que quand tu le demandes. Au casque ou sur de bonnes enceintes : les téléphones perdent les graves, et l’illusion avec.</p>
+
+          <section class="result" id="result" aria-live="polite"></section>
+
+          <fieldset class="field field--plain">
+            <legend class="field-label">Sens</legend>
+            <div class="segmented" id="sens">
+              <label><input type="radio" name="sens" value="monte" checked />Ça monte</label>
+              <label><input type="radio" name="sens" value="descend" />Ça descend</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="field field--plain">
+            <legend class="field-label">Mouvement</legend>
+            <div class="segmented" id="mouvement">
+              <label><input type="radio" name="mouvement" value="glissando" checked />Glissando</label>
+              <label><input type="radio" name="mouvement" value="marches" />Par demi-tons</label>
+            </div>
+            <p class="field-help detail">Le glissando continu est celui de Jean-Claude Risset (1969) ; la gamme par marches, celle de Roger Shepard (1964).</p>
+          </fieldset>
+
+          <fieldset class="field field--plain">
+            <legend class="field-label">Vitesse</legend>
+            <div class="segmented" id="vitesse">
+              <label><input type="radio" name="vitesse" value="lente" />Lente</label>
+              <label><input type="radio" name="vitesse" value="normale" checked />Normale</label>
+              <label><input type="radio" name="vitesse" value="rapide" />Rapide</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="field field--plain">
+            <legend class="field-label">Vue</legend>
+            <div class="segmented" id="vue">
+              <label><input type="radio" name="vue" value="cote" checked />De côté</label>
+              <label><input type="radio" name="vue" value="dessus" />De dessus</label>
+            </div>
+            <p class="field-help detail">De côté, on voit les composantes grimper. De dessus, l’hélice est un cercle : on voit le son tourner en rond.</p>
+          </fieldset>
+
+          <details class="disclosure" id="paradox">
+            <summary>Le paradoxe du triton</summary>
+            <div class="disclosure-body">
+              <p class="note">Deux sons de Shepard à six demi-tons l’un de l’autre. Le second monte-t-il, ou descend-il ? Il n’y a pas de bonne réponse : la question est ce que <em>tu</em> entends.</p>
+              <div class="actions">
+                <button class="button" type="button" id="paradox-play">Écouter la paire</button>
+                <button class="button" type="button" id="paradox-up" hidden>Ça monte</button>
+                <button class="button" type="button" id="paradox-down" hidden>Ça descend</button>
+              </div>
+              <p class="note" id="paradox-status" role="status"></p>
+            </div>
+          </details>
+
+          <button class="button share-button" type="button" id="share-button">
+            <svg viewBox="0 0 16 16" aria-hidden="true" width="16" height="16"><path d="M8 2v8M5 5l3-3 3 3M3 9v4h10V9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+            Partager
+          </button>
+        </div>
+
+        <div class="viz-stage">
+          <div class="stage-frame">
+            <div class="scene" id="scene" role="img" aria-label="Hélice des hauteurs, un tour par octave, avec les composantes du son en sphères"></div>
+            <p class="scene-hint" id="scene-hint"></p>
+            <figure class="spectrum">
+              <figcaption class="figure-title">Le spectre du son : neuf sinusoïdes à l’octave sous une enveloppe fixe <span class="detail">— une composante qui atteint le haut s’éteint, une autre naît en bas</span></figcaption>
+              <svg id="spectrum" role="img" aria-label="Spectre du son de Shepard : barres à l’octave sous une enveloppe en cloche"></svg>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#methode">La méthode</a></li>
+            <li><a href="#sources">D’où viennent les chiffres</a></li>
+            <li><a href="#limites">Ce que ça ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>
+              La hauteur d’un son a deux faces. Sa <strong>hauteur brute</strong> (grave ou aigu, en hertz), et sa <strong>classe de
+              hauteur</strong> : un do reste un do, quelle que soit l’octave. L’hélice réunit les deux : on monte le long du fil, et l’on
+              revient au même point du cercle à chaque octave. C’est la <em>spirale des hauteurs</em>, décrite par Roger Shepard.
+            </p>
+            <p>
+              Le son que tu entends n’est pas une note : c’est <strong>neuf notes à l’octave</strong>, du do1 au do9, jouées ensemble. Les
+              sphères sont ces composantes. Une enveloppe fixe règle leur force : fortes au milieu, presque inaudibles aux extrêmes.
+              Quand tout monte d’un demi-ton, chaque sphère grimpe un peu ; celle du haut s’efface, une nouvelle apparaît en bas.
+              Après douze demi-tons, l’ensemble est <strong>exactement le même son</strong>. Ton oreille a suivi les sphères du
+              milieu, qui montaient. Elle a raison à chaque instant et tort sur la durée.
+            </p>
+            <p>
+              Le compteur dit la vérité : les demi-tons que tu as cru gravir, et l’endroit où tu es vraiment (toujours entre do et si).
+              Passe en vue <strong>de dessus</strong> : il n’y a plus de haut ni de bas, seulement un cercle sur lequel le son tourne.
+            </p>
+          </section>
+
+          <section id="methode">
+            <h2>La méthode</h2>
+            <ul>
+              <li>Composantes : f<sub>k</sub> = 32,7 Hz × 2<sup>k + p</sup>, pour k de 0 à 8, où p (entre 0 et 1) est la position dans l’octave.</li>
+              <li>Enveloppe : A(x) = ½ − ½ cos(2πx/9), avec x = k + p en octaves ; nulle en 0 et 9, maximale à 4,5 (do5 environ).</li>
+              <li>Glissando : p avance de 60, 120 ou 240 cents par seconde. Par demi-tons : p saute de 100 cents à la même cadence, avec un léger creux de volume à chaque marche.</li>
+              <li>Le compteur cumule les cents parcourus sans jamais les réduire à l’octave. Les sphères, elles, y sont réduites : c’est toute l’illusion.</li>
+              <li>Le paradoxe du triton joue la paire (p, p + 600 cents) ; p est tiré au sort à chaque écoute.</li>
+            </ul>
+            <div class="formula" id="formula"></div>
+          </section>
+
+          <section id="sources">
+            <h2>D’où viennent les chiffres</h2>
+            <ul>
+              <li>R. N. Shepard, « Circularity in judgments of relative pitch », <em>Journal of the Acoustical Society of America</em>, 36, 1964.</li>
+              <li>J.-C. Risset, « Pitch control and pitch paradoxes demonstrated with computer-synthesized sounds », <em>JASA</em>, 46, 1969 (le glissando continu).</li>
+              <li>D. Deutsch, « A musical paradox », <em>Music Perception</em>, 3, 1986 (le paradoxe du triton).</li>
+              <li>Aucune donnée téléchargée : tout se calcule et se joue dans ton navigateur.</li>
+            </ul>
+          </section>
+
+          <section id="limites">
+            <h2>Ce que ça ne dit pas</h2>
+            <ul>
+              <li><strong>Le matériel compte.</strong> Un haut-parleur de téléphone coupe les graves : l’enveloppe n’est plus symétrique et l’illusion faiblit. Au casque, elle est nette.</li>
+              <li><strong>Ce n’est pas un son de musique.</strong> Neuf sinusoïdes à l’octave n’ont pas de timbre ; les compositeurs (Risset, Ligeti, et bien des musiques de film) reconstruisent l’effet avec de vrais instruments, par couches.</li>
+              <li><strong>Le paradoxe du triton varie d’une personne à l’autre.</strong> Diana Deutsch a observé que la réponse dépend de la position p, différemment selon les auditeurs, et proposé un lien avec la langue et la région d’enfance ; ce lien reste discuté. Ici, on note seulement ce que tu entends.</li>
+              <li><strong>On peut apprendre à ne plus être dupe.</strong> En suivant volontairement une sphère jusqu’à son extinction, on entend le son « retomber ». L’illusion tient à ce que l’oreille suit ce qui est le plus fort.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Ton ascension en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : l’hélice des hauteurs, les composantes du son et le compteur de demi-tons." />
+        <p class="note">Aucune donnée n’est envoyée : tout est calculé dans ton navigateur.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

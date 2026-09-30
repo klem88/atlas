@@ -75,3 +75,4 @@ docs/                       idées, design
 | [Pourquoi ton piano est (légèrement) faux](viz/piano-temperament/) | brouillon | aucune donnée, tout est calculé |
 | [La forme d’un accord](viz/forme-accord/) | brouillon | aucune donnée, three.js |
 | [Pourquoi une tierce sonne douce](viz/consonance/) | brouillon | aucune donnée, modèle de Plomp–Levelt |
+| [La gamme qui monte sans fin](viz/gamme-sans-fin/) | brouillon | aucune donnée, three.js |

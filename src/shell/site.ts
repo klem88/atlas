@@ -65,6 +65,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-09',
   },
+  {
+    slug: 'gamme-sans-fin',
+    title: 'La gamme qui monte sans fin',
+    summary: 'Un son qui monte, monte, monte… et ne va nulle part. L’illusion de Shepard, vue de l’intérieur : une hélice de hauteurs qui tourne sur elle-même.',
+    tags: ['Musique', 'Illusion'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 
