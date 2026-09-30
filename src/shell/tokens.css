@@ -31,6 +31,14 @@
   --seq-4: #4d799e;
   --seq-5: #315c7f;
   --seq-6: #1c405d;
+  /* Rampe des cartes (grandeur) : foncé = plus, dans les deux thèmes, pour qu'une carte se lise pareil sur tous les écrans. */
+  --ramp-0: #e5f0fa;
+  --ramp-1: #bfd4e7;
+  --ramp-2: #97b5cf;
+  --ramp-3: #7197b8;
+  --ramp-4: #4d799e;
+  --ramp-5: #315c7f;
+  --ramp-6: #1c405d;
 
   /* États sans valeur */
   --no-data: #dedfe0;
@@ -87,6 +95,14 @@
     --seq-4: #719abe;
     --seq-5: #9bbcd9;
     --seq-6: #cee1f1;
+    /* Même sens qu'en clair, éclaircie pour rester lisible sur fond sombre. */
+    --ramp-0: #becdda;
+    --ramp-1: #9db4c9;
+    --ramp-2: #7c9cb9;
+    --ramp-3: #5d86a9;
+    --ramp-4: #437299;
+    --ramp-5: #2d5f87;
+    --ramp-6: #1a4e75;
     --no-data: #2a2f34;
     --no-market: #1b2127;
     --hatch: rgba(15, 20, 24, 0.5);
@@ -115,6 +131,14 @@
   --seq-4: #719abe;
   --seq-5: #9bbcd9;
   --seq-6: #cee1f1;
+  /* Même sens qu'en clair, éclaircie pour rester lisible sur fond sombre. */
+  --ramp-0: #becdda;
+  --ramp-1: #9db4c9;
+  --ramp-2: #7c9cb9;
+  --ramp-3: #5d86a9;
+  --ramp-4: #437299;
+  --ramp-5: #2d5f87;
+  --ramp-6: #1a4e75;
   --no-data: #2a2f34;
   --no-market: #1b2127;
   --hatch: rgba(15, 20, 24, 0.5);

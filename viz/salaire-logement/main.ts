@@ -95,6 +95,11 @@ async function main() {
     },
   });
 
+  // Noms au zoom : les communes où l'on vend le plus (les villes) d'abord. Faute de population dans les données,
+  // le volume de ventes 2010-2025 sert d'indicateur de taille.
+  const volume = communes.map((c) => prices.salesVolume(c.code));
+  map.setLabelOrder(communes.map((_, i) => i).sort((a, b) => volume[b]! - volume[a]!));
+
   const fillsFor = (s: VizState): ((i: number) => CommuneFill) => {
     const maxPrice = model.capacity(s).maxPrice; // calculé une fois, pas 35 000
     return (i) => {

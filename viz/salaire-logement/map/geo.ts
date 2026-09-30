@@ -148,3 +148,11 @@ export function featureBounds(f: CommuneFeature, layouts: TerritoryLayout[]): [[
   const l = layouts.find((x) => x.territory.id === territoryOf(f.properties.code));
   return l ? geoPath(l.projection).bounds(f) : null;
 }
+
+/** Centre projeté d'une commune (point d'ancrage de son nom), ou null hors des territoires affichés. */
+export function featureCentroid(f: CommuneFeature, layouts: TerritoryLayout[]): [number, number] | null {
+  const l = layouts.find((x) => x.territory.id === territoryOf(f.properties.code));
+  if (!l) return null;
+  const c = geoPath(l.projection).centroid(f);
+  return Number.isFinite(c[0]) && Number.isFinite(c[1]) ? c : null;
+}

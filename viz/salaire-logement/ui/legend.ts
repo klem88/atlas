@@ -6,7 +6,7 @@ import { AREA_CLASSES } from '../domain/classes';
  */
 export function renderLegend(target: HTMLElement): void {
   const swatches = AREA_CLASSES.map(
-    (c, i) => `<li title="${c.label} : ${c.hint}"><span class="swatch" style="background: var(--seq-${i})"></span><span class="visually-hidden">${c.label}</span></li>`,
+    (c, i) => `<li title="${c.label} : ${c.hint}"><span class="swatch" style="background: var(--ramp-${i})"></span><span class="visually-hidden">${c.label}</span></li>`,
   ).join('');
   const ticks = AREA_CLASSES.slice(1)
     .map((c, i) => `<span style="left: ${((i + 1) / AREA_CLASSES.length) * 100}%">${c.min}</span>`)

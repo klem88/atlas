@@ -5,11 +5,13 @@ import {
   buildBorderPath,
   buildPaths,
   featureBounds,
+  featureCentroid,
   layoutTerritories,
   type CommuneFeature,
   type MapGeometry,
   type TerritoryLayout,
 } from './geo';
+import { placeLabels, LABEL_MIN_ZOOM, type LabelCandidate } from './labels';
 import { pickCandidates } from './pick';
 
 /** Apparence d'une commune : une couleur de remplissage et éventuellement une texture. */
@@ -71,6 +73,10 @@ export class CanvasMap {
   private selected: number | null = null;
   private pickDirty = true;
   private frame = 0;
+  /** Ordre d'importance des communes pour les noms (la plus importante d'abord). */
+  private labelOrder: number[] = [];
+  private anchors: ([number, number] | null)[] = [];
+  private labelWidths = new Map<number, number>();
   private patterns = new Map<string, CanvasPattern>();
   /** Zoom demandé avant que la carte ait une taille : appliqué au premier dimensionnement. */
   private pendingZoom: { index: number; duration: number } | null = null;
@@ -135,6 +141,12 @@ export class CanvasMap {
   setTheme(theme: MapTheme): void {
     this.theme = theme;
     this.patterns.clear();
+    this.requestDraw();
+  }
+
+  /** Ordre dans lequel les noms de communes sont placés au zoom, de la plus importante à la moins importante. */
+  setLabelOrder(order: number[]): void {
+    this.labelOrder = order;
     this.requestDraw();
   }
 
@@ -210,6 +222,8 @@ export class CanvasMap {
     this.allPaths = new Path2D();
     for (const p of this.paths) this.allPaths.addPath(p);
     this.borders = buildBorderPath(this.geo, this.layouts);
+    this.anchors = this.geo.communes.map((f) => featureCentroid(f, this.layouts));
+    this.labelWidths.clear(); // la police web a pu finir de charger depuis la dernière mesure
     this.zoomBehavior.translateExtent([
       [0, 0],
       [width, height],
@@ -298,7 +312,47 @@ export class CanvasMap {
     }
 
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.drawLabels();
     this.drawInsetFrames();
+  }
+
+  /** Noms des communes, une fois zoomé : les plus importantes d'abord, sans chevauchement. */
+  private drawLabels(): void {
+    const { ctx, transform: t, theme } = this;
+    if (t.k < LABEL_MIN_ZOOM) return;
+    ctx.font = `12px ${getComputedStyle(this.canvas).fontFamily}`;
+
+    // Candidats dans la vue seulement : la largeur du texte n'est mesurée (et retenue) que pour eux.
+    const ordered = this.selected !== null ? [this.selected, ...this.labelOrder] : this.labelOrder;
+    const candidates: LabelCandidate[] = [];
+    for (const index of ordered) {
+      const a = this.anchors[index];
+      if (!a) continue;
+      const sx = a[0] * t.k + t.x;
+      const sy = a[1] * t.k + t.y;
+      if (sx < 0 || sy < 0 || sx > this.width || sy > this.height) continue;
+      let width = this.labelWidths.get(index);
+      if (width === undefined) {
+        width = ctx.measureText(this.geo.communes[index]!.properties.nom).width;
+        this.labelWidths.set(index, width);
+      }
+      candidates.push({ index, x: a[0], y: a[1], width });
+    }
+
+    const placed = placeLabels(candidates, { k: t.k, tx: t.x, ty: t.y, width: this.width, height: this.height });
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 3;
+    for (const p of placed) {
+      const name = this.geo.communes[p.index]!.properties.nom;
+      // Détouré de la couleur de fond : lisible sur toutes les teintes de la rampe.
+      ctx.strokeStyle = theme.surface;
+      ctx.strokeText(name, p.x, p.y);
+      ctx.fillStyle = theme.ink;
+      ctx.fillText(name, p.x, p.y);
+    }
+    ctx.textAlign = 'start';
   }
 
   /** Cadres et noms des encarts d'outre-mer, suivant le zoom. */

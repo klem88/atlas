@@ -33,7 +33,7 @@ export default async function buildOg(): Promise<void> {
   const geo = decodeTopology((await json('communes.topo.json')) as Topology<never>);
   const state = readStateFromUrl('', { first: prices.firstYear, last: prices.lastYear });
   const maxPrice = model.capacity(state).maxPrice;
-  const ramp = Array.from({ length: 7 }, (_, i) => t[`seq-${i}`]!);
+  const ramp = Array.from({ length: 7 }, (_, i) => t[`ramp-${i}`]!);
 
   const canvas = createOgCanvas();
   const ctx = canvas.getContext('2d');
