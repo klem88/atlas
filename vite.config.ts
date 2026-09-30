@@ -18,6 +18,8 @@ function pages(): Record<string, string> {
 }
 
 export default defineConfig({
+  // Base de déploiement : `/` en local, `/<dépôt>/` sur GitHub Pages (fournie par la CI).
+  base: process.env.BASE_PATH ?? '/',
   resolve: {
     alias: { '@shell': resolve(root, 'src/shell') },
   },

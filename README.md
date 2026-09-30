@@ -11,7 +11,9 @@ npm test           # tests unitaires (Vitest)
 npm run build      # vérification des types + build statique dans dist/
 ```
 
-Le site est 100 % statique : `dist/` se déploie tel quel (Vercel, Netlify, GitHub Pages…).
+Le site est 100 % statique. Il est publié sur GitHub Pages par [.github/workflows/deploy.yml](.github/workflows/deploy.yml) à chaque push sur `main` (tests, puis build avec la base `/<dépôt>/`).
+
+L’URL publique utilisée dans les balises de partage est définie dans [.env](.env) (`VITE_SITE_URL`).
 
 ## Structure
 
@@ -31,6 +33,7 @@ viz/<slug>/                 une visualisation = un dossier autonome
   domain/                   calculs purs et testés
   map/, ui/                 rendu et interface
   pipeline/                 sources publiques → public/data/<slug>/
+  og/                       image d’aperçu des liens → public/og/<slug>.png
 public/data/<slug>/         données statiques produites par le pipeline
 ```
 

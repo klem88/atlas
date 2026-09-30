@@ -1,6 +1,7 @@
 import { fmtInt, parseFrenchNumber } from '@shell/format';
 import { createSearch } from '@shell/search';
 import { mountShell } from '@shell/shell';
+import { assetUrl } from '@shell/site';
 import { createStore } from '@shell/store';
 import type { Topology } from 'topojson-specification';
 import { PriceTable } from './data/prices';
@@ -15,11 +16,13 @@ import { readStateFromUrl, stateToSearch, type VizState } from './state';
 import { renderLegend } from './ui/legend';
 import { renderAssumptionList, renderFormula } from './ui/method';
 import { renderCommuneCard, renderResult, tooltipHtml } from './ui/panels';
+import { setupShare, shareText } from './ui/share';
+import { buildCardData } from './ui/share-card';
 import { readTheme, watchTheme } from './ui/theme';
 import { createTimeline } from './ui/timeline';
 import './viz.css';
 
-const DATA = '/data/salaire-logement';
+const DATA = assetUrl('data/salaire-logement');
 
 mountShell({ currentSlug: 'salaire-logement' });
 
@@ -178,6 +181,39 @@ async function main() {
     renderFormula($('formula'), model, s);
     renderAssumptionList($('assumption-list'), model, s);
   };
+
+  // --- Partage ------------------------------------------------------------------
+  const cardData = () => {
+    const s = store.get();
+    const budgetSeries = prices.years.map((x) => ({ x, y: model.capacity(s, x).maxPrice }));
+    const i = s.selectedCode ? indexByCode.get(s.selectedCode) : undefined;
+    let commune = null;
+    if (i !== undefined) {
+      const r = model.communeAt(s, communes[i]!.code);
+      if (r.area !== undefined) {
+        const series = model.communeSeries(s, communes[i]!.code);
+        const valid = series.filter((p): p is { x: number; y: number } => p.y !== null);
+        const peak = valid.length ? valid.reduce((a, b) => (b.y > a.y ? b : a)) : null;
+        commune = { nom: communes[i]!.nom, area: r.area, peak, series };
+      }
+    }
+    return buildCardData({
+      netMonthlyIncome: s.netMonthlyIncome,
+      year: s.year,
+      rate: model.rateFor(s.year),
+      commune,
+      budget: { value: model.capacity(s).maxPrice, peak: budgetSeries.reduce((a, b) => (b.y > a.y ? b : a)), series: budgetSeries },
+      url: location.href,
+    });
+  };
+  setupShare($<HTMLButtonElement>('share-button'), $<HTMLDialogElement>('share-dialog'), {
+    getData: cardData,
+    getMapImage: () => map.element,
+    getText: () => {
+      const d = cardData();
+      return shareText(store.get().netMonthlyIncome, d.figure, d.figureCaption, d.comparison);
+    },
+  });
 
   // --- Rendu réactif ----------------------------------------------------------
   let urlTimer: number | undefined;

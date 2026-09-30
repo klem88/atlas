@@ -27,4 +27,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
   },
 ];
 
-export const vizUrl = (slug: string) => `/viz/${slug}/`;
+/** URL publiques, relatives à la base de déploiement (`/` en local, `/atlas/` sur GitHub Pages). */
+export const homeUrl = () => import.meta.env.BASE_URL;
+export const vizUrl = (slug: string) => `${import.meta.env.BASE_URL}viz/${slug}/`;
+export const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;

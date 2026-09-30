@@ -15,9 +15,11 @@
     "data:salaire-logement:clean": "tsx viz/salaire-logement/pipeline/build.ts --clean-cache",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "og:salaire-logement": "tsx viz/salaire-logement/og/build-og.ts"
   },
   "devDependencies": {
+    "@napi-rs/canvas": "^1.0.9",
     "@types/d3-geo": "^3.1.1",
     "@types/d3-selection": "^3.0.12",
     "@types/d3-transition": "^3.0.9",

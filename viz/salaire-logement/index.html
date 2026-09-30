@@ -8,14 +8,27 @@
       name="description"
       content="Entre ton revenu et découvre, commune par commune, la surface que tu pourrais acheter en France, de 2010 à aujourd’hui."
     />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/salaire-logement/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="Ce que ton salaire achète" />
+    <meta property="og:description" content="Commune par commune, la surface que tes revenus permettent d’acheter en France, et comment elle a changé depuis 2010." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/salaire-logement/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/salaire-logement.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Carte de France des communes colorées selon la surface achetable avec 2 500 € par mois." />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
     />
-    <link rel="preload" href="/data/salaire-logement/prices.json" as="fetch" crossorigin />
-    <link rel="preload" href="/data/salaire-logement/communes.topo.json" as="fetch" crossorigin />
+    <link rel="preload" href="%BASE_URL%data/salaire-logement/prices.json" as="fetch" crossorigin />
+    <link rel="preload" href="%BASE_URL%data/salaire-logement/communes.topo.json" as="fetch" crossorigin />
   </head>
   <body>
     <header data-site-header></header>
@@ -55,6 +68,11 @@
           </form>
 
           <section class="result" aria-live="polite" id="result"></section>
+
+          <button class="button share-button" type="button" id="share-button">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10V2.5M5 5.5 8 2.5l3 3M3.5 9v4.5h9V9" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round" /></svg>
+            Partager mon résultat
+          </button>
 
           <section class="commune-card" id="commune-card" aria-live="polite"></section>
 
@@ -197,6 +215,25 @@
         </div>
       </section>
     </main>
+
+    <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-title">
+      <div class="share-dialog-body">
+        <header class="share-dialog-head">
+          <h2 id="share-title">Ton résultat en image</h2>
+          <button class="button button--icon" type="button" data-action="close" aria-label="Fermer">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" /></svg>
+          </button>
+        </header>
+        <img class="share-preview" alt="Aperçu de l’image à partager : ton budget ou ta surface achetable, la carte et l’évolution depuis 2010." />
+        <p class="note">L’image reprend la vue actuelle de la carte : zoome sur ta région avant de la générer. Aucune donnée n’est envoyée : tout est calculé dans ton navigateur.</p>
+        <div class="share-actions">
+          <button class="button button--primary" type="button" data-action="share" hidden>Partager…</button>
+          <button class="button" type="button" data-action="download">Télécharger l’image</button>
+          <button class="button" type="button" data-action="copy">Copier le lien</button>
+        </div>
+        <p class="share-status" role="status"></p>
+      </div>
+    </dialog>
 
     <footer data-site-footer></footer>
     <script type="module" src="./main.ts"></script>

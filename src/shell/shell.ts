@@ -4,7 +4,7 @@ import './page.css';
 import './components.css';
 import './charts/charts.css';
 import { escapeHtml } from './html';
-import { SITE, VISUALIZATIONS, vizUrl } from './site';
+import { SITE, VISUALIZATIONS, homeUrl, vizUrl } from './site';
 
 /**
  * Monte l'en-tête et le pied de page communs dans les éléments
@@ -18,9 +18,9 @@ export function mountShell(options: { currentSlug?: string } = {}): void {
   if (header) {
     header.className = 'site-header';
     header.innerHTML = `
-      <a class="site-mark" href="/">${SITE.name}${current ? ` <span>· ${escapeHtml(current.title)}</span>` : ''}</a>
+      <a class="site-mark" href="${homeUrl()}">${SITE.name}${current ? ` <span>· ${escapeHtml(current.title)}</span>` : ''}</a>
       <nav class="site-nav" aria-label="Site">
-        <a href="/"${current ? '' : ' aria-current="page"'}>Toutes les visualisations</a>
+        <a href="${homeUrl()}"${current ? '' : ' aria-current="page"'}>Toutes les visualisations</a>
       </nav>`;
   }
 

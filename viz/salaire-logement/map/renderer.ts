@@ -165,6 +165,11 @@ export class CanvasMap {
     this.animateTo(zoomIdentity, 500);
   }
 
+  /** Élément canvas affiché (pour en faire une capture). */
+  get element(): HTMLCanvasElement {
+    return this.canvas;
+  }
+
   destroy(): void {
     this.resizeObserver.disconnect();
     cancelAnimationFrame(this.frame);
