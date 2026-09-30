@@ -1,0 +1,25 @@
+{
+  "name": "ce-que-ton-salaire-achete",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Carte de France : ce que ton salaire permet d'acheter, commune par commune, de 2010 à aujourd'hui.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "data": "tsx pipeline/build.ts",
+    "data:clean": "tsx pipeline/build.ts --clean-cache",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "mapshaper": "^0.7.70",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  }
+}
