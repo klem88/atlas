@@ -129,6 +129,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'published',
     published: '2026-10',
   },
+  {
+    slug: 'compose-ta-progression',
+    title: 'Compose ta progression',
+    summary: 'Pose un accord, choisis le suivant parmi ceux que les chansons jouent vraiment, et découvre en chemin si ta progression est un classique ou une rareté.',
+    tags: ['Musique', 'Harmonie', 'Jeu'],
+    status: 'published',
+    published: '2026-10',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 

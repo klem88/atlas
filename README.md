@@ -82,4 +82,5 @@ docs/                       idées, design
 | [Le voyage sur le tore](viz/voyage-sur-le-tore/) | publiée | [rapport qualité](viz/voyage-sur-le-tore/pipeline/REPORT.md) · iRb, Billboard, Tonnetz à plat |
 | [La boussole des styles](viz/carte-des-styles/) | publiée | [rapport qualité](viz/carte-des-styles/pipeline/REPORT.md) · [sonde](viz/carte-des-styles/pipeline/PROBE.md) |
 | [Cinquante ans de refrains](viz/cinquante-ans-de-refrains/) | publiée | [rapport qualité](viz/cinquante-ans-de-refrains/pipeline/REPORT.md) · Chordonomicon, Billboard |
+| [Compose ta progression](viz/compose-ta-progression/) | publiée | aucune donnée propre : lit celles de progression-jouee |
 | [Où le solo respire](viz/ou-le-solo-respire/) | publiée | [rapport qualité](viz/ou-le-solo-respire/pipeline/REPORT.md) · Weimar Jazz Database |

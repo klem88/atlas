@@ -1,0 +1,311 @@
+/* Styles propres à « Compose ta progression ». Toujours dériver des jetons de src/shell/tokens.css. */
+
+.field--plain {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.field--row {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.select {
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: var(--space-1) var(--space-2);
+  max-width: 14rem;
+}
+
+.result {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  border-block: 1px solid var(--rule);
+}
+
+.result-eyebrow {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.result-eyebrow .detail {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.result-figure {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.5rem + 1.8vw, 3rem);
+  font-weight: 300;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-unit {
+  font-size: 0.5em;
+  color: var(--ink-2);
+}
+
+.result-line {
+  font-size: var(--text-md);
+}
+
+.result-line strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.result-examples {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.button--ghost {
+  border-color: transparent;
+}
+
+/* Scène ------------------------------------------------------------------------------------------- */
+.stage-frame {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+/* La portée */
+.staff {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 3.6rem;
+}
+
+.chord {
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+  min-width: 3.4rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  animation: chord-in 0.35s var(--ease);
+}
+
+@keyframes chord-in {
+  from {
+    transform: translateY(14px) scale(0.85);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chord {
+    animation: none;
+  }
+}
+
+.chord:hover {
+  border-color: var(--ink-3);
+}
+
+.chord.is-last {
+  border-color: var(--seq-5);
+  background: var(--seq-5);
+  color: var(--surface);
+}
+
+.chord.is-playing {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--surface);
+}
+
+.chord-name {
+  font-weight: 700;
+  font-size: var(--text-md);
+}
+
+.chord-degree {
+  font-size: var(--text-xs);
+  opacity: 0.75;
+}
+
+.chord-sep {
+  width: 14px;
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.staff-empty {
+  font-family: var(--font-display);
+  color: var(--ink-2);
+}
+
+/* La ligne qui respire */
+.breath {
+  display: grid;
+  gap: var(--space-1);
+  min-height: 2.4rem;
+}
+
+.breath-bar {
+  display: block;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--seq-4);
+  transition: width 0.6s var(--ease);
+}
+
+.breath-label,
+.breath-note {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.breath-label strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* L'éventail */
+.fan-sentence {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--ink);
+  min-height: 1.6em;
+}
+
+.fan {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.fan-ray {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.fan-ray--other {
+  stroke-dasharray: 3 3;
+}
+
+.fan-pivot circle {
+  fill: var(--seq-6);
+}
+
+.fan-pivot-label {
+  fill: var(--surface);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.fan-pivot-sub {
+  fill: var(--surface);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.fan-disc {
+  cursor: pointer;
+}
+
+.fan-disc circle {
+  fill: var(--seq-2);
+  stroke: var(--surface);
+  stroke-width: 2;
+  transition: fill 0.15s;
+}
+
+.fan-disc--rank-0 circle {
+  fill: var(--seq-5);
+}
+
+.fan-disc--rank-1 circle {
+  fill: var(--seq-4);
+}
+
+.fan-disc--rank-2 circle {
+  fill: var(--seq-3);
+}
+
+.fan-disc:hover circle,
+.fan-disc:focus-visible circle {
+  fill: var(--accent);
+}
+
+.fan-disc:focus-visible {
+  outline: none;
+}
+
+.fan-disc--other {
+  cursor: default;
+}
+
+.fan-disc--other circle {
+  fill: var(--surface-sunk);
+  stroke: var(--rule-strong);
+  stroke-dasharray: 3 3;
+}
+
+.fan-disc-label {
+  fill: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.fan-disc--rank-0 .fan-disc-label,
+.fan-disc--rank-1 .fan-disc-label,
+.fan-disc--rank-0 .fan-disc-sub,
+.fan-disc--rank-1 .fan-disc-sub,
+.fan-disc:hover .fan-disc-label,
+.fan-disc:hover .fan-disc-sub {
+  fill: var(--surface);
+}
+
+.fan-disc-sub {
+  fill: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.figure-sub {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+@media (max-width: 640px) {
+  .stage-frame {
+    padding: var(--space-4);
+  }
+
+  .fan-sentence {
+    font-size: var(--text-md);
+  }
+}

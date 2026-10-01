@@ -33,13 +33,21 @@ Le pendant joueur de « Ta progression a déjà été jouée 40 000 fois » : on
 - Les septièmes restent repliées (comme partout) : « Sol » vaut aussi G7.
 - Maximum huit accords (limite des parts) ; au-delà, la page propose de partager ou de recommencer.
 
+## Décisions de construction (2 octobre 2026)
+
+- Pas de données propres : la page importe le contrat, le chargeur et les exemples de `progression-jouee` (dépendance de code entre deux pages, assumée et notée dans les deux README).
+- L'éventail est un demi-cercle au-dessus de l'accord courant (pivot), plutôt qu'à droite de la portée : lisible et touchable à 375 px, même dessin sur la carte de partage et l'aperçu.
+- Pour la suite vide et pour un seul accord, les poids viennent des paires (`p2`) agrégées par premier accord ; la page le dit (« des poids relatifs, pas une probabilité »).
+- Les exemples nommés sont ceux de la page sœur, triés par année ; un lien préremplit « Ta progression a déjà été jouée ».
+
 ## Tâches
 
-- [ ] Domaine : `nextChords(prefix, shard, meta, style)` (probabilités, regroupement « autre chose »), tirage pondéré, phrases ; tests
-- [ ] Interface : portée, éventail (SVG, disposition en arc sans chevauchement), ligne qui respire, panneau, son, URL
-- [ ] Textes, image de partage, image d'aperçu
-- [ ] Vérification 375 px, clair, sombre ; publication
+- [x] Domaine : `nextChords(prefix, shard, meta, style)` (probabilités, regroupement « autre chose »), tirage pondéré, phrases ; tests
+- [x] Interface : portée, éventail (SVG, disposition en arc sans chevauchement), ligne qui respire, panneau, son, URL
+- [x] Textes, image de partage, image d'aperçu
+- [x] Vérification dans le navigateur de l'éditeur ; publiée le 2 octobre 2026
+- [ ] Relecture de l'auteur sur téléphone
 
 ## Prochaine action
 
-Créer la branche, `npm run new:viz -- compose-ta-progression`, écrire le domaine en TDD.
+Relecture de l'auteur sur téléphone : https://klem88.github.io/atlas/viz/compose-ta-progression/?p=I,V,vi . Idées de suite : décennies dans le sélecteur de style ; un mode « devine la suite » (quiz).

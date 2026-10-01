@@ -9,6 +9,9 @@ Choisis quatre accords (en degrés, ou sur le clavier) et la page te dit combien
 
 ## Structure
 
+La page « Compose ta progression » (`viz/compose-ta-progression/`) lit les mêmes fichiers et importe `data/contract.ts`, `data/load.ts`, `domain/examples.ts` et `domain/lookup.ts` : un changement de format ici la touche aussi.
+
+
 - `data/` : contrat des fichiers, validation, chargement paresseux (une part par longueur).
 - `domain/` : recherche dans les agrégats, rotations, phrase (`lookup.ts`) ; exemples nommés et surlignage dans une grille (`examples.ts`) ; voix des accords et reconnaissance au clavier (`voicing.ts`).
 - `pipeline/` : `build.ts` (orchestration, rapport), `ngrams.ts` (comptage par longueur avec élagage a priori).
