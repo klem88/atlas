@@ -26,15 +26,37 @@ Sur une grille de jazz, chaque accord reçoit les notes que les solistes y ont r
 - Seuls les morceaux dont la grille de Weimar correspond à celle d'iRb (même suite d'accords à la transposition près) sont affichés avec la grille iRb ; les autres utilisent la grille de Weimar.
 - **Repli** si les conditions d'usage ne permettent pas la publication : la même page avec les notes **de la mélodie des standards** (iRb n'a pas les mélodies ; alors abandon) ou, plus simplement, la synthèse par type d'accord sans grille nommée. La décision revient à l'auteur.
 
+## Courriel proposé (à envoyer par l'auteur à jazzomat@hfm-weimar.de)
+
+> **Subject: Permission to publish aggregated statistics derived from the Weimar Jazz Database**
+>
+> Dear Jazzomat team,
+>
+> I am building Atlas (https://klem88.github.io/atlas/), a small non-commercial, open-source website of French-language data visualisations. One page, « Où le solo respire » (“Where the solo breathes”), shows, for each chord of a jazz standard, the distribution of scale degrees that soloists actually play over it, computed from the 456 transcribed solos of the Weimar Jazz Database.
+>
+> What would be published: only aggregated counts per (tune, chord position, scale degree) and per chord type, as a static JSON file (about 300 KB), plus tune titles and soloist names. No note-by-note transcription, no melody, no audio, nothing that would allow reconstructing a solo. The database itself is never redistributed; the page credits the WJD and cites *Inside the Jazzomat* (Pfleiderer et al., 2017) and lists the download page.
+>
+> Could you confirm that this use is in line with the terms under which the WJD is made available? If attribution should take a specific form, I will follow it.
+>
+> With thanks for this remarkable resource,
+> Clément Roux
+
+## Décisions de construction (nuit du 1er octobre 2026)
+
+- **Chiffres réels** (dominante, 82 377 notes) : fondamentale 14 %, quinte 13 %, septième mineure 11 %, tierce 10 %, neuvième 9,5 %. La phrase de la fiche était fausse : la fondamentale n'est pas « presque jamais » jouée. La page dit ce que les données disent ; la phrase partageable est à réécrire par l'auteur depuis `REPORT.md`.
+- Comptes **par symbole d'accord du standard** (toutes ses occurrences, tous les chorus), pas par mesure ; la grille affichée est le texte `chord_changes` de la base. Pas d'appariement avec l'iRb.
+- « Sur le temps » = premier tatum du temps. Aucune suite de notes exportée ; 111 Ko gzippés.
+- `node:sqlite` (Node 22.5+) suffit : pas de `better-sqlite3`.
+
 ## Tâches
 
-- [ ] Courriel à Jazzomat (conditions d'usage), réponse notée ici
-- [ ] Pipeline : lecture SQLite (`better-sqlite3` ou `sql.js`), appariement avec iRb, comptages par accord et par type, `REPORT.md`
-- [ ] Domaine : degrés relatifs à l'accord, répartitions, note évitée ; tests
-- [ ] Grille qui s'allume, petits multiples, son, URL
-- [ ] Textes, image de partage, image d'aperçu
-- [ ] Vérification mobile/clair/sombre, relecture de l'auteur, publication (sous réserve des conditions d'usage)
+- [ ] Courriel à Jazzomat (conditions d'usage), **à envoyer par l'auteur** ; texte proposé ci-dessous ; réponse à noter ici
+- [x] Pipeline : lecture SQLite avec `node:sqlite` (sans dépendance), comptages par (solo, symbole, degré) et par type, `REPORT.md` ; pas d'appariement iRb (la grille de Weimar est utilisée, voir décisions)
+- [x] Domaine : degrés relatifs à l'accord, répartitions, note évitée, grille textuelle ; tests
+- [x] Grille qui s'allume, petits multiples par type, son, URL
+- [x] Textes, image de partage, image d'aperçu
+- [ ] **Vérification dans le navigateur non faite** (quota atteint) : à ouvrir en premier à la reprise ; relecture de l'auteur, publication sous réserve des conditions d'usage
 
 ## Prochaine action
 
-Après `cinquante-ans-de-refrains` : le courriel (à écrire par l'auteur, texte proposé par Claude), puis le pipeline.
+Ouvrir http://localhost:5173/viz/ou-le-solo-respire/ et vérifier la page (non vue dans un navigateur), puis l'auteur envoie le courriel ci-dessus et réécrit la phrase partageable depuis le rapport.

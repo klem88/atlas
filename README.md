@@ -82,3 +82,4 @@ docs/                       idées, design
 | [Le voyage sur le tore](viz/voyage-sur-le-tore/) | brouillon | [rapport qualité](viz/voyage-sur-le-tore/pipeline/REPORT.md) · iRb, Billboard, three.js |
 | [La boussole des styles](viz/carte-des-styles/) | brouillon | [rapport qualité](viz/carte-des-styles/pipeline/REPORT.md) · [sonde](viz/carte-des-styles/pipeline/PROBE.md) |
 | [Cinquante ans de refrains](viz/cinquante-ans-de-refrains/) | brouillon | [rapport qualité](viz/cinquante-ans-de-refrains/pipeline/REPORT.md) · Chordonomicon, Billboard |
+| [Où le solo respire](viz/ou-le-solo-respire/) | brouillon, non vérifié | [rapport qualité](viz/ou-le-solo-respire/pipeline/REPORT.md) · Weimar Jazz Database |

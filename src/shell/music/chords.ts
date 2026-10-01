@@ -150,7 +150,8 @@ function freeQuality(raw: string): Quality {
     if (/^(7|9|11|13)/.test(tail)) return 'min7';
     return 'min';
   }
-  if (/^(maj|M)(7|9|11|13)/.test(q) || /^(\^|Δ)/.test(q)) return 'maj7';
+  // « j7 » : la septième majeure de la Weimar Jazz Database (« Ebj7 »).
+  if (/^(maj|M)(7|9|11|13)/.test(q) || /^(\^|Δ|j7|j9)/.test(q)) return 'maj7';
   if (/^(maj|M|6|69|add|2|5|4|no3d)/.test(q)) return 'maj';
   if (/^(7|9|11|13|alt|dom)/.test(q)) return 'dom7';
   return 'other';

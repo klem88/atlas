@@ -155,6 +155,14 @@ describe('qualités : notation iRealPro (iRb)', () => {
     expect(q('C6')).toBe('maj');
     expect(q('C69')).toBe('maj');
   });
+  it('lit l’écriture de la Weimar Jazz Database', () => {
+    expect(q('Ebj7')).toBe('maj7');
+    expect(q('G-7')).toBe('min7');
+    expect(q('Am7b5')).toBe('hdim');
+    expect(q('F-')).toBe('min');
+    expect(q('C79b')).toBe('dom7');
+    expect(parseChord('NC')).toBeNull();
+  });
 });
 
 describe('classe de triade', () => {

@@ -36,7 +36,7 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | 3c | [voyage-sur-le-tore](voyage-sur-le-tore.md) : Le voyage sur le tore (three.js) | construite en brouillon sur `feat/voyage-sur-le-tore` ; la phrase partageable s'est retournée (à trancher) |
 | 3d | [carte-des-styles](carte-des-styles.md) : La boussole des styles | sonde négative (pas d'îles sauf le jazz), repli « boussole » construit en brouillon sur `feat/carte-des-styles` |
 | 3e | [cinquante-ans-de-refrains](cinquante-ans-de-refrains.md) : Cinquante ans de refrains | construite en brouillon sur `feat/cinquante-ans-de-refrains`, en attente de relecture |
-| 3f | [ou-le-solo-respire](ou-le-solo-respire.md) : Où le solo respire | cadré, conditions d'usage Weimar à confirmer |
+| 3f | [ou-le-solo-respire](ou-le-solo-respire.md) : Où le solo respire | construite sur `feat/ou-le-solo-respire`, **page non vérifiée en navigateur** ; courriel Weimar à envoyer |
 | 4 | [Qui chante autour de chez toi](qui-chante.md) | publiée (2026-09-30) ; restent l'image de partage et le test sur téléphone |
 | 5 | [Sous tes pieds](sous-tes-pieds.md) | cadrage validé, sondes faites |
 

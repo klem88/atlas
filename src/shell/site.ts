@@ -121,6 +121,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-09',
   },
+  {
+    slug: 'ou-le-solo-respire',
+    title: 'Où le solo respire',
+    summary: 'Sur chaque accord d’un standard, les notes que les grands solistes ont vraiment jouées : la couleur de l’accord, vue depuis 456 solos transcrits.',
+    tags: ['Musique', 'Jazz', 'Improvisation'],
+    status: 'draft',
+    published: '2026-10',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 
