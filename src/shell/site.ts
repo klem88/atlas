@@ -137,6 +137,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'published',
     published: '2026-10',
   },
+  {
+    slug: 'suis-les-fleches',
+    title: 'Suis les flèches',
+    summary: 'La carte d’une tonalité : sept accords, des flèches qui disent qui tire vers qui, et les progressions les plus jouées qui s’y dessinent pendant qu’elles sonnent.',
+    tags: ['Musique', 'Harmonie', 'Apprendre'],
+    status: 'draft',
+    published: '2026-10',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 

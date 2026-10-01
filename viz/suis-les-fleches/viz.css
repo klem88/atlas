@@ -1,0 +1,15 @@
+/* Styles propres à « Suis les flèches ». Toujours dériver des jetons de src/shell/tokens.css. */
+
+.stage-frame {
+  position: relative;
+  min-height: clamp(360px, 60vh, 720px);
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+}
+
+/* Sans panneau de réglages : la scène occupe toute la largeur. */
+.viz-workspace:not(:has(.viz-panel)) {
+  grid-template-columns: 1fr;
+}
