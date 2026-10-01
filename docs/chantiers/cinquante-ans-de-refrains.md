@@ -32,14 +32,24 @@ Année par année, ce que les chansons font de leurs accords : combien d'accords
 - Les titres repères viennent du Billboard (années 1958–1991) ; après 1991, pas de titre (Chordonomicon n'en a pas), et la page l'explique.
 - Le mot « simplification » n'apparaît pas dans le titre ; le texte parle de « moins d'accords », pas de « moins de musique ».
 
+## Décisions de construction (nuit du 1er octobre 2026)
+
+- **Deux corpus dans le même graphique, jamais superposés** : un commutateur tablatures 1950–2024 / Billboard 1958–1991 ; le texte explique que la rupture de 1991 est un changement de population, pas de musique.
+- **Cinq mesures** : accords distincts (classes degré × mode), part des mineurs, part des morceaux à quatre accords ou moins, part des septièmes (relue sur les symboles bruts, le cache n'ayant que les triades), part des emprunts (fondamentale hors gamme).
+- **Aucun lissage**, même déclaré : les années à moins de 200 morceaux sont hachurées (sur la courbe et sur les rubans), et les années rondes gonflées par les tablatures datées à la décennie sont signalées.
+- **Repères** : pour chaque année du Billboard, le titre le plus riche et le plus sobre en accords distincts (« la richesse existe à toutes les époques »).
+- « Ce que ça ne dit pas » est la **première** section des notes, avant « Comment lire ».
+- Le titre garde « Cinquante ans de refrains » ; « simplification » n'apparaît nulle part.
+
 ## Tâches
 
-- [ ] Pipeline : agrégats par année et par style, effectifs, `REPORT.md`
-- [ ] Domaine : mesures, lissage déclaré, hachures ; tests
-- [ ] Interface : ligne + rubans (D3 échelles, SVG), repères, survol, URL
-- [ ] Textes (limites d'abord), image de partage, image d'aperçu
-- [ ] Vérification mobile/clair/sombre, relecture de l'auteur, publication
+- [x] Pipeline : agrégats par année et par style, effectifs, `REPORT.md`
+- [x] Domaine : mesures, hachures (< 200 morceaux) ; pas de lissage du tout ; tests
+- [x] Interface : ligne (graphique du socle) + rubans SVG, repères Billboard, glissé, URL
+- [x] Textes (limites d'abord), image de partage, image d'aperçu
+- [x] Vérification dans le navigateur de l'éditeur (375 px)
+- [ ] Relecture de l'auteur (ton éditorial surtout), publication
 
 ## Prochaine action
 
-Après `carte-des-styles` : créer la branche et étendre le pipeline aux agrégats annuels.
+Relecture de l'auteur : `git checkout feat/cinquante-ans-de-refrains`, http://localhost:5173/viz/cinquante-ans-de-refrains/?annee=1975 . Le ton des textes est le point à surveiller.

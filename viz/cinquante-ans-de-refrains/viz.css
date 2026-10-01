@@ -1,0 +1,175 @@
+/* Styles propres à « Cinquante ans de refrains ». Toujours dériver des jetons de src/shell/tokens.css. */
+
+.field--plain {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.select {
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  width: 100%;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.result {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  border-block: 1px solid var(--rule);
+}
+
+.result-eyebrow {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.result-weak {
+  color: var(--accent);
+}
+
+.result-figure {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem);
+  font-weight: 300;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-unit {
+  font-size: 0.5em;
+  color: var(--ink-2);
+}
+
+.result-line {
+  font-size: var(--text-md);
+}
+
+.result-line strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.stage-frame {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.figure-title {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.figure-sub {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.chart-host svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.lc-weak rect,
+.rb-weak {
+  pointer-events: none;
+}
+
+.rb-hatch-line {
+  stroke: var(--hatch-ink);
+  stroke-width: 1.5;
+}
+
+.rb-area--0 {
+  fill: var(--seq-6);
+}
+.rb-area--1 {
+  fill: var(--seq-5);
+}
+.rb-area--2 {
+  fill: var(--seq-4);
+}
+.rb-area--3 {
+  fill: var(--seq-3);
+}
+.rb-area--4 {
+  fill: var(--seq-2);
+}
+.rb-area--5 {
+  fill: var(--seq-1);
+}
+.rb-area--6 {
+  fill: var(--seq-0);
+}
+
+.rb-label {
+  fill: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+}
+
+.rb-axis {
+  fill: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-cursor {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+@media (max-width: 640px) {
+  .stage-frame {
+    padding: var(--space-4);
+  }
+}

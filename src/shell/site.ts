@@ -113,6 +113,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-09',
   },
+  {
+    slug: 'cinquante-ans-de-refrains',
+    title: 'Cinquante ans de refrains',
+    summary: 'Année par année, ce que les chansons font de leurs accords : combien, lesquels, et ce que ça ne dit pas.',
+    tags: ['Musique', 'Harmonie', 'Histoire'],
+    status: 'draft',
+    published: '2026-09',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 
