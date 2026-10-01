@@ -11,7 +11,7 @@ Chaque accord est une case sur un tore (le Tonnetz replié) ; un morceau y trace
 
 - `domain/tonnetz.ts` : réseau, coordonnées du tore, 24 triades, transformations P, L, R et table des distances, statistiques d'un chemin (pur, testé).
 - `domain/journey.ts` : la grille d'un morceau → arrêts, triades, positions, résumé.
-- `scene/torus.ts` : three.js (surface, réseau, facettes, étiquettes, chemin progressif, anneaux).
+- `domain/plane.ts` : le Tonnetz déplié (périodicité, instance la plus proche, chemin déroulé) ; `scene/draw-plane.ts` : dessin pur ; `scene/plane-scene.ts` : canvas, suivi de la tête, glisser.
 - `ui/share-card.ts` : image de partage depuis la capture WebGL.
 - Socle utilisé : `src/shell/music/{chords,voicing,player,synth}.ts`, `search.ts` ; `tools/lib/{corpora,degrees-corpus,named-songs}.ts`.
 

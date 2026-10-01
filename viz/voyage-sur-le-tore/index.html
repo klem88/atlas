@@ -29,12 +29,13 @@
 
     <main class="viz">
       <header class="viz-intro">
-        <p class="viz-kicker">Musique · Géométrie · three.js</p>
+        <p class="viz-kicker">Musique · Géométrie</p>
         <h1>Le voyage sur le tore</h1>
         <p class="viz-lede">
           Pose les vingt-quatre accords majeurs et mineurs sur un plan où les voisins partagent deux notes, replie ce plan : c’est un
-          tore. Un morceau y devient un chemin, et le tore ne mesure pas ce que l’oreille croit : « Giant Steps », qui sonne comme une
-          suite de bonds, y avance à plus petits pas qu’« Autumn Leaves ». Lance un morceau et regarde-le voyager, en l’écoutant.
+          tore. Ici on le montre déplié, à plat, pour y lire chaque accord ; un morceau y devient un chemin, et le tore ne mesure pas
+          ce que l’oreille croit : « Giant Steps », qui sonne comme une suite de bonds, y avance à plus petits pas qu’« Autumn
+          Leaves ». Lance un morceau et regarde-le voyager, en l’écoutant.
         </p>
         <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
@@ -79,8 +80,11 @@
 
         <div class="viz-stage">
           <div class="stage-frame">
-            <div class="scene" id="scene" role="img" aria-label="Le tore des accords et le chemin du morceau"></div>
-            <p class="scene-hint" id="scene-hint">Glisse pour tourner le tore (deux doigts sur téléphone). MAJUSCULES : majeurs ; minuscules : mineurs ; un anneau marque un accord ramené à sa triade voisine.</p>
+            <div class="scene-wrap">
+              <div class="scene" id="scene" role="img" aria-label="Le Tonnetz à plat et le chemin du morceau"></div>
+              <button class="button scene-recenter" type="button" id="recenter">Recentrer</button>
+            </div>
+            <p class="scene-hint" id="scene-hint">Le tore, déplié à plat : triangles pointe en haut, accords majeurs ; pointe en bas, mineurs ; les noms aux coins sont les notes. La vue suit la tête pendant la lecture ; glisse pour te déplacer. Un anneau marque un accord ramené à sa triade voisine.</p>
             <div class="grid" id="grid"></div>
           </div>
         </div>
@@ -103,8 +107,9 @@
               quinte ; vers le haut, une tierce majeure. Trois notes voisines forment un triangle, et ce triangle est un accord :
               pointe en haut, majeur ; pointe en bas, mineur. Deux triangles qui se touchent par un côté partagent deux notes : passer
               de l’un à l’autre, c’est ne bouger qu’une seule note. Comme les notes reviennent toutes les douze, le quadrillage se
-              referme sur lui-même : c’est un <strong>tore</strong>, avec quatre colonnes autour du grand cercle et trois rangées
-              autour du tube.
+              referme sur lui-même : c’est un <strong>tore</strong>. Un tore se lit mal en volume (la moitié est toujours cachée) ;
+              on le montre donc déplié, comme une carte du monde : le même motif de douze notes se répète dans toutes les
+              directions, et un chemin qui sort d’un côté continue simplement sur la copie voisine.
             </p>
             <p>
               Le <strong>chemin</strong> relie les accords du morceau dans l’ordre. Une traîne foncée derrière la tête à l’accent, le

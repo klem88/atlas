@@ -43,6 +43,10 @@ Le Tonnetz est le plan des accords : chaque triangle est un accord majeur ou min
 - Moyennes par style dans le panneau (barres) ; les tablatures font 2,4 par pas, les standards 2,7.
 - Le lecteur d'accords (`Player`) et les symboles lisibles ont été montés dans le socle.
 
+## Refonte du 2 octobre 2026 : le tore à plat
+
+L'auteur a trouvé la scène three.js illisible et peu belle (facettes courbes, étiquettes partout, chemin caché derrière le tore). Décision prise avec lui : **déplier le tore** (option A). La scène est un canvas 2D : mosaïque de triangles (majeurs pointe en haut, mineurs pointe en bas), noms de notes aux nœuds, instances visitées allumées, chemin en traîne avec la tête à l'accent, vue qui suit la tête pendant la lecture, glisser pour se déplacer, « Recentrer ». Le plan étant périodique ((4, 2) et (0, 3)), chaque pas rejoint l'instance la plus proche : le chemin ne saute jamais. Domaine `domain/plane.ts` testé, dessin pur `scene/draw-plane.ts` partagé avec l'image d'aperçu ; three.js retiré de cette page. Le titre reste « Le voyage sur le tore », le texte explique le dépliage.
+
 ## Tâches
 
 - [x] Domaine : positions sur le tore, distance PLR, réduction à la triade ; tests

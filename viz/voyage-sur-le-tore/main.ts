@@ -12,7 +12,8 @@ import type { NamedSong, SongsFile, StylesFile } from './data/contract';
 import { validateSongs, validateStyles } from './data/validate';
 import { buildJourney, journeyPath, journeyWords, type Journey, type Stop } from './domain/journey';
 import { triadName, triadShort } from './domain/tonnetz';
-import { createTorusScene, readTorusTheme } from './scene/torus';
+import { unwrapPath } from './domain/plane';
+import { createPlaneScene, readPlaneColors } from './scene/plane-scene';
 import { SPEEDS, readStateFromUrl, stateToSearch, type Speed, type VizState } from './state';
 import { renderShareCard, sharePhrase } from './ui/share-card';
 import './viz.css';
@@ -33,6 +34,7 @@ const els = {
   shareButton: $<HTMLButtonElement>('share-button'),
   shareDialog: $<HTMLDialogElement>('share-dialog'),
   scene: $('scene'),
+  recenter: $<HTMLButtonElement>('recenter'),
   grid: $('grid'),
   styleList: $('style-list'),
 };
@@ -50,7 +52,7 @@ const PRESETS: { label: string; id: string }[] = [
 const store = createStore<VizState>(readStateFromUrl(location.search));
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const synth = new Synth();
-const scene = createTorusScene(els.scene, readTorusTheme(), reducedMotion);
+const scene = createPlaneScene(els.scene, readPlaneColors(), reducedMotion);
 let songs = new Map<string, NamedSong>();
 let journey: Journey | null = null;
 /** Indice de la position du chemin (journeyPath) pour chaque arrêt de la grille. */
@@ -118,7 +120,7 @@ function setCursor(st: Stop | null) {
 const player = new Player(synth, (step) => {
   if (!step) {
     els.play.textContent = 'Jouer';
-    scene.setAutoRotate(true);
+    scene.setFollow(true);
     if (journey) scene.setHead(-1);
     els.grid.querySelectorAll('.grid-cell.is-playing').forEach((c) => c.classList.remove('is-playing'));
     return;
@@ -142,7 +144,7 @@ els.play.addEventListener('click', () => {
   // `play` commence par arrêter (et remettre le bouton à « Jouer ») : on écrit l'état après.
   player.play(steps);
   els.play.textContent = 'Arrêter';
-  scene.setAutoRotate(false);
+  scene.setFollow(true);
 });
 
 /* Styles ----------------------------------------------------------------------------------------------------- */
@@ -174,9 +176,13 @@ function render(state: VizState, previous?: VizState) {
       if (pathStops.has(st.index)) k++;
       pathIndexOfStop[st.index] = st.triad ? k : -1;
     }
+    const rings = new Set<number>();
+    path.forEach((p, i) => {
+      if (!p.stop.exact) rings.add(i);
+    });
     scene.setPath(
-      path.map((p) => ({ s: p.s, t: p.t })),
-      journey.stops.filter((st) => st.pos && !st.exact).map((st) => st.pos!),
+      unwrapPath(path.map((p) => p.stop.triad!)),
+      rings,
     );
     renderResult(journey);
     renderGrid(journey);
@@ -219,7 +225,8 @@ async function boot() {
 void boot();
 
 new ResizeObserver(() => scene.resize()).observe(els.scene);
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => scene.setTheme(readTorusTheme()));
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => scene.setColors(readPlaneColors()));
+els.recenter.addEventListener('click', () => scene.recenter());
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) player.stop();
 });

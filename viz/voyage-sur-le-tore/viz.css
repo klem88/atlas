@@ -166,6 +166,10 @@
   padding: var(--space-4);
 }
 
+.scene-wrap {
+  position: relative;
+}
+
 .scene {
   position: relative;
   width: 100%;
@@ -173,10 +177,24 @@
   max-height: 70vh;
   border-radius: var(--radius);
   overflow: hidden;
+  border: 1px solid var(--rule);
+  cursor: grab;
+}
+
+.scene:active {
+  cursor: grabbing;
 }
 
 .scene canvas {
   display: block;
+}
+
+.scene-recenter {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
 }
 
 .scene-hint {

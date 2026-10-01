@@ -33,10 +33,11 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | 3 | Point de ralliement et nom du site | à décider par l'auteur |
 | 3a | [progression-jouee](progression-jouee.md) : Ta progression a déjà été jouée 40 000 fois | construite en brouillon sur `feat/progression-jouee` (nuit du 1er octobre), en attente de relecture |
 | 3b | [fleuve-des-accords](fleuve-des-accords.md) : Le fleuve des enchaînements | construite en brouillon sur `feat/fleuve-des-accords`, en attente de relecture |
-| 3c | [voyage-sur-le-tore](voyage-sur-le-tore.md) : Le voyage sur le tore (three.js) | construite en brouillon sur `feat/voyage-sur-le-tore` ; la phrase partageable s'est retournée (à trancher) |
+| 3c | [voyage-sur-le-tore](voyage-sur-le-tore.md) : Le voyage sur le tore | publiée ; refaite à plat (canvas 2D) le 2 octobre 2026 |
 | 3d | [carte-des-styles](carte-des-styles.md) : La boussole des styles | sonde négative (pas d'îles sauf le jazz), repli « boussole » construit en brouillon sur `feat/carte-des-styles` |
 | 3e | [cinquante-ans-de-refrains](cinquante-ans-de-refrains.md) : Cinquante ans de refrains | construite en brouillon sur `feat/cinquante-ans-de-refrains`, en attente de relecture |
 | 3f | [ou-le-solo-respire](ou-le-solo-respire.md) : Où le solo respire | construite sur `feat/ou-le-solo-respire`, **page non vérifiée en navigateur** ; courriel Weimar à envoyer |
+| 3g | [compose-ta-progression](compose-ta-progression.md) : Compose ta progression | cadré le 2 octobre 2026, en construction sur `feat/compose-ta-progression` |
 | 4 | [Qui chante autour de chez toi](qui-chante.md) | publiée (2026-09-30) ; restent l'image de partage et le test sur téléphone |
 | 5 | [Sous tes pieds](sous-tes-pieds.md) | cadrage validé, sondes faites |
 

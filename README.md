@@ -79,7 +79,7 @@ docs/                       idées, design
 | [Ce qu’une seule note contient](viz/une-seule-note/) | publiée | aucune donnée, série harmonique |
 | [Ta progression a déjà été jouée 40 000 fois](viz/progression-jouee/) | publiée | [rapport qualité](viz/progression-jouee/pipeline/REPORT.md) · Chordonomicon, iRb, McGill Billboard |
 | [Le fleuve des enchaînements](viz/fleuve-des-accords/) | publiée | [rapport qualité](viz/fleuve-des-accords/pipeline/REPORT.md) · mêmes corpus |
-| [Le voyage sur le tore](viz/voyage-sur-le-tore/) | publiée | [rapport qualité](viz/voyage-sur-le-tore/pipeline/REPORT.md) · iRb, Billboard, three.js |
+| [Le voyage sur le tore](viz/voyage-sur-le-tore/) | publiée | [rapport qualité](viz/voyage-sur-le-tore/pipeline/REPORT.md) · iRb, Billboard, Tonnetz à plat |
 | [La boussole des styles](viz/carte-des-styles/) | publiée | [rapport qualité](viz/carte-des-styles/pipeline/REPORT.md) · [sonde](viz/carte-des-styles/pipeline/PROBE.md) |
 | [Cinquante ans de refrains](viz/cinquante-ans-de-refrains/) | publiée | [rapport qualité](viz/cinquante-ans-de-refrains/pipeline/REPORT.md) · Chordonomicon, Billboard |
 | [Où le solo respire](viz/ou-le-solo-respire/) | publiée | [rapport qualité](viz/ou-le-solo-respire/pipeline/REPORT.md) · Weimar Jazz Database |
