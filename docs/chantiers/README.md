@@ -38,7 +38,7 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | 3e | [cinquante-ans-de-refrains](cinquante-ans-de-refrains.md) : Cinquante ans de refrains | construite en brouillon sur `feat/cinquante-ans-de-refrains`, en attente de relecture |
 | 3f | [ou-le-solo-respire](ou-le-solo-respire.md) : Où le solo respire | construite sur `feat/ou-le-solo-respire`, **page non vérifiée en navigateur** ; courriel Weimar à envoyer |
 | 3g | [compose-ta-progression](compose-ta-progression.md) : Compose ta progression | publiée le 2 octobre 2026, en attente de relecture |
-| 3h | [suis-les-fleches](suis-les-fleches.md) : Suis les flèches | en construction sur `feat/suis-les-fleches` |
+| 3h | [suis-les-fleches](suis-les-fleches.md) : Suis les flèches | construite en brouillon sur `feat/suis-les-fleches`, en attente de relecture |
 | 4 | [Qui chante autour de chez toi](qui-chante.md) | publiée (2026-09-30) ; restent l'image de partage et le test sur téléphone |
 | 5 | [Sous tes pieds](sous-tes-pieds.md) | cadrage validé, sondes faites |
 

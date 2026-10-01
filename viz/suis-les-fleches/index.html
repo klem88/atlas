@@ -31,8 +31,11 @@
       <header class="viz-intro">
         <p class="viz-kicker">Musique · Harmonie · Apprendre</p>
         <h1>Suis les flèches</h1>
-        <p class="viz-lede">La carte d’une tonalité : sept accords, des flèches qui disent qui tire vers qui, et les progressions les plus jouées qui s’y dessinent pendant qu’elles sonnent.</p>
-        <!-- Affiche les éléments de classe « detail » (aides, notes de calcul) : voir src/shell/details.ts. -->
+        <p class="viz-lede">
+          Sept accords, toujours à la même place : la maison au centre, et autour, les accords du repos, du départ et de la tension.
+          Les flèches disent qui tire vers qui. Choisis une progression : elle se dessine sur la carte pendant qu’elle sonne. Ou
+          touche deux accords à la suite pour voir le pas qui les relie.
+        </p>
         <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
           <span class="details-toggle-label">Plus de détails</span>
@@ -40,12 +43,36 @@
       </header>
 
       <section class="viz-workspace" aria-label="Visualisation">
-        <!-- Réglages et résultat. Pour une visualisation sans panneau, supprimer ce bloc :
-             la scène prend alors toute la largeur (voir viz.css). -->
-        <div class="viz-panel" id="panel"></div>
+        <div class="viz-panel" id="panel">
+          <div class="field field--plain field--row">
+            <label class="field-label" for="tonic">Tonalité</label>
+            <select id="tonic" class="select"></select>
+          </div>
+          <section class="about" id="about" aria-live="polite"></section>
+          <p class="count" id="count" aria-live="polite"></p>
+          <div class="library-block">
+            <h2 class="field-label">Les progressions courantes</h2>
+            <ul class="library" id="library"></ul>
+          </div>
+          <p class="note detail">Le son ne part que quand tu le demandes. « Écouter » joue la progression en boucle une vingtaine de secondes ; les flèches ◀ ▶ avancent d’un accord à la fois.</p>
+        </div>
 
         <div class="viz-stage">
-          <div class="stage-frame" id="stage"></div>
+          <div class="stage-frame">
+            <fieldset class="segmented views" id="views" aria-label="Disposition de la carte"></fieldset>
+            <svg class="map" id="map" role="group" aria-label="La carte des sept accords de la tonalité"></svg>
+            <div class="sequence" id="sequence" aria-label="La progression"></div>
+            <div class="transport">
+              <button class="button button--icon" type="button" id="prev" aria-label="Accord précédent">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" fill="none" /></svg>
+              </button>
+              <button class="button button--primary" type="button" id="play" aria-pressed="false">Écouter</button>
+              <button class="button button--icon" type="button" id="next" aria-label="Accord suivant">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" fill="none" /></svg>
+              </button>
+            </div>
+            <p class="legend" id="legend" aria-live="polite"></p>
+          </div>
         </div>
       </section>
 
@@ -61,19 +88,57 @@
         <div class="prose">
           <section id="lire">
             <h2>Comment lire</h2>
-            <p>À écrire : ce que représentent les formes, les couleurs, les interactions.</p>
+            <p>
+              Une tonalité majeure contient sept accords, un sur chaque note de sa gamme. On les nomme par leur
+              <strong>degré</strong> : I pour celui de la tonique, V pour celui de la cinquième note, et ainsi de suite. Les
+              minuscules (ii, iii, vi) sont des accords mineurs ; vii° est diminué. Le degré ne change pas avec la tonalité :
+              I–V–vi–IV se joue Do – Sol – La m – Fa en do, Sol – Ré – Mi m – Do en sol.
+            </p>
+            <p>
+              Chaque accord a une <strong>fonction</strong>, dite ici avec des mots simples. Le <strong>repos</strong> (I, vi, iii)
+              donne l’impression d’être posé. Le <strong>départ</strong> (IV, ii) quitte la maison sans urgence. La
+              <strong>tension</strong> (V, vii°) appelle un retour. La couleur des disques suit cette tension : plus elle
+              monte, plus le disque tranche sur le fond.
+            </p>
+            <p>
+              Les <strong>flèches fines</strong> en fond sont les attractions les plus classiques : V vers I, ii vers V, IV vers V…
+              Quand une progression joue, son chemin se trace en orange, pas après pas, et la phrase sous la carte dit ce qui se
+              passe : comment bouge la basse, quelle zone on quitte et laquelle on rejoint, combien de notes les deux accords
+              partagent.
+            </p>
+            <p>
+              Trois dispositions de la même carte. Le <strong>cercle</strong> met la maison au centre, entourée de ses trois zones.
+              La <strong>ligne de quintes</strong> range les accords de façon qu’un pas vers la droite descende d’une quinte :
+              beaucoup de progressions avancent alors vers la droite, vers la maison. La <strong>grille</strong> est disposée à la
+              main, comme un schéma de livre, avec la cadence IV – I – V au milieu.
+            </p>
           </section>
           <section id="methode">
             <h2>La méthode</h2>
-            <p>À écrire : le calcul, pas à pas, idéalement avec les valeurs de l’utilisateur.</p>
+            <ul>
+              <li><strong>Fonctions</strong> : la répartition classique de l’harmonie tonale. iii est rangé avec le repos (il partage deux notes avec I), comme dans la plupart des manuels ; on peut aussi l’entendre comme un passage vers vi.</li>
+              <li><strong>Mouvement de la basse</strong> : l’écart entre les fondamentales des deux accords. Monter d’une quarte ou descendre d’une quinte mène au même accord : la page parle de « quinte descendante », le pas qui donne le plus nettement l’impression d’aller quelque part.</li>
+              <li><strong>Notes communes</strong> : celles que partagent les deux triades. Deux accords à une tierce l’un de l’autre en partagent deux, d’où leur glissement doux ; deux voisins comme IV et V n’en partagent aucune, d’où leur élan.</li>
+              <li><strong>Son</strong> : la fondamentale à la basse, et les trois notes de l’accord placées au plus près de l’accord précédent, en synthèse additive dans ton navigateur.</li>
+              <li><strong>Compte des chansons</strong> : la suite exacte, cherchée dans les comptes de <a href="../progression-jouee/">Ta progression a déjà été jouée</a>. Elle peut apparaître n’importe où dans le morceau.</li>
+            </ul>
           </section>
           <section id="sources">
             <h2>D’où viennent les chiffres</h2>
-            <p>À écrire : chaque source avec son lien, sa licence et sa période.</p>
+            <ul>
+              <li>Les fonctions, les flèches et les progressions relèvent de la théorie musicale courante. La façon de les montrer est inspirée des diagrammes de Brian Calli (<em>Harmonie illustrée</em>, <a href="https://briancallimusic.com/fr/libros">briancallimusic.com</a>) ; rien n’est repris de ses livres.</li>
+              <li>Les comptes de chansons : <strong>Chordonomicon</strong> (Kantarelis et al., 2024, CC BY-NC 4.0), via les agrégats de « Ta progression a déjà été jouée ».</li>
+              <li>Les titres cités sont des exemples connus, pas un échantillon : ils mettent un son sur la suite.</li>
+            </ul>
           </section>
           <section id="limites">
             <h2>Ce que ça ne dit pas</h2>
-            <p>À écrire : les angles morts, les approximations, les territoires manquants.</p>
+            <ul>
+              <li><strong>Seulement la gamme majeure</strong> : les accords empruntés (♭VII, ♭VI, iv), les dominantes secondaires et le mode mineur viendront dans une suite de la page.</li>
+              <li><strong>Triades seulement</strong> : les septièmes et les couleurs (Sol 7, Do maj 7) changent la tension sans changer la place sur la carte.</li>
+              <li><strong>Les flèches ne sont pas des règles</strong> : elles disent les attractions les plus fréquentes. Toutes les suites sont permises, et beaucoup de belles chansons les contredisent.</li>
+              <li><strong>Une chanson ne se résume pas à sa grille</strong> : mélodie, rythme et timbre comptent autant.</li>
+            </ul>
           </section>
         </div>
       </section>

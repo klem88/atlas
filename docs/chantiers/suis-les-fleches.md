@@ -43,11 +43,20 @@ Apprendre l'harmonie en la **voyant**, dans l'esprit des livres de Brian Calli (
 ## Tâches
 
 - [x] Domaine : dispositions, bibliothèque, mouvements et notes communes ; tests
-- [ ] Interface : carte SVG, flèches de fond, comète, sélecteur de vue, bibliothèque, pas à pas, son, URL, compte des chansons
-- [ ] Textes (comment lire, méthode, sources, limites), image d'aperçu
-- [ ] Vérification dans le navigateur : clair, sombre, 375 px
+- [x] Interface : carte SVG, flèches de fond, comète, sélecteur de vue, bibliothèque, pas à pas, son, URL, compte des chansons
+- [x] Textes (comment lire, méthode, sources, limites), image d'aperçu
+- [x] Vérification dans le navigateur : clair, sombre, 375 px
 - [ ] Relecture de l'auteur
+
+## Décisions de construction (1er octobre 2026)
+
+- La flèche d'un pas s'incurve toujours à gauche du sens de marche : un aller et un retour ne se superposent pas. Dans la ligne de quintes, les pas vers la maison passent donc au-dessus, les retours en dessous, avec une hauteur minimale pour sauter par-dessus les disques voisins.
+- Pendant l'écoute, chaque tour efface le chemin, mais le pas qui referme la boucle (IV → I dans l'axe de la pop) reste dessiné.
+- Toucher un accord de la carte sort de la progression : on l'entend, et le pas depuis l'accord précédent se dessine et se raconte (exploration libre).
+- Sur mobile, la carte passe avant la bibliothèque.
+- En sombre, la rampe s'inverse (la tension devient la plus claire) : le texte dit « plus la tension monte, plus le disque tranche sur le fond ».
+- Limite connue : en ligne de quintes à 375 px, les disques font environ 38 px (sept accords sur une ligne) ; le cercle et la grille respectent les 44 px.
 
 ## Prochaine action
 
-Interface : `main.ts`, `ui/map.ts` (carte SVG, flèches, comète), `state.ts` (URL).
+Relecture de l'auteur : http://localhost:5173/viz/suis-les-fleches/ (`npm run dev`). Ensuite, au choix : la piste B (anneau extérieur des accords voisins : dominantes secondaires V/x, emprunts ♭VII, ♭VI, iv, avec les progressions qui les utilisent) ou la piste C (panneau « la colle » : notes communes et mouvements d'un demi-ton entre deux accords, sur un mini-clavier).

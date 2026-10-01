@@ -18,7 +18,7 @@ describe('dispositions', () => {
       expect(p.y + l.radius).toBeLessThanOrEqual(l.aspect);
     }
     for (let i = 0; i < points.length; i++)
-      for (let j = i + 1; j < points.length; j++) expect(Math.hypot(points[i]!.x - points[j]!.x, points[i]!.y - points[j]!.y)).toBeGreaterThan(l.radius * 2.4);
+      for (let j = i + 1; j < points.length; j++) expect(Math.hypot(points[i]!.x - points[j]!.x, points[i]!.y - points[j]!.y)).toBeGreaterThan(l.radius * 2.2);
   });
 
   it('cercle : I au centre, chaque accord dans le secteur de sa fonction', () => {

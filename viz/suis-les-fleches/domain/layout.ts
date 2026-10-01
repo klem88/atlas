@@ -46,6 +46,9 @@ export interface Layout {
   aspect: number;
   /** Rayon d'un accord, en fraction de la largeur. */
   radius: number;
+  /** Courbure des flèches (fraction de leur longueur), et hauteur minimale de la courbe (pour sauter par-dessus les disques voisins). */
+  bend: number;
+  minHop: number;
   positions: Readonly<Record<string, Point>>;
   /** Secteurs de fonction (cercle seulement) : angle de début et de fin, en degrés, sens horaire depuis 3 h. */
   sectors: readonly { fn: Fn; from: number; to: number }[];
@@ -69,6 +72,8 @@ function circle(): Layout {
     view: 'cercle',
     aspect: 1,
     radius: 0.062,
+    bend: 0.18,
+    minHop: 0,
     positions,
     sectors: [
       { fn: 'tension', from: -150, to: -30 },
@@ -84,9 +89,10 @@ const LINE_ORDER = ['vii°', 'iii', 'vi', 'ii', 'V', 'I', 'IV'];
 function line(): Layout {
   const positions: Record<string, Point> = {};
   LINE_ORDER.forEach((label, i) => {
-    positions[label] = { x: 0.07 + (i * 0.86) / (LINE_ORDER.length - 1), y: 0.21 };
+    positions[label] = { x: 0.065 + (i * 0.87) / (LINE_ORDER.length - 1), y: 0.25 };
   });
-  return { view: 'ligne', aspect: 0.42, radius: 0.052, positions, sectors: [] };
+  // Flèches très bombées : vers la droite (vers la maison) elles passent au-dessus, vers la gauche en dessous.
+  return { view: 'ligne', aspect: 0.5, radius: 0.062, bend: 0.42, minHop: 0.16, positions, sectors: [] };
 }
 
 /** Grille « de livre » : la cadence IV – I – V au milieu, ses deux voisins mineurs dessous, ii et vii° au-dessus. */
@@ -100,7 +106,7 @@ function grid(): Layout {
     vi: { x: 0.3, y: 0.62 },
     iii: { x: 0.7, y: 0.62 },
   };
-  return { view: 'grille', aspect: 0.75, radius: 0.058, positions, sectors: [] };
+  return { view: 'grille', aspect: 0.75, radius: 0.058, bend: 0.18, minHop: 0, positions, sectors: [] };
 }
 
 export function layoutOf(view: View): Layout {
@@ -114,15 +120,16 @@ export const chordOfDegree = (d: Degree): MapChord | undefined => DIATONIC.find(
 
 /**
  * Flèche courbe de `a` vers `b` : courbe de Bézier quadratique qui s'incurve toujours à gauche du sens de marche
- * (A→B et B→A ne se superposent pas), raccourcie aux deux bouts pour partir du bord des disques.
+ * (A→B et B→A ne se superposent pas), au moins `minHop` de haut, raccourcie aux deux bouts pour partir du bord des disques.
  */
-export function arrowPath(a: Point, b: Point, radius: number, bend = 0.2): { d: string; mid: Point; end: Point; angle: number } {
+export function arrowPath(a: Point, b: Point, radius: number, bend = 0.2, minHop = 0): { d: string; mid: Point; end: Point; angle: number } {
   const dx = b.x - a.x;
   const dy = b.y - a.y;
   const len = Math.hypot(dx, dy) || 1;
   const nx = dy / len;
   const ny = -dx / len;
-  const c = { x: (a.x + b.x) / 2 + nx * bend * len, y: (a.y + b.y) / 2 + ny * bend * len };
+  const lift = Math.max(bend * len, minHop);
+  const c = { x: (a.x + b.x) / 2 + nx * lift, y: (a.y + b.y) / 2 + ny * lift };
   const trim = (from: Point, toward: Point, by: number): Point => {
     const l = Math.hypot(toward.x - from.x, toward.y - from.y) || 1;
     return { x: from.x + ((toward.x - from.x) * by) / l, y: from.y + ((toward.y - from.y) * by) / l };
