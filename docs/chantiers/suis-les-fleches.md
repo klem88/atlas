@@ -42,7 +42,7 @@ Apprendre l'harmonie en la **voyant**, dans l'esprit des livres de Brian Calli (
 
 ## Tâches
 
-- [ ] Domaine : dispositions, bibliothèque, mouvements et notes communes ; tests
+- [x] Domaine : dispositions, bibliothèque, mouvements et notes communes ; tests
 - [ ] Interface : carte SVG, flèches de fond, comète, sélecteur de vue, bibliothèque, pas à pas, son, URL, compte des chansons
 - [ ] Textes (comment lire, méthode, sources, limites), image d'aperçu
 - [ ] Vérification dans le navigateur : clair, sombre, 375 px
@@ -50,4 +50,4 @@ Apprendre l'harmonie en la **voyant**, dans l'esprit des livres de Brian Calli (
 
 ## Prochaine action
 
-Domaine : `domain/layout.ts`, `domain/library.ts`, `domain/moves.ts` et leurs tests.
+Interface : `main.ts`, `ui/map.ts` (carte SVG, flèches, comète), `state.ts` (URL).
