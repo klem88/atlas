@@ -35,7 +35,7 @@ export function commonTones(a: Degree, b: Degree): number[] {
 const KIND_TEXT: Record<MoveKind, string> = {
   meme: 'on reste',
   'quinte-desc': 'quinte descendante, le pas le plus naturel',
-  'quinte-asc': 'quinte montante, on s’éloigne d’un cran',
+  'quinte-asc': 'quinte montante, le cycle des quintes à rebours',
   'seconde-asc': 'un pas vers le haut, un élan',
   'seconde-desc': 'un pas vers le bas',
   'tierce-asc': 'une tierce, un glissement doux',
@@ -55,6 +55,7 @@ function functionText(a: Degree, b: Degree): string | null {
   const fb = chordOfDegree(b)?.fn;
   if (!fa || !fb) return null;
   if (b.step === 0 && b.cls === 'maj' && fa === 'tension') return 'la tension se résout : retour à la maison';
+  if (b.step === 0 && b.cls === 'maj' && a.step === 5 && a.cls === 'maj') return 'retour à la maison en douceur, sans passer par la tension (la cadence « amen »)';
   if (b.step === 0 && b.cls === 'maj') return 'retour à la maison';
   if (a.step === 0 && a.cls === 'maj') return `on quitte la maison vers ${fb === 'tension' ? 'la tension' : fb === 'depart' ? 'le départ' : 'un autre repos'}`;
   if (fa === fb) return `on reste dans la zone « ${FN_LABELS[fa].name} »`;

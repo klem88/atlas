@@ -28,6 +28,8 @@ export class ChordMap {
   private nodes = new Map<string, SVGGElement>();
   private moves: [string, string][] = [];
   private animation = 0;
+  /** Termine l'animation en cours (trait plein, comète retirée) : un nouveau pas ne laisse jamais un trait à demi tracé. */
+  private finish: (() => void) | null = null;
 
   constructor(
     private svg: SVGSVGElement,
@@ -163,13 +165,20 @@ export class ChordMap {
     }
   }
 
-  clearTrail() {
+  private settle() {
     cancelAnimationFrame(this.animation);
+    this.finish?.();
+    this.finish = null;
+  }
+
+  clearTrail() {
+    this.settle();
     this.moves = [];
     this.trail.replaceChildren();
   }
 
   private redrawTrail() {
+    this.settle();
     this.trail.replaceChildren();
     this.moves.forEach(([a, b], i) => {
       const g = this.arrow(a, b, 'map-step', this.trail).parentElement!;
@@ -180,9 +189,8 @@ export class ChordMap {
   /** Dessine un pas du chemin : la traînée se trace pendant `seconds`, une comète la parcourt. */
   drawMove(from: string, to: string, seconds: number, animate = true) {
     if (from === to) return;
-    cancelAnimationFrame(this.animation);
+    this.settle();
     this.trail.querySelectorAll('.map-step').forEach((g) => g.classList.add('is-past'));
-    this.trail.querySelector('.map-comet')?.remove();
     this.moves.push([from, to]);
     const line = this.arrow(from, to, 'map-step', this.trail);
     if (this.opts.reducedMotion || !animate) return;
@@ -197,6 +205,12 @@ export class ChordMap {
     el('circle', { r: 9, class: 'map-comet-core' }, comet);
     const duration = Math.min(700, seconds * 1000 * 0.7);
     const start = performance.now();
+    this.finish = () => {
+      line.style.strokeDasharray = '';
+      line.style.strokeDashoffset = '';
+      head.style.opacity = '';
+      comet.remove();
+    };
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration);
       const e = 1 - Math.pow(1 - t, 3);
@@ -204,12 +218,7 @@ export class ChordMap {
       comet.setAttribute('transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
       line.style.strokeDashoffset = `${(1 - e) * length}`;
       if (t < 1) this.animation = requestAnimationFrame(tick);
-      else {
-        line.style.strokeDasharray = '';
-        line.style.strokeDashoffset = '';
-        head.style.opacity = '';
-        comet.remove();
-      }
+      else this.settle();
     };
     this.animation = requestAnimationFrame(tick);
   }

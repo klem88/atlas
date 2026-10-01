@@ -98,6 +98,7 @@ describe('mouvements', () => {
   it('raconte un pas', () => {
     expect(moveSentence(d('V'), d('I'), 0)).toBe('Sol → Do : quinte descendante, le pas le plus naturel ; la tension se résout : retour à la maison. 1 note en commun : sol.');
     expect(moveSentence(d('IV'), d('V'), 0)).toBe('Fa → Sol : un pas vers le haut, un élan ; du départ à la tension. Aucune note en commun.');
+    expect(moveSentence(d('IV'), d('I'), 0)).toBe('Fa → Do : quinte montante, le cycle des quintes à rebours ; retour à la maison en douceur, sans passer par la tension (la cadence « amen »). 1 note en commun : do.');
     expect(moveSentence(d('I'), d('vi'), 7)).toContain('2 notes en commun : sol, si.');
   });
 });
