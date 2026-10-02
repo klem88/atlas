@@ -92,9 +92,9 @@ const map = new ChordMap(els.map, {
 
 /** Survol d'un candidat (souris) : sa flèche se dessine et le panneau raconte le pas à venir. */
 function hover(c: Chord | null) {
-  map.preview(c);
-  if (inspecting !== null) return; // pendant la consultation d’un pas, la carte ne propose rien
+  if (inspecting !== null) return; // pendant la consultation d’un pas, la carte ne propose rien (pas même la flèche d’aperçu)
   if (playing !== null) return; // pendant l'écoute, ni le panneau ni la carte ne reviennent au chemin complet
+  map.preview(c);
   const { home, path } = store.get();
   const j = journeyOf(home, path);
   const last = j.steps[j.steps.length - 1];
@@ -222,7 +222,7 @@ els.cardResume.addEventListener('click', () => {
 function renderRoute(route: Route | null, j: Journey, explicit: boolean) {
   shownRoute = route;
   els.routeClear.hidden = !(explicit && route);
-  els.recipe.hidden = !route;
+  els.recipe.hidden = !route || !route.recipe.length;
   els.routeTitle.hidden = !route;
   els.routeHint.textContent = route ? '' : DEST_HINT;
   els.routeHint.hidden = !!route;
@@ -232,7 +232,7 @@ function renderRoute(route: Route | null, j: Journey, explicit: boolean) {
     return;
   }
   const via = route.hops.length > 1 ? ` (par ${route.hops.slice(0, -1).map((t) => nameOf({ root: t, cls: 'maj' })).join(', ')})` : '';
-  els.routeTitle.textContent = explicit ? `Vers ${keyName(route.target)}${via}` : `On penche vers ${keyName(route.hop)}${via}`;
+  els.routeTitle.textContent = explicit ? `Vers ${keyName(route.target)}${via}` : `On penche vers ${keyName(route.target)}${via}`;
   els.recipe.innerHTML = route.recipe
     .map(
       (step, i) =>
@@ -243,7 +243,8 @@ function renderRoute(route: Route | null, j: Journey, explicit: boolean) {
 
 /** Toucher une tonalité de l’anneau : en faire la destination (ou l’abandonner). */
 function chooseKey(t: number) {
-  if (playing !== null) return;
+  // Pendant l’écoute : on l’arrête, puis on applique le choix.
+  if (playing !== null) stopListening();
   inspecting = null; // on quitte d’abord la consultation, puis on applique le choix
   const { home, path } = store.get();
   const j = journeyOf(home, path);

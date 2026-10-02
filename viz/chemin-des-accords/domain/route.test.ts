@@ -63,7 +63,7 @@ describe('routeTo', () => {
     ]);
   });
 
-  it('jouer la recette mène vraiment à l’étape', () => {
+  it('chaque pas de la recette, rejoué par la règle, fait ce qu’il annonce, et mène à l’étape', () => {
     const starts: [number, Chord[]][] = [
       [C, [M(C)]],
       [C, [M(C), M(G)]],
@@ -71,17 +71,51 @@ describe('routeTo', () => {
       [C, [M(C), M(D)]],
       [C, [M(C), m(B)]],
       [C, [M(C), m(G)]],
+      [C, [M(C), m(G), M(C)]],
+      [C, [M(C), m(B), M(C)]],
+      [C, [M(C), M(10), M(C), M(10)]],
+      [C, [M(C), M(D), M(C), M(D)]],
       [G, [M(G)]],
     ];
     for (const [home, path] of starts) {
-      const key = journeyOf(home, path).key;
-      for (const target of [key + 7, key + 5]) {
-        const r = routeTo(journeyOf(home, path), target % 12)!;
+      const j = journeyOf(home, path);
+      const targets = [(j.key + 7) % 12, (j.key + 5) % 12, ...(j.leaning !== null ? [j.leaning] : [])];
+      for (const target of targets) {
+        const r = routeTo(j, target)!;
+        const where = `${path.map((c) => `${c.root}${c.cls}`).join(',')} vers ${target}`;
+        // Une recette vide n’est admise que si aucune porte ne fait pencher ni ne confirme (aucun cas aujourd’hui).
+        expect(r.recipe.length, where).toBeGreaterThan(0);
         const played = [...path];
-        for (const s of r.recipe) played.push(s.chord);
-        expect(journeyOf(home, played).key, `${path.length} accords, vers ${target % 12}`).toBe(r.hop);
+        for (const s of r.recipe) {
+          played.push(s.chord);
+          const e = journeyOf(home, played).steps[played.length - 1]!.event;
+          expect(e.kind, `${where}, ${s.chord.root}${s.chord.cls}`).not.toBe('repete');
+          expect(e.kind, `${where}, ${s.chord.root}${s.chord.cls}`).not.toBe('boucle');
+          if (s.why === 'frole') expect(e, where).toEqual({ kind: 'frole', target: r.hop });
+          if (s.why === 'confirme') expect(e.kind === 'confirme' && e.to === r.hop, `${where} : ${JSON.stringify(e)}`).toBe(true);
+        }
+        expect(journeyOf(home, played).key, where).toBe(r.hop);
       }
     }
+  });
+
+  it('après Do – Sol m – Do, on ne rejoue pas Sol m (ce serait une boucle) : Si♭ confirme', () => {
+    expect(routeTo(journeyOf(C, [M(C), m(G), M(C)]), F)!.recipe.map((s) => [s.chord, s.why])).toEqual([
+      [M(10), 'confirme'],
+      [M(F), 'arrivee'],
+    ]);
+  });
+
+  it('après une boucle Do – Si♭ – Do – Si♭, Si♭ ne mène plus vers Fa', () => {
+    const r = routeTo(journeyOf(C, [M(C), M(10), M(C), M(10)]), F)!;
+    expect(r.recipe.some((s) => s.why === 'frole' && s.chord.root === 10 && s.chord.cls === 'maj')).toBe(false);
+    expect(r.pass).not.toContainEqual(M(10));
+    expect(r.recipe.map((s) => [s.chord, s.why])).toEqual([
+      [m(D), 'pivot'],
+      [m(G), 'frole'],
+      [M(10), 'confirme'],
+      [M(F), 'arrivee'],
+    ]);
   });
 
   it('une destination lointaine guide vers la première voisine', () => {

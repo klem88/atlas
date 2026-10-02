@@ -58,7 +58,7 @@ export function leanOf(c: Chord, key: number): number | null {
 }
 
 /** L'événement d'un accord quand rien n'est en suspens. */
-function freshEvent(c: Chord, key: number, loops: ReadonlySet<string>, leanIn: (chord: Chord, k: number) => number | null): StepEvent {
+function freshEvent(c: Chord, key: number, leanIn: (chord: Chord, k: number) => number | null): StepEvent {
   const r = roleOf(c, key);
   if (r.kind === 'diatonique') return { kind: 'gamme' };
   const target = leanIn(c, key);
@@ -84,7 +84,7 @@ export function journeyOf(home: number, chords: readonly Chord[]): Journey {
       return;
     }
     if (leaning === null) {
-      const event = freshEvent(c, key, loops, leanIn);
+      const event = freshEvent(c, key, leanIn);
       if (event.kind === 'frole') {
         leaning = event.target;
         pending = i;

@@ -169,6 +169,7 @@ export class ChordMap {
       g.classList.toggle('is-home', t === v.home);
       g.classList.toggle('is-leaning', t === v.leaning);
       g.classList.toggle('is-destination', t === v.route?.target);
+      g.setAttribute('aria-label', t === v.key ? `${keyName(t)}, tu y es` : `Aller vers ${keyName(t)}`);
       g.querySelector('text')!.style.transform = `rotate(${-v.rotation}deg)`;
     }
     const arc = homeArc(v.home, v.key);

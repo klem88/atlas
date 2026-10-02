@@ -2,9 +2,11 @@
  * La route vers une tonalité : de voisine en voisine sur le cycle des quintes, et pour la prochaine voisine (« l’étape »),
  * une recette de trois ou quatre accords (un commun, celui qui fait pencher, celui qui confirme, la nouvelle tonique),
  * les portes (ce qui mène, ce qui ramène) et le guide de chaque accord de la carte.
+ * La recette est construite en rejouant la règle du parcours (`journeyOf`) : chaque accord proposé fait vraiment ce
+ * qu’il annonce à la suite du chemin déjà joué (boucles, accords qui ne frôlent plus, répétitions compris).
  */
 import { diatonicChords, fifthsOffset, mod12, roleOf, sameChord, type Chord } from '../../suis-les-fleches/domain/harmony';
-import type { Journey } from './journey';
+import { journeyOf, type Journey, type StepEvent } from './journey';
 
 export type Guide = 'mene' | 'commun' | 'ramene' | 'neutre';
 export type RecipeWhy = 'pivot' | 'frole' | 'confirme' | 'arrivee';
@@ -31,6 +33,7 @@ export interface Route {
 const inKey = (c: Chord, key: number) => roleOf(c, key).kind === 'diatonique';
 const M = (root: number): Chord => ({ root: mod12(root), cls: 'maj' });
 const m = (root: number): Chord => ({ root: mod12(root), cls: 'min' });
+const dim = (root: number): Chord => ({ root: mod12(root), cls: 'dim' });
 
 /** La voisine sur le cycle des quintes en direction de `target` (à six crans : côté dièses). */
 export function nextHop(from: number, target: number): number {
@@ -56,8 +59,8 @@ export function doors(from: number, to: number): { pass: Chord[]; back: Chord[] 
 }
 
 /**
- * Limite acceptée : si la page penche vers une autre tonalité que l’étape (par un accord chromatique),
- * la recette part quand même de la tonalité du moment ; cas rare.
+ * Si la page penche vers une autre tonalité que l’étape (par un accord chromatique), la recette part de la tonalité
+ * du moment : ses premiers pas peuvent éteindre ce frôlement lointain.
  */
 export function routeTo(j: Journey, target: number): Route | null {
   const t = mod12(target);
@@ -65,21 +68,81 @@ export function routeTo(j: Journey, target: number): Route | null {
   const hops = hopsTo(j.key, t);
   const hop = hops[0]!;
   const sharp = mod12(hop - j.key) === 7;
-  // Vers les dièses : vi (= ii de l’étape), V/V, iii de l’étape. Vers les bémols : ii (= vi de l’étape), ♭VII, ii de l’étape.
+  // Le pivot : vi du moment (= ii de l’étape) côté dièses, ii du moment (= vi de l’étape) côté bémols.
   const pivot = sharp ? m(j.key + 9) : m(j.key + 2);
-  const frolant = sharp ? M(j.key + 2) : M(j.key + 10);
-  const confirm = sharp ? m(hop + 4) : m(hop + 2);
-  const last = j.steps[j.steps.length - 1]?.chord ?? null;
-  const plan: [Chord, RecipeWhy][] =
-    j.leaning === hop
-      ? [
-          // Si le dernier accord est déjà celui qui confirme, on ne le rejoue pas : l’accord qui fait pencher confirme à sa place.
-          [last && sameChord(last, confirm) ? frolant : confirm, 'confirme'],
-          [M(hop), 'arrivee'],
-        ]
-      : [...(last && sameChord(last, pivot) ? [] : [[pivot, 'pivot'] as [Chord, RecipeWhy]]), [frolant, 'frole'], [confirm, 'confirme'], [M(hop), 'arrivee']];
-  const recipe = plan.map(([chord, why]) => ({ chord, why, here: roleOf(chord, j.key).label, there: roleOf(chord, hop).label }));
-  return { target: t, hop, hops, recipe, ...doors(j.key, hop) };
+  // Par ordre de préférence. Dièses : V/V, iii de l’étape, vii° de l’étape. Bémols : ♭VII, v (= ii de l’étape), vii° de l’étape.
+  const leaners = sharp ? [M(j.key + 2), m(hop + 4), dim(hop + 11)] : [M(j.key + 10), m(j.key + 7), dim(hop + 11)];
+  const confirmers = sharp ? [m(hop + 4), M(j.key + 2), dim(hop + 11)] : [m(hop + 2), M(j.key + 10), dim(hop + 11)];
+
+  const played = j.steps.map((s) => s.chord);
+  const after = (extra: Chord[]) => journeyOf(j.home, [...played, ...extra]);
+  const lastEvent = (extra: Chord[]): StepEvent | undefined => after(extra).steps.at(-1)?.event;
+  const leansWith = (extra: Chord[]) => {
+    const e = lastEvent(extra);
+    return e?.kind === 'frole' && e.target === hop;
+  };
+  const confirmsWith = (extra: Chord[]) => {
+    const e = lastEvent(extra);
+    return e?.kind === 'confirme' && e.to === hop;
+  };
+  const lastOf = (extra: Chord[]): Chord | null => extra.at(-1) ?? played.at(-1) ?? null;
+  const differs = (c: Chord, extra: Chord[]) => {
+    const last = lastOf(extra);
+    return !last || !sameChord(last, c);
+  };
+
+  const all = doors(j.key, hop);
+  // Les portes : seulement les accords qui, joués maintenant, font pencher vers l’étape ou y font passer.
+  const gates = { pass: all.pass.filter((c) => leansWith([c]) || confirmsWith([c])), back: all.back };
+  const chosen: [Chord, RecipeWhy][] = [];
+  const steps = (): Route => ({
+    target: t,
+    hop,
+    hops,
+    recipe: chosen.map(([chord, why]) => ({ chord, why, here: roleOf(chord, j.key).label, there: roleOf(chord, hop).label })),
+    ...gates,
+  });
+
+  if (j.leaning !== hop) {
+    // Faire pencher : d’abord par le pivot (sauf s’il vient d’être joué), sinon directement.
+    const withPivot = differs(pivot, []) ? [pivot] : [];
+    const tryLean = (prefix: Chord[]) => leaners.find((c) => leansWith([...prefix, c]));
+    let lean = tryLean(withPivot);
+    let prefix = withPivot;
+    if (!lean && withPivot.length) {
+      lean = tryLean([]);
+      prefix = [];
+    }
+    if (!lean) return { ...steps(), recipe: [] };
+    for (const c of prefix) chosen.push([c, 'pivot']);
+    chosen.push([lean, 'frole']);
+  }
+
+  // Confirmer : un accord propre à l’étape, qui ne rejoue pas le dernier et ne ferme pas une boucle.
+  const sofar = () => chosen.map(([c]) => c);
+  const tryConfirm = (prefix: Chord[]) => confirmers.find((c) => differs(c, prefix) && confirmsWith([...prefix, c]));
+  const direct = tryConfirm(sofar());
+  if (direct) chosen.push([direct, 'confirme']);
+  else {
+    // Sinon, un accord commun aux deux tonalités (le pivot d’abord), qui n’est ni la tonique du moment ni le dernier joué.
+    const tonic = M(j.key);
+    const commons = [pivot, ...diatonicChords(j.key).map((d) => d.chord).filter((c) => inKey(c, hop) && !sameChord(c, pivot))].filter(
+      (c) => !sameChord(c, tonic) && differs(c, sofar()),
+    );
+    let found: [Chord, Chord] | null = null;
+    for (const x of commons) {
+      const c = tryConfirm([...sofar(), x]);
+      if (c) {
+        found = [x, c];
+        break;
+      }
+    }
+    if (!found) return { ...steps(), recipe: [] };
+    chosen.push([found[0], 'pivot'], [found[1], 'confirme']);
+  }
+
+  if (differs(M(hop), sofar())) chosen.push([M(hop), 'arrivee']);
+  return steps();
 }
 
 export function guideOf(c: Chord, r: Route, key: number): Guide {

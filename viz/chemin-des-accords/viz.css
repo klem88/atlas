@@ -297,6 +297,7 @@
   gap: var(--space-2);
 }
 .route-clear {
+  position: relative;
   width: 1.75rem;
   height: 1.75rem;
   padding: 0;
@@ -306,6 +307,15 @@
   color: var(--ink-3);
   font: 400 var(--text-xs) var(--font-ui);
   cursor: pointer;
+}
+/* Cible tactile d’au moins 44 px, sans grossir le « ✕ ». */
+.route-clear::after {
+  content: '';
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
 }
 .route-clear[hidden] {
   display: none;
