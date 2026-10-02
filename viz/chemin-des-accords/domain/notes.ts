@@ -40,6 +40,9 @@ function either(chords: readonly Chord[]): string {
   return names.length <= 1 ? (names[0] ?? '') : `${names.slice(0, -1).join(', ')} ou ${names[names.length - 1]}`;
 }
 
+const CRANS: Record<number, string> = { 2: 'deux', 3: 'trois', 4: 'quatre', 5: 'cinq', 6: 'six' };
+const capital = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+
 /** Les accords qui feraient passer vers `target` (sauf celui qui a frôlé) et ceux qui ramènent dans `key`. */
 function doorsOf(key: number, target: number, frolant: Chord) {
   const d = doors(key, target);
@@ -71,16 +74,26 @@ export function noteFor(j: Journey, ctx: NoteContext): Note | null {
       return ev('eteint', `${head} : ${frolant} n’était qu’un détour vers ${keyName(e.target)} (on dit une tonicisation).`);
     }
     case 'frole': {
+      const head = `${nameOf(c)} n’est pas dans ${keyName(last.key)} : il tire vers ${keyName(e.target)}`;
+      if (Math.abs(fifthsOffset(last.key, e.target)) !== 1) {
+        return ev('frole', `${head}, à ${CRANS[Math.abs(fifthsOffset(last.key, e.target))]} crans. Un accord qui n’existe qu’en ${short(e.target)} y fera passer ; un accord qui n’existe qu’en ${short(last.key)} te ramènera.`);
+      }
       const { pass, back } = doorsOf(last.key, e.target, c);
-      const go = pass.length ? ` Pour y passer, joue ${either(pass)} (${pass.length > 1 ? 'ils n’existent' : 'il n’existe'} qu’en ${short(e.target)})` : '';
-      const stay = back.length ? `${go ? ' ;' : ''} pour rester en ${short(last.key)}, joue ${either(back)}` : '';
-      return ev('frole', `${nameOf(c)} n’est pas dans ${keyName(last.key)} : il tire vers ${keyName(e.target)}.${go}${stay}.`);
+      const parts = [
+        pass.length ? `pour y passer, joue ${either(pass)} (${pass.length > 1 ? 'ils n’existent' : 'il n’existe'} qu’en ${short(e.target)})` : '',
+        back.length ? `pour rester en ${short(last.key)}, joue ${either(back)}` : '',
+      ].filter(Boolean);
+      return ev('frole', `${head}.${parts.length ? ` ${capital(parts.join(' ; '))}.` : ''}`);
     }
     case 'suspens': {
+      const head = `${nameOf(c)} est en ${short(last.key)} comme en ${short(e.target)} : on ne sait pas encore.`;
+      if (Math.abs(fifthsOffset(last.key, e.target)) !== 1) return ev('suspens', head);
       const { pass, back } = doorsOf(last.key, e.target, j.steps[j.pending ?? n - 1]!.chord);
-      const go = pass.length ? ` ${either(pass)} passerai${pass.length > 1 ? 'ent' : 't'} en ${short(e.target)}` : '';
-      const stay = back.length ? `${go ? ' ;' : ''} ${either(back)} ramènerai${back.length > 1 ? 'ent' : 't'} en ${short(last.key)}` : '';
-      return ev('suspens', `${nameOf(c)} est en ${short(last.key)} comme en ${short(e.target)} : on ne sait pas encore.${go}${stay}.`);
+      const parts = [
+        pass.length ? `${either(pass)} passerai${pass.length > 1 ? 'ent' : 't'} en ${short(e.target)}` : '',
+        back.length ? `${either(back)} ramènerai${back.length > 1 ? 'ent' : 't'} en ${short(last.key)}` : '',
+      ].filter(Boolean);
+      return ev('suspens', `${head}${parts.length ? ` ${capital(parts.join(' ; '))}.` : ''}`);
     }
     case 'boucle':
       return ev('boucle', loopText(j.steps[n - 2]!.chord, c, last.label, j.key));
@@ -126,14 +139,15 @@ export const pivotTip = (chord: Chord, before: string, after: string) => `${name
 export const RING_TIP = `Les douze tonalités majeures, rangées par quintes : deux voisines partagent presque tous leurs accords. En pointillés, la maison ; en couleur, où tu es.`;
 export const RIBBON_TIP = `Ta progression, accord par accord. Chaque bande est une tonalité ; un accord pivot est à cheval sur deux bandes.`;
 
-const WHY: Record<RecipeStep['why'], (s: RecipeStep, key: number, hop: number, home: number) => string> = {
+const WHY: Record<RecipeStep['why'], (s: RecipeStep, key: number, hop: number, home: number, target: number) => string> = {
   pivot: (s, key, hop) => `commun : ${s.here} en ${short(key)}, ${s.there} en ${short(hop)}`,
   frole: (s, _key, hop) => `tire vers ${short(hop)} (${s.here})`,
   confirme: (_s, _key, hop) => `n’existe qu’en ${short(hop)} : confirmé`,
-  arrivee: (_s, _key, hop, home) => `${short(hop)}, ${hop === home ? 'la maison' : 'la nouvelle maison'}`,
+  arrivee: (_s, _key, hop, home, target) => `${short(hop)}, ${hop === home ? 'la maison' : hop === target ? 'la nouvelle maison' : `une étape vers ${short(target)}`}`,
 };
 
-export const recipeText = (s: RecipeStep, key: number, hop: number, home: number) => WHY[s.why](s, key, hop, home);
+/** `key` : tonalité du moment ; `hop` : l’étape ; `home` : la maison ; `target` : la destination (l’étape par défaut). */
+export const recipeText = (s: RecipeStep, key: number, hop: number, home: number, target = hop) => WHY[s.why](s, key, hop, home, target);
 
 export const arrivalText = (t: number) => `Te voilà en ${keyName(t)}.`;
 

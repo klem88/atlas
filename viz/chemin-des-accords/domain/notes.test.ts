@@ -26,6 +26,10 @@ describe('noteFor', () => {
     expect(note([M(0), M(2), m(5)])!.text).toMatch(/^Fa m ramène en Do majeur/);
   });
 
+  it('frôlement vers une tonalité lointaine : pas de liste de portes', () => {
+    expect(note([M(0), M(1)])!.text).toBe('Ré♭ n’est pas dans Do majeur : il tire vers La♭ majeur, à quatre crans. Un accord qui n’existe qu’en La♭ y fera passer ; un accord qui n’existe qu’en Do te ramènera.');
+  });
+
   it('confirmation avec pivot, puis retour à la maison', () => {
     expect(note([M(0), m(9), M(2), M(7), m(11)])!.text).toBe(`Si m n’existe qu’en Sol majeur : on y est. Ré a servi de pivot : V/V en Do, V en Sol.`);
     expect(note([M(0), M(2), M(7), m(11), dim(11), M(0), M(5)])!.kind).toBe('retour');
@@ -85,6 +89,8 @@ describe('guidage et fiche', () => {
       'n’existe qu’en Sol : confirmé',
       'Sol, la nouvelle maison',
     ]);
+    const far = routeTo(journeyOf(0, [M(0)]), 9)!;
+    expect(recipeText(far.recipe[far.recipe.length - 1]!, 0, far.hop, 0, 9)).toBe('Sol, une étape vers La');
     const back = routeTo(journeyOf(7, [M(7)]), 0)!;
     expect(recipeText(back.recipe[back.recipe.length - 1]!, 7, 0, 0)).toBe('Do, la maison');
   });
