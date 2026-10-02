@@ -49,6 +49,8 @@ let rotation = 0;
 let rotationKey = store.get().home;
 /** Part du corpus du dernier pas posé (pour la légende « pas rare »). */
 let lastShare: number | null = null;
+/** Identifiant du minuteur de l'écoute en cours (null hors écoute). */
+let playing: number | null = null;
 
 const map = new ChordMap(els.map, {
   onPick: (c) => pick(c),
@@ -59,6 +61,7 @@ const map = new ChordMap(els.map, {
 /** Survol d'un candidat (souris) : sa flèche se dessine et le panneau raconte le pas à venir. */
 function hover(c: Chord | null) {
   map.preview(c);
+  if (playing !== null) return; // pendant l'écoute, ni le panneau ni la carte ne reviennent au chemin complet
   const { home, path } = store.get();
   const j = journeyOf(home, path);
   const last = j.steps[j.steps.length - 1];
@@ -113,9 +116,36 @@ function renderPanel(j: Journey, cands: Candidate[]) {
           : 'Trop peu de chansons pour le dire.';
   els.undo.disabled = n === 0;
   els.restart.disabled = n === 0;
+  els.listen.disabled = store.get().path.length === 0;
+}
+
+/* Écouter : rejoue le chemin pas à pas ; la carte rebascule à chaque modulation. */
+const STEP_MS = 900;
+
+function stopListening() {
+  if (playing !== null) clearTimeout(playing);
+  playing = null;
+  els.listen.textContent = '▶ Écouter';
+  render();
+}
+
+function listen() {
+  const { path } = store.get();
+  if (!path.length) return;
+  lastVoicing = null;
+  els.listen.textContent = '■ Arrêter';
+  // La rotation de l'anneau n'est pas remise à zéro : `ringRotation` le ramène vers la maison par le plus court chemin.
+  const step = (i: number) => {
+    if (i > path.length) return stopListening();
+    render(i);
+    sound(path[i - 1]!);
+    playing = window.setTimeout(() => step(i + 1), STEP_MS);
+  };
+  step(1);
 }
 
 function pick(c: Chord) {
+  if (playing !== null) stopListening();
   const { home, path } = store.get();
   const j = journeyOf(home, path);
   const last = j.steps[j.steps.length - 1]?.chord ?? null;
@@ -125,18 +155,23 @@ function pick(c: Chord) {
 }
 
 els.undo.addEventListener('click', () => {
+  if (playing !== null) stopListening();
   lastShare = null;
   store.set({ path: store.get().path.slice(0, -1) });
 });
 els.restart.addEventListener('click', () => {
+  if (playing !== null) stopListening();
   lastShare = null;
   lastVoicing = null;
   store.set({ path: [] });
 });
 els.home.addEventListener('change', () => {
+  if (playing !== null) stopListening();
   lastShare = null;
   store.set({ home: Number(els.home.value), path: [] });
 });
+
+els.listen.addEventListener('click', () => (playing !== null ? stopListening() : listen()));
 
 store.subscribe(() => {
   history.replaceState(null, '', `${location.pathname}${stateToSearch(store.get())}${location.hash}`);
