@@ -145,6 +145,14 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'draft',
     published: '2026-10',
   },
+  {
+    slug: 'chemin-des-accords',
+    title: 'Le chemin des accords',
+    summary: 'Compose une progression sur la carte d’une tonalité : à chaque accord, vois où tu es, où tu peux aller, et d’où tu viens.',
+    tags: ['Musique', 'Harmonie', 'Apprendre'],
+    status: 'draft',
+    published: '2026-10',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 

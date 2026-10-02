@@ -87,7 +87,7 @@ Bibliothèque de progressions, autres dispositions (grille, bande), tonalités e
 ## Tâches
 
 - [x] Cadrage avec l'auteur (maquettes : modulation, possibilités, écran complet)
-- [ ] Domaine : `journey.ts`, `halos.ts`, `ring.ts` ; tests
+- [ ] Domaine : `journey.ts` ✓, `halos.ts`, `geometry.ts`, `notes.ts` ; tests
 - [ ] Squelette de la page (`npm run new:viz`), carte + anneau + halos, geste toucher-poser, son
 - [ ] Traînée, ruban, panneau, annulation, bascule animée
 - [ ] URL, écoute du chemin, textes (comment lire, méthode, sources, limites)
@@ -101,7 +101,9 @@ Bibliothèque de progressions, autres dispositions (grille, bande), tonalités e
 - Carte « C » : cercle local + anneau des tonalités (choix de l'auteur, sur maquettes).
 - Halo = possibilité, flèche = chemin (choix de l'auteur).
 - Toucher = jouer et poser, avec annulation (choix de l'auteur).
+- Une dominante secondaire de cible mineure (V/ii, V/iii, V/vi) est une couleur, comme un emprunt : elle éclaire un accord sans quitter la tonalité (pas de tonalités mineures dans cette page). Seuls V/V et les accords d’ailleurs frôlent. Un accord répété ne change rien. (Construction, 2 octobre 2026.)
+- `ring.ts` devient `geometry.ts` : satellites et anneau partagent la même géométrie.
 
 ## Prochaine action
 
-Domaine : écrire les tests de `journey.ts` (cas des critères de fin), puis le code.
+Domaine : `halos.ts`, `geometry.ts`, `notes.ts` (tests d’abord).
