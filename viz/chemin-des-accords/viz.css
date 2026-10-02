@@ -431,6 +431,9 @@
 }
 .token {
   display: grid;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
   justify-items: center;
   min-width: 3.5rem;
   padding: var(--space-1) var(--space-2);
@@ -452,8 +455,53 @@
 .token.is-pending {
   border-style: dashed;
 }
+.token.is-selected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.token:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* La fiche d'un accord du ruban */
+.step-card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.step-card[hidden] {
+  display: none;
+}
+.step-card-name {
+  margin: 0;
+  font: 400 var(--text-xl) var(--font-display);
+  color: var(--ink);
+}
+.step-card-facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+.step-card-facts dt {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+.step-card-facts dd {
+  margin: 0;
+}
 /* Le chevauchement n'a lieu que si une bande précède : en tout premier jeton, il déborderait à gauche. */
-.band + .band .token.is-pivot {
+li:has(> .token.is-pivot) {
+  display: contents;
+}
+.band + .band li:has(> .token.is-pivot) > .token {
   margin-left: calc(-1 * var(--space-4));
   box-shadow: 0 0 0 3px var(--surface-sunk);
 }

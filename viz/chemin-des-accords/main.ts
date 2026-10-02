@@ -11,7 +11,7 @@ import { moveSentence, roleText } from '../suis-les-fleches/domain/moves';
 import { ringRotation } from './domain/geometry';
 import { candidates, type Candidate, type Rows } from './domain/halos';
 import { journeyOf, type Journey } from './domain/journey';
-import { arrivalText, DEST_HINT, noteFor, pct, recipeText, RIBBON_TIP, RING_TIP, whereText, type NoteKind } from './domain/notes';
+import { arrivalText, DEST_HINT, noteFor, pct, recipeText, RIBBON_TIP, RING_TIP, stepCard, whereText, type NoteKind } from './domain/notes';
 import { routeTo, type Route } from './domain/route';
 import { readStateFromUrl, stateToSearch, type VizState } from './state';
 import { ChordMap } from './ui/map';
@@ -42,6 +42,14 @@ const els = {
   recipe: $('recipe'),
   routeHint: $('route-hint'),
   ribbon: $('ribbon'),
+  card: $('step-card'),
+  cardName: $('card-name'),
+  cardKey: $('card-key'),
+  cardDegree: $('card-degree'),
+  cardRole: $('card-role'),
+  cardDid: $('card-did'),
+  cardPresent: $<HTMLButtonElement>('card-present'),
+  cardResume: $<HTMLButtonElement>('card-resume'),
   map: document.getElementById('map') as unknown as SVGSVGElement,
 };
 
@@ -70,6 +78,8 @@ let arrived: number | null = null;
 /** L’état du chemin pour lequel la légende d’arrivée est affichée. */
 let arrivalFor: string | null = null;
 let arrivalNote = '';
+/** L’indice de l’accord du ruban qu’on consulte (la carte revient à ce moment), ou null au présent. */
+let inspecting: number | null = null;
 /** La route affichée dans le panneau (pour les pas de la recette). */
 let shownRoute: Route | null = null;
 
@@ -83,6 +93,7 @@ const map = new ChordMap(els.map, {
 /** Survol d'un candidat (souris) : sa flèche se dessine et le panneau raconte le pas à venir. */
 function hover(c: Chord | null) {
   map.preview(c);
+  if (inspecting !== null) return; // pendant la consultation d’un pas, la carte ne propose rien
   if (playing !== null) return; // pendant l'écoute, ni le panneau ni la carte ne reviennent au chemin complet
   const { home, path } = store.get();
   const j = journeyOf(home, path);
@@ -106,8 +117,10 @@ function trailOf(j: Journey): Chord[] {
 }
 
 /** Dessine le chemin jusqu'au pas `n` (tout le chemin par défaut ; l'écoute rejoue pas à pas). */
-function render(n = store.get().path.length) {
+function render(n = inspecting !== null ? inspecting + 1 : store.get().path.length) {
   const { home, path } = store.get();
+  if (inspecting !== null && inspecting >= path.length) inspecting = null;
+  const full = journeyOf(home, path);
   const j = journeyOf(home, path.slice(0, n));
   const last = j.steps[j.steps.length - 1]?.chord ?? null;
   const cands = candidates(last, j.key, rows);
@@ -115,7 +128,7 @@ function render(n = store.get().path.length) {
   rotationKey = j.key;
   // La destination ne vaut que pour le chemin complet (ni écoute, ni consultation d’un pas).
   let route: Route | null = null;
-  const complete = n === path.length;
+  const complete = n === path.length && inspecting === null;
   if (complete) {
     // Destination atteinte ou sans objet : on l’efface ; la légende d’arrivée seulement si le dernier pas y a mené.
     if (destination !== null && j.key === destination) {
@@ -128,11 +141,12 @@ function render(n = store.get().path.length) {
     route = dest !== null ? routeTo(j, dest) : null;
   }
   map.render({ key: j.key, home, leaning: j.leaning, rotation, current: last, candidates: cands, trail: trailOf(j), route });
-  renderRibbon(els.ribbon, j);
+  renderRibbon(els.ribbon, full, inspecting);
+  renderCard(full);
   renderPanel(j, cands);
   renderRoute(route, j, complete && destination !== null);
   // La légende ne parle que du chemin complet : pendant l'écoute, on la vide.
-  if (n === path.length) {
+  if (complete) {
     // Un nouveau rendu du même état (survol, chargement des parts) garde la légende affichée, même « une seule fois » ;
     // si seul le nombre de satellites change, on la recalcule sans compter comme « vue » celle qui s'affichait pour cet état.
     const satellites = cands.filter((c) => c.satellite).length;
@@ -158,6 +172,38 @@ function render(n = store.get().path.length) {
     els.note.textContent = noteText;
   } else els.note.textContent = '';
 }
+
+/** La fiche de l’accord consulté (calculée sur le chemin complet, pour connaître le pivot). */
+function renderCard(full: Journey) {
+  els.card.hidden = inspecting === null;
+  if (inspecting === null) return;
+  const c = stepCard(full, inspecting);
+  els.cardName.textContent = c.name;
+  els.cardKey.textContent = c.key;
+  els.cardDegree.textContent = c.degree;
+  els.cardRole.textContent = c.role;
+  els.cardDid.textContent = c.did;
+}
+
+els.ribbon.addEventListener('click', (e) => {
+  const b = (e.target as Element).closest<HTMLElement>('[data-index]');
+  if (!b) return;
+  if (playing !== null) stopListening();
+  const i = Number(b.dataset.index);
+  inspecting = i === inspecting ? null : i;
+  render();
+});
+els.cardPresent.addEventListener('click', () => {
+  inspecting = null;
+  render();
+});
+els.cardResume.addEventListener('click', () => {
+  if (inspecting === null) return;
+  const keep = store.get().path.slice(0, inspecting + 1);
+  inspecting = null;
+  lastShare = null;
+  store.set({ path: keep });
+});
 
 /** Le bloc « Destination » : la recette de l’étape, ou l’indice quand il n’y a pas de route. */
 function renderRoute(route: Route | null, j: Journey, explicit: boolean) {
@@ -185,6 +231,7 @@ function renderRoute(route: Route | null, j: Journey, explicit: boolean) {
 /** Toucher une tonalité de l’anneau : en faire la destination (ou l’abandonner). */
 function chooseKey(t: number) {
   if (playing !== null) return;
+  inspecting = null; // on quitte d’abord la consultation, puis on applique le choix
   const { home, path } = store.get();
   const j = journeyOf(home, path);
   destination = t === destination || t === j.key ? null : t;
@@ -237,6 +284,7 @@ function stopListening() {
 function listen() {
   const { path } = store.get();
   if (!path.length) return;
+  inspecting = null;
   lastVoicing = null;
   els.listen.textContent = '■ Arrêter';
   // La rotation de l'anneau n'est pas remise à zéro : `ringRotation` le ramène vers la maison par le plus court chemin.
@@ -250,6 +298,12 @@ function listen() {
 }
 
 function pick(c: Chord) {
+  // Toucher un accord pendant la consultation d’un pas ramène seulement au présent, sans rien ajouter.
+  if (inspecting !== null) {
+    inspecting = null;
+    render();
+    return;
+  }
   // Toucher un accord pendant l'écoute l'arrête seulement, sans l'ajouter au chemin.
   if (playing !== null) {
     stopListening();
@@ -266,11 +320,13 @@ function pick(c: Chord) {
 
 els.undo.addEventListener('click', () => {
   if (playing !== null) stopListening();
+  inspecting = null;
   lastShare = null;
   store.set({ path: store.get().path.slice(0, -1) });
 });
 els.restart.addEventListener('click', () => {
   if (playing !== null) stopListening();
+  inspecting = null;
   lastShare = null;
   lastVoicing = null;
   destination = null;
@@ -278,6 +334,7 @@ els.restart.addEventListener('click', () => {
 });
 els.home.addEventListener('change', () => {
   if (playing !== null) stopListening();
+  inspecting = null;
   lastShare = null;
   destination = null;
   store.set({ home: Number(els.home.value), path: [] });
