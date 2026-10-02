@@ -4,8 +4,10 @@
  */
 import { chordAt, fifthsOffset, keyName, nameOf, roleOf, sameChord, type Chord } from '../../suis-les-fleches/domain/harmony';
 import { chordByLabel } from '../../suis-les-fleches/domain/layout';
+import { roleText } from '../../suis-les-fleches/domain/moves';
 import type { Candidate } from './halos';
 import type { Journey } from './journey';
+import { doors, type RecipeStep } from './route';
 
 export type NoteKind = 'retour' | 'confirme' | 'eteint' | 'frole' | 'suspens' | 'boucle' | 'emprunt' | 'couleur' | 'rare' | 'satellite' | 'halos' | 'depart';
 
@@ -32,6 +34,18 @@ function loopText(tonic: Chord, c: Chord, label: string, key: number): string {
   return `${nameOf(tonic)} – ${nameOf(c)} en boucle : ${why}. On reste en ${short(key)} : ${nameOf(c)} est une couleur, pas une destination.`;
 }
 
+/** « A », « A ou B », « A, B ou C ». */
+function either(chords: readonly Chord[]): string {
+  const names = chords.map(nameOf);
+  return names.length <= 1 ? (names[0] ?? '') : `${names.slice(0, -1).join(', ')} ou ${names[names.length - 1]}`;
+}
+
+/** Les accords qui feraient passer vers `target` (sauf celui qui a frôlé) et ceux qui ramènent dans `key`. */
+function doorsOf(key: number, target: number, frolant: Chord) {
+  const d = doors(key, target);
+  return { pass: d.pass.filter((c) => !sameChord(c, frolant)), back: d.back };
+}
+
 export const pct = (share: number) => (share < 0.01 ? '< 1 %' : `${Math.round(share * 100)} %`);
 
 export function noteFor(j: Journey, ctx: NoteContext): Note | null {
@@ -56,10 +70,18 @@ export function noteFor(j: Journey, ctx: NoteContext): Note | null {
       const head = roleOf(c, j.key).kind === 'diatonique' ? `${nameOf(c)} n’existe qu’en ${keyName(j.key)}` : `${nameOf(c)} ramène en ${keyName(j.key)}`;
       return ev('eteint', `${head} : ${frolant} n’était qu’un détour vers ${keyName(e.target)} (on dit une tonicisation).`);
     }
-    case 'frole':
-      return ev('frole', `${nameOf(c)} n’est pas dans ${keyName(last.key)} : il tire vers ${keyName(e.target)}. Si un accord propre à ${short(e.target)} suit, on aura modulé.`);
-    case 'suspens':
-      return ev('suspens', `${nameOf(c)} est en ${short(last.key)} comme en ${short(e.target)} : on ne sait pas encore.`);
+    case 'frole': {
+      const { pass, back } = doorsOf(last.key, e.target, c);
+      const go = pass.length ? ` Pour y passer, joue ${either(pass)} (${pass.length > 1 ? 'ils n’existent' : 'il n’existe'} qu’en ${short(e.target)})` : '';
+      const stay = back.length ? `${go ? ' ;' : ''} pour rester en ${short(last.key)}, joue ${either(back)}` : '';
+      return ev('frole', `${nameOf(c)} n’est pas dans ${keyName(last.key)} : il tire vers ${keyName(e.target)}.${go}${stay}.`);
+    }
+    case 'suspens': {
+      const { pass, back } = doorsOf(last.key, e.target, j.steps[j.pending ?? n - 1]!.chord);
+      const go = pass.length ? ` ${either(pass)} passerai${pass.length > 1 ? 'ent' : 't'} en ${short(e.target)}` : '';
+      const stay = back.length ? `${go ? ' ;' : ''} ${either(back)} ramènerai${back.length > 1 ? 'ent' : 't'} en ${short(last.key)}` : '';
+      return ev('suspens', `${nameOf(c)} est en ${short(last.key)} comme en ${short(e.target)} : on ne sait pas encore.${go}${stay}.`);
+    }
     case 'boucle':
       return ev('boucle', loopText(j.steps[n - 2]!.chord, c, last.label, j.key));
     case 'couleur': {
@@ -103,3 +125,70 @@ export const pivotTip = (chord: Chord, before: string, after: string) => `${name
 
 export const RING_TIP = `Les douze tonalités majeures, rangées par quintes : deux voisines partagent presque tous leurs accords. En pointillés, la maison ; en couleur, où tu es.`;
 export const RIBBON_TIP = `Ta progression, accord par accord. Chaque bande est une tonalité ; un accord pivot est à cheval sur deux bandes.`;
+
+const WHY: Record<RecipeStep['why'], (s: RecipeStep, key: number, hop: number, home: number) => string> = {
+  pivot: (s, key, hop) => `commun : ${s.here} en ${short(key)}, ${s.there} en ${short(hop)}`,
+  frole: (s, _key, hop) => `tire vers ${short(hop)} (${s.here})`,
+  confirme: (_s, _key, hop) => `n’existe qu’en ${short(hop)} : confirmé`,
+  arrivee: (_s, _key, hop, home) => `${short(hop)}, ${hop === home ? 'la maison' : 'la nouvelle maison'}`,
+};
+
+export const recipeText = (s: RecipeStep, key: number, hop: number, home: number) => WHY[s.why](s, key, hop, home);
+
+export const arrivalText = (t: number) => `Te voilà en ${keyName(t)}.`;
+
+export const DEST_HINT = 'Touche une tonalité de l’anneau pour t’y rendre : la carte te montrera le chemin.';
+
+export interface StepCard {
+  name: string;
+  key: string;
+  degree: string;
+  role: string;
+  did: string;
+}
+
+/** La fiche d'un accord du chemin : où il est, ce qu'il est, ce qu'il a fait. */
+export function stepCard(j: Journey, i: number): StepCard {
+  const s = j.steps[i]!;
+  const e = s.event;
+  const confirm = s.pivot ? j.steps.find((x) => x.event.kind === 'confirme' && x.event.pivot === i) : undefined;
+  const from = confirm && confirm.event.kind === 'confirme' ? confirm.event.from : s.key;
+  let did = '';
+  switch (e.kind) {
+    case 'gamme':
+      did = i === 0 ? 'il ouvre le chemin' : 'il reste dans la tonalité';
+      break;
+    case 'repete':
+      did = 'il se répète';
+      break;
+    case 'couleur':
+      did =
+        e.cause === 'emprunt'
+          ? `une couleur empruntée à ${short(s.key)} mineur, sans quitter la tonalité`
+          : `il éclaire ${nameOf(chordAt(s.key, chordByLabel(e.anchor)!.degree))} sans quitter la tonalité`;
+      break;
+    case 'frole':
+      did = `il a fait pencher vers ${keyName(e.target)}`;
+      break;
+    case 'suspens':
+      did = 'commun aux deux tonalités, il a laissé la question ouverte';
+      break;
+    case 'confirme':
+      did = `il a confirmé le passage en ${keyName(e.to)}`;
+      break;
+    case 'eteint':
+      did = `il a ramené en ${keyName(s.key)} : ${nameOf(j.steps[e.frole]!.chord)} n’était qu’un détour`;
+      break;
+    case 'boucle':
+      did = 'un aller-retour autour de la tonique : une couleur, pas une destination';
+      break;
+  }
+  if (s.pivot) did += ` ; il est devenu le pivot (${s.pivot.after} en ${short(s.key)})`;
+  return {
+    name: nameOf(s.chord),
+    key: s.pivot ? `${keyName(from)}, puis ${keyName(s.key)}` : keyName(s.key),
+    degree: s.pivot ? `${s.pivot.before} en ${short(from)}, ${s.pivot.after} en ${short(s.key)}` : s.label,
+    role: roleText(s.chord, s.key),
+    did: `${did}.`,
+  };
+}

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { Chord } from '../../suis-les-fleches/domain/harmony';
+import { roleText } from '../../suis-les-fleches/domain/moves';
 import { journeyOf } from './journey';
-import { haloTip, noteFor, pct, pivotTip, whereText, type NoteContext, type NoteKind } from './notes';
+import { arrivalText, haloTip, noteFor, pct, pivotTip, recipeText, stepCard, whereText, type NoteContext, type NoteKind } from './notes';
+import { routeTo } from './route';
 
 const M = (root: number): Chord => ({ root, cls: 'maj' });
 const m = (root: number): Chord => ({ root, cls: 'min' });
@@ -17,8 +19,9 @@ describe('noteFor', () => {
   });
 
   it('frôlement, suspens, extinction', () => {
-    expect(note([M(0), M(2)])!.text).toBe(`Ré n’est pas dans Do majeur : il tire vers Sol majeur. Si un accord propre à Sol suit, on aura modulé.`);
-    expect(note([M(0), M(2), m(4)])!.text).toBe('Mi m est en Do comme en Sol : on ne sait pas encore.');
+    expect(note([M(0), M(2)])!.text).toBe('Ré n’est pas dans Do majeur : il tire vers Sol majeur. Pour y passer, joue Si m ou Fa♯ ° (ils n’existent qu’en Sol) ; pour rester en Do, joue Ré m, Fa ou Si °.');
+    expect(note([M(0), M(2), m(4)])!.text).toBe('Mi m est en Do comme en Sol : on ne sait pas encore. Si m ou Fa♯ ° passeraient en Sol ; Ré m, Fa ou Si ° ramèneraient en Do.');
+    expect(note([M(0), M(10)])!.text).toBe('Si♭ n’est pas dans Do majeur : il tire vers Fa majeur. Pour y passer, joue Sol m ou Mi ° (ils n’existent qu’en Fa) ; pour rester en Do, joue Mi m, Sol ou Si °.');
     expect(note([M(0), M(2), M(5)])!.text).toBe(`Fa n’existe qu’en Do majeur : Ré n’était qu’un détour vers Sol majeur (on dit une tonicisation).`);
     expect(note([M(0), M(2), m(5)])!.text).toMatch(/^Fa m ramène en Do majeur/);
   });
@@ -70,5 +73,40 @@ describe('textes', () => {
     expect(pct(0.004)).toBe('< 1 %');
     expect(haloTip(M(7), { chord: m(4), label: 'iii', share: 0.35, count: 0, satellite: false, anchor: null })).toBe('35 % des chansons qui jouent Sol font ensuite Mi m.');
     expect(pivotTip(M(2), 'V/V', 'V')).toBe('Ré appartient aux deux tonalités : V/V avant, V après.');
+  });
+});
+
+describe('guidage et fiche', () => {
+  it('les pas de la recette', () => {
+    const r = routeTo(journeyOf(0, [M(0), M(7)]), 7)!;
+    expect(r.recipe.map((s) => recipeText(s, 0, 7, 0))).toEqual([
+      'commun : vi en Do, ii en Sol',
+      'tire vers Sol (V/V)',
+      'n’existe qu’en Sol : confirmé',
+      'Sol, la nouvelle maison',
+    ]);
+    const back = routeTo(journeyOf(7, [M(7)]), 0)!;
+    expect(recipeText(back.recipe[back.recipe.length - 1]!, 7, 0, 0)).toBe('Do, la maison');
+  });
+
+  it('l’arrivée', () => {
+    expect(arrivalText(7)).toBe('Te voilà en Sol majeur.');
+  });
+
+  it('la fiche d’un accord', () => {
+    const j = journeyOf(0, [M(0), m(9), M(2), M(7), m(11)]);
+    expect(stepCard(j, 2)).toEqual({
+      name: 'Ré',
+      key: 'Do majeur, puis Sol majeur',
+      degree: 'V/V en Do, V en Sol',
+      role: roleText(M(2), 7),
+      did: 'il a fait pencher vers Sol majeur ; il est devenu le pivot (V en Sol).',
+    });
+    expect(stepCard(j, 4)).toMatchObject({ key: 'Sol majeur', degree: 'iii', did: 'il a confirmé le passage en Sol majeur.' });
+    expect(stepCard(j, 0).did).toBe('il ouvre le chemin.');
+    expect(stepCard(j, 1).did).toBe('il reste dans la tonalité.');
+    expect(stepCard(journeyOf(0, [M(0), m(5)]), 1).did).toBe('une couleur empruntée à Do mineur, sans quitter la tonalité.');
+    expect(stepCard(journeyOf(0, [M(0), M(2), M(5)]), 2).did).toBe('il a ramené en Do majeur : Ré n’était qu’un détour.');
+    expect(stepCard(journeyOf(0, [M(0), M(10), M(0), M(10)]), 3).did).toBe('un aller-retour autour de la tonique : une couleur, pas une destination.');
   });
 });
