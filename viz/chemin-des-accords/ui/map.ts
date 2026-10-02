@@ -57,6 +57,7 @@ export class ChordMap {
   private previewLayer: SVGGElement;
   private nodeLayer: SVGGElement;
   private pcts: SVGGElement;
+  private sectorNames: SVGTextElement[] = [];
   private nodes = new Map<string, SVGGElement>();
   private spots = new Map<string, Spot>();
   private view: MapView | null = null;
@@ -101,7 +102,9 @@ export class ChordMap {
       const d = polar(r0, s.from + 2);
       el('path', { class: `map-sector map-sector--${s.fn}`, d: `M${a.x},${a.y} A${r1},${r1} 0 0 1 ${b.x},${b.y} L${c.x},${c.y} A${r0},${r0} 0 0 0 ${d.x},${d.y} Z` }, g);
       const mid = polar(r1 + 18, (s.from + s.to) / 2);
-      el('text', { class: 'map-sector-name', x: mid.x, y: mid.y, 'text-anchor': 'middle' }, g).textContent = FN_LABELS[s.fn].name;
+      const name = el('text', { class: 'map-sector-name', x: mid.x, y: mid.y, 'text-anchor': 'middle' }, g);
+      name.textContent = FN_LABELS[s.fn].name;
+      this.sectorNames.push(name);
     }
   }
 
@@ -110,11 +113,21 @@ export class ChordMap {
     const out = new Map<string, Spot>();
     for (const { chord, role } of diatonicChords(v.key))
       out.set(chordId(chord), { chord, p: diatonicPoint(role.label), r: role.label === 'I' ? TONIC_DISK : DISK, label: role.label, kind: `diatonique map-node--${role.fn}` });
-    const outside = v.candidates.filter((c) => c.satellite).map((c) => ({ chord: c.chord, label: c.label, anchor: c.anchor }));
-    if (v.current && !out.has(chordId(v.current)) && !outside.some((o) => chordId(o.chord) === chordId(v.current!))) {
-      const r = roleOf(v.current, v.key);
-      outside.push({ chord: v.current, label: r.label, anchor: r.anchor });
-    }
+    // Au plus quatre satellites, par priorité : l'accord du moment, l'accord précédent (pour que la flèche du dernier pas reste
+    // dessinée), puis les candidats de plus forte part.
+    const outside: { chord: Chord; label: string; anchor: string | null }[] = [];
+    const add = (chord: Chord, label: string, anchor: string | null) => {
+      if (outside.length < 4 && !out.has(chordId(chord)) && !outside.some((o) => chordId(o.chord) === chordId(chord))) outside.push({ chord, label, anchor });
+    };
+    const extra = (c: Chord) => {
+      const r = roleOf(c, v.key);
+      const cand = v.candidates.find((x) => chordId(x.chord) === chordId(c));
+      add(c, cand?.label ?? r.label, cand ? cand.anchor : r.anchor);
+    };
+    if (v.current) extra(v.current);
+    const previous = v.trail[v.trail.length - 2];
+    if (previous) extra(previous);
+    for (const c of v.candidates.filter((x) => x.satellite).sort((x, y) => (y.share ?? 0) - (x.share ?? 0))) add(c.chord, c.label, c.anchor);
     const pts = satellitePoints(outside.map((o) => ({ id: chordId(o.chord), anchor: o.anchor })));
     for (const o of outside) out.set(chordId(o.chord), { chord: o.chord, p: pts.get(chordId(o.chord))!, r: SAT_DISK, label: o.label, kind: 'satellite' });
     return out;
@@ -153,12 +166,19 @@ export class ChordMap {
     }
     for (const [id, s] of this.spots) {
       let g = this.nodes.get(id);
+      let fresh = false;
       if (!g) {
         g = el('g', { tabindex: 0, role: 'button' }, this.nodeLayer);
         el('circle', { class: 'map-node-disc' }, g);
         el('text', { class: 'map-node-name', 'text-anchor': 'middle' }, g);
         el('text', { class: 'map-node-sub', 'text-anchor': 'middle' }, g);
-        const pick = () => this.opts.onPick(this.spots.get(id)!.chord);
+        const pick = () => {
+          const sp = this.spots.get(id);
+          if (sp) this.opts.onPick(sp.chord);
+        };
+        const hover = (c: Chord | null) => {
+          if (!c || this.spots.has(id)) this.opts.onHover(c);
+        };
         g.addEventListener('click', pick);
         g.addEventListener('keydown', (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -167,16 +187,22 @@ export class ChordMap {
           }
         });
         g.addEventListener('pointerenter', (e) => {
-          if (e.pointerType === 'mouse') this.opts.onHover(this.spots.get(id)!.chord);
+          if (e.pointerType === 'mouse') hover(this.spots.get(id)?.chord ?? null);
         });
         g.addEventListener('pointerleave', (e) => {
-          if (e.pointerType === 'mouse') this.opts.onHover(null);
+          if (e.pointerType === 'mouse') hover(null);
         });
-        g.classList.add('is-entering');
-        requestAnimationFrame(() => g!.classList.remove('is-entering'));
+        // Le clavier a le même aperçu que la souris.
+        g.addEventListener('focus', () => hover(this.spots.get(id)?.chord ?? null));
+        g.addEventListener('blur', () => hover(null));
+        fresh = true;
         this.nodes.set(id, g);
       }
-      g.setAttribute('class', `map-node map-node--${s.kind}${id === current ? ' is-current' : ''}`);
+      g.setAttribute('class', `map-node map-node--${s.kind}${id === current ? ' is-current' : ''}${fresh ? ' is-entering' : ''}`);
+      if (fresh) {
+        const node = g;
+        requestAnimationFrame(() => requestAnimationFrame(() => node.classList.remove('is-entering')));
+      }
       g.style.transform = `translate(${s.p.x.toFixed(1)}px, ${s.p.y.toFixed(1)}px)`;
       const [disc, name, sub] = [g.children[0]!, g.children[1]!, g.children[2]!];
       disc.setAttribute('r', String(s.r));
@@ -194,13 +220,77 @@ export class ChordMap {
   private drawHalos(v: MapView) {
     this.halos.replaceChildren();
     this.pcts.replaceChildren();
+    const placed: DOMRect[] = [];
+    // Les noms de l'anneau (à leur place finale, anneau tourné) comptent aussi comme obstacles.
+    const ringKeys = KEYS.map((t) => polar(KEY_RING, keyAngle(t) + v.rotation));
     for (const c of v.candidates) {
       if (c.share === null) continue;
       const s = this.spots.get(chordId(c.chord));
       if (!s) continue;
       const r = s.r + 6 + 54 * Math.sqrt(c.share);
       el('circle', { class: 'map-halo', cx: s.p.x, cy: s.p.y, r, style: `--share:${c.share.toFixed(3)}` }, this.halos);
-      el('text', { class: 'map-pct', x: s.p.x, y: s.p.y + r + 26, 'text-anchor': 'middle' }, this.pcts).textContent = pct(c.share);
+      const t = el('text', { class: 'map-pct', 'text-anchor': 'middle' }, this.pcts);
+      t.textContent = pct(c.share);
+      placed.push(this.placePct(t, s, r, placed, ringKeys));
+    }
+    this.hideCollidingSectorNames(placed);
+  }
+
+  /** Cherche pour un pourcentage la place (sous, au-dessus, à droite, à gauche du halo) qui ne touche ni autre disque ni autre pourcentage. */
+  private placePct(t: SVGTextElement, s: Spot, r: number, placed: DOMRect[], ringKeys: Point[]): DOMRect {
+    const gap = 8;
+    const h = t.getBBox().height || 28;
+    const w = t.getBBox().width || 60;
+    const spots: [number, number, 'middle' | 'start' | 'end'][] = [
+      [s.p.x, s.p.y + r + h * 0.85, 'middle'],
+      [s.p.x, s.p.y - r - h * 0.25, 'middle'],
+      [s.p.x + r + gap, s.p.y + h * 0.3, 'start'],
+      [s.p.x - r - gap, s.p.y + h * 0.3, 'end'],
+    ];
+    let best = spots[0]!;
+    let bestHits = Infinity;
+    for (const cand of spots) {
+      const [x, y, anchor] = cand;
+      const left = anchor === 'middle' ? x - w / 2 : anchor === 'start' ? x : x - w;
+      const box = new DOMRect(left, y - h * 0.8, w, h);
+      let hits = 0;
+      for (const o of this.spots.values()) {
+        if (o === s) continue;
+        const nx = Math.max(box.left, Math.min(o.p.x, box.right));
+        const ny = Math.max(box.top, Math.min(o.p.y, box.bottom));
+        if (Math.hypot(o.p.x - nx, o.p.y - ny) < o.r + 4) hits++;
+      }
+      for (const k of ringKeys) {
+        const nx = Math.max(box.left, Math.min(k.x, box.right));
+        const ny = Math.max(box.top, Math.min(k.y, box.bottom));
+        if (Math.hypot(k.x - nx, k.y - ny) < 30) hits++;
+      }
+      for (const q of placed) if (box.left < q.right && q.left < box.right && box.top < q.bottom && q.top < box.bottom) hits++;
+      if (hits < bestHits) {
+        bestHits = hits;
+        best = cand;
+        if (hits === 0) break;
+      }
+    }
+    t.setAttribute('x', String(best[0]));
+    t.setAttribute('y', String(best[1]));
+    t.setAttribute('text-anchor', best[2]);
+    const left = best[2] === 'middle' ? best[0] - w / 2 : best[2] === 'start' ? best[0] : best[0] - w;
+    return new DOMRect(left, best[1] - h * 0.8, w, h);
+  }
+
+  /** Les noms de secteur s'effacent quand un pourcentage ou un disque passe dessus : la couleur du secteur suffit alors. */
+  private hideCollidingSectorNames(pcts: DOMRect[]) {
+    for (const n of this.sectorNames) {
+      const b = n.getBBox();
+      const hit =
+        pcts.some((q) => b.x < q.right && q.left < b.x + b.width && b.y < q.bottom && q.top < b.y + b.height) ||
+        [...this.spots.values()].some((o) => {
+          const nx = Math.max(b.x, Math.min(o.p.x, b.x + b.width));
+          const ny = Math.max(b.y, Math.min(o.p.y, b.y + b.height));
+          return Math.hypot(o.p.x - nx, o.p.y - ny) < o.r + 6;
+        });
+      n.classList.toggle('is-hidden', hit);
     }
   }
 

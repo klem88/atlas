@@ -30,7 +30,11 @@
 .map-sector--tension {
   fill: color-mix(in srgb, var(--seq-2) 60%, transparent);
 }
+.map-sector-name.is-hidden {
+  opacity: 0;
+}
 .map-sector-name {
+  transition: opacity 0.3s;
   font: 600 22px var(--font-ui);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -140,6 +144,9 @@
 .map-node.is-leaving {
   opacity: 0;
 }
+.map-node.is-leaving {
+  pointer-events: none;
+}
 .map-node-disc {
   stroke: var(--surface);
   stroke-width: 4;
@@ -239,6 +246,26 @@
   .map-node,
   .map-halo {
     transition: none;
+  }
+}
+
+/* Petits écrans : la carte est réduite à environ un tiers, les textes grossissent pour rester lisibles (≥ 11 px à l'écran). */
+@media (max-width: 640px) {
+  .map-pct {
+    font-size: 32px;
+    stroke-width: 8px;
+  }
+  .map-node-name {
+    font-size: 30px;
+  }
+  .map-node-sub {
+    font-size: 30px;
+  }
+  .map-sector-name {
+    font-size: 28px;
+  }
+  .ring-key-name {
+    font-size: 34px;
   }
 }
 

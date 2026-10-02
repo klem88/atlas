@@ -42,6 +42,7 @@ const synth = new Synth();
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let rows: Rows = {};
+let shardState: 'chargement' | 'pret' | 'echec' = 'chargement';
 let lastVoicing: number[] | null = null;
 let rotation = 0;
 let rotationKey = store.get().home;
@@ -99,7 +100,15 @@ function renderPanel(j: Journey, cands: Candidate[]) {
   const before = j.steps[n - 2];
   els.step.textContent = !last ? 'Rien encore : choisis un premier accord.' : before ? moveSentence(before.chord, last.chord, last.key) : `${nameOf(last.chord)} : ${roleText(last.chord, last.key)}.`;
   const top = cands.filter((c) => c.share !== null && c.share > 0).sort((a, b) => b.share! - a.share!).slice(0, 4);
-  els.next.textContent = !last ? 'Partout : depuis la maison, tout est possible.' : top.length ? top.map((c) => `${nameOf(c.chord)} ${pct(c.share!)}`).join(' · ') : 'Trop peu de chansons pour le dire.';
+  els.next.textContent = !last
+    ? 'Partout : depuis la maison, tout est possible.'
+    : shardState === 'chargement'
+      ? 'Chargement des parts des chansons…'
+      : shardState === 'echec'
+        ? 'Les parts des chansons n’ont pas pu être chargées ; la carte reste jouable.'
+        : top.length
+          ? top.map((c) => `${nameOf(c.chord)} ${pct(c.share!)}`).join(' · ')
+          : 'Trop peu de chansons pour le dire.';
   els.undo.disabled = n === 0;
   els.restart.disabled = n === 0;
 }
@@ -136,10 +145,12 @@ render();
 loadShard(2)
   .then((s) => {
     rows = s.rows;
+    shardState = 'pret';
     render();
   })
   .catch(() => {
-    els.next.textContent = 'Les parts des chansons n’ont pas pu être chargées ; la carte reste jouable.';
+    shardState = 'echec';
+    render();
   });
 
 // Servi par la tâche 9 (légende « pas rare ») ; retiré à ce moment-là.
