@@ -6,7 +6,7 @@ import { mountShell } from '@shell/shell';
 import { createStore } from '@shell/store';
 import { KEY_NAMES } from '../compose-ta-progression/state';
 import { loadShard } from '../progression-jouee/data/load';
-import { chordId, keyName, nameOf, type Chord } from '../suis-les-fleches/domain/harmony';
+import { chordId, fifthsIndex, keyName, nameOf, type Chord } from '../suis-les-fleches/domain/harmony';
 import { moveSentence, roleText } from '../suis-les-fleches/domain/moves';
 import { ringRotation } from './domain/geometry';
 import { candidates, type Candidate, type Rows } from './domain/halos';
@@ -46,7 +46,8 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
 let rows: Rows = {};
 let shardState: 'chargement' | 'pret' | 'echec' = 'chargement';
 let lastVoicing: number[] | null = null;
-let rotation = 0;
+// `keyAngle` met Do en haut : la tonalité de départ (`?t=`) doit y être dès l'ouverture.
+let rotation = -30 * fifthsIndex(store.get().home);
 let rotationKey = store.get().home;
 /** Part du corpus du dernier pas posé (pour la légende « pas rare »). */
 let lastShare: number | null = null;
@@ -175,7 +176,8 @@ function pick(c: Chord) {
   const { home, path } = store.get();
   const j = journeyOf(home, path);
   const last = j.steps[j.steps.length - 1]?.chord ?? null;
-  lastShare = last ? (candidates(last, j.key, rows).find((x) => chordId(x.chord) === chordId(c))?.share ?? 0) : null;
+  // Sans les parts du corpus (chargement ou échec), on ne sait rien du pas : pas de légende « rare ».
+  lastShare = last && shardState === 'pret' ? (candidates(last, j.key, rows).find((x) => chordId(x.chord) === chordId(c))?.share ?? 0) : null;
   sound(c);
   store.set({ path: [...path, c] });
 }

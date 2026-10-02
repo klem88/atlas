@@ -28,6 +28,14 @@ describe('noteFor', () => {
     expect(note([M(0), M(2), M(7), m(11), dim(11), M(0), M(5)])!.kind).toBe('retour');
   });
 
+  it('retour à la maison par modulation : la légende « retour » est celle qui reste', () => {
+    expect(note([M(0), M(2), M(7), m(11), dim(11), M(0), M(5)])!.kind).toBe('retour');
+  });
+
+  it('rejouer le même accord n’est pas un pas rare', () => {
+    expect(note([M(0), M(0)], { share: 0 })?.kind).not.toBe('rare');
+  });
+
   it('emprunt, emprunt en boucle, dominante vers un accord mineur', () => {
     expect(note([M(0), M(10)])!.text).toBe('Si♭ vient de Do mineur : une ombre passagère, on reste en Do.');
     expect(note([M(0), M(10), M(0), M(10)])!.text).toBe('Do – Si♭ en boucle : le son du rock (mode mixolydien). On reste en Do : Si♭ est une couleur, pas une destination.');

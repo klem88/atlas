@@ -244,6 +244,7 @@
   .map-ring,
   .ring-key-name,
   .map-node,
+  .map-sector-name,
   .map-halo {
     transition: none;
   }
@@ -342,7 +343,8 @@
 .token.is-pending {
   border-style: dashed;
 }
-.token.is-pivot {
+/* Le chevauchement n'a lieu que si une bande précède : en tout premier jeton, il déborderait à gauche. */
+.band + .band .token.is-pivot {
   margin-left: calc(-1 * var(--space-4));
   box-shadow: 0 0 0 3px var(--surface-sunk);
 }

@@ -4,9 +4,13 @@ import { keyName, nameOf } from '../../suis-les-fleches/domain/harmony';
 import { bandsOf, type Journey } from '../domain/journey';
 import { pivotTip, RIBBON_TIP } from '../domain/notes';
 
+/** Nombre de pas au rendu précédent. */
+let lastCount = -1;
+
 export function renderRibbon(root: HTMLElement, j: Journey) {
   root.dataset.tip = RIBBON_TIP;
   if (!j.steps.length) {
+    lastCount = 0;
     root.innerHTML = `<p class="ribbon-empty">Ta progression s’écrira ici.</p>`;
     return;
   }
@@ -28,5 +32,7 @@ export function renderRibbon(root: HTMLElement, j: Journey) {
     .join('');
   const leaning = j.leaning !== null ? `<li class="band band--leaning"><span class="band-name">vers ${escapeHtml(keyName(j.leaning))} ?</span></li>` : '';
   root.innerHTML = `<ol class="ribbon-bands">${bands}${leaning}</ol>`;
-  root.scrollLeft = root.scrollWidth;
+  // On ne recale à droite que si le chemin a changé : un simple survol ne ramène pas un ruban qu'on a fait défiler.
+  if (j.steps.length !== lastCount) root.scrollLeft = root.scrollWidth;
+  lastCount = j.steps.length;
 }

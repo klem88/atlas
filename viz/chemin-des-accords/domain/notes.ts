@@ -71,7 +71,8 @@ export function noteFor(j: Journey, ctx: NoteContext): Note | null {
     default:
       break;
   }
-  if (ctx.share !== null && ctx.share < 0.01 && n > 1) return ev('rare', `Peu de chansons font ce pas. Rien n’est interdit : à toi de juger à l’oreille.`);
+  // Rejouer le même accord n'est pas un « pas » : il n'est jamais parmi les candidats, sa part vaut 0 sans être rare.
+  if (ctx.share !== null && ctx.share < 0.01 && n > 1 && e.kind !== 'repete') return ev('rare', `Peu de chansons font ce pas. Rien n’est interdit : à toi de juger à l’oreille.`);
   if (n === 1 && !ctx.seen.has('halos'))
     return { kind: 'halos', text: `Les halos montrent où vont les chansons après ${nameOf(c)} : plus il est grand, plus le pas est courant.`, once: true };
   if (ctx.satellites > 0 && !ctx.seen.has('satellite'))
