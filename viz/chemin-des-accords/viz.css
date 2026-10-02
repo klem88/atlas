@@ -75,6 +75,25 @@
   font-weight: 700;
   fill: var(--ink);
 }
+.ring-key {
+  cursor: pointer;
+  outline: none;
+}
+.ring-key:focus-visible .ring-key-mark {
+  stroke: var(--focus);
+}
+.ring-key.is-destination .ring-key-mark {
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-dasharray: 6 5;
+}
+.map-route-arc {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-dasharray: 10 8;
+  marker-end: url(#map-head-accent);
+}
 .map-home-arc {
   fill: none;
   stroke: var(--accent);
@@ -189,6 +208,33 @@
   fill: var(--surface);
 }
 
+/* Guidage : les accords de la route */
+.map-node-ring {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 3;
+}
+.map-node--guide-commun .map-node-ring {
+  stroke: var(--ink-3);
+  stroke-dasharray: 4 6;
+}
+.map-node--guide-mene .map-node-disc {
+  stroke: var(--accent);
+  stroke-width: 5;
+}
+.map-node--guide-ramene {
+  opacity: 0.35;
+}
+.map-node.is-next .map-node-ring {
+  stroke: var(--accent);
+  stroke-width: 6;
+  stroke-dasharray: none;
+}
+.map-halo--muted {
+  fill: var(--ink-3);
+  fill-opacity: 0.1;
+}
+
 /* Panneau */
 .home-field {
   display: grid;
@@ -238,6 +284,69 @@
   font-style: italic;
   color: var(--ink-2);
   text-align: center;
+}
+
+/* La recette : les accords à jouer pour changer de tonalité */
+.route-block[hidden] {
+  display: none;
+}
+.route-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.route-clear {
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-3);
+  font: 400 var(--text-xs) var(--font-ui);
+  cursor: pointer;
+}
+.route-clear[hidden] {
+  display: none;
+}
+.recipe {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.recipe-step {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: baseline;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+}
+.recipe-step.is-next {
+  border: 2px solid var(--accent);
+}
+.recipe-num {
+  color: var(--ink-3);
+}
+.recipe-name {
+  font-weight: 700;
+  color: var(--ink);
+}
+.route-hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--ink-3);
 }
 
 @media (prefers-reduced-motion: reduce) {

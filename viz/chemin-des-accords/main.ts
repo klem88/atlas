@@ -11,7 +11,8 @@ import { moveSentence, roleText } from '../suis-les-fleches/domain/moves';
 import { ringRotation } from './domain/geometry';
 import { candidates, type Candidate, type Rows } from './domain/halos';
 import { journeyOf, type Journey } from './domain/journey';
-import { noteFor, pct, RIBBON_TIP, RING_TIP, whereText, type NoteKind } from './domain/notes';
+import { arrivalText, DEST_HINT, noteFor, pct, recipeText, RIBBON_TIP, RING_TIP, whereText, type NoteKind } from './domain/notes';
+import { routeTo, type Route } from './domain/route';
 import { readStateFromUrl, stateToSearch, type VizState } from './state';
 import { ChordMap } from './ui/map';
 import { renderRibbon } from './ui/ribbon';
@@ -35,6 +36,11 @@ const els = {
   undo: $<HTMLButtonElement>('undo'),
   listen: $<HTMLButtonElement>('listen'),
   restart: $<HTMLButtonElement>('restart'),
+  routeBlock: $('route-block'),
+  routeTitle: $('route-title'),
+  routeClear: $<HTMLButtonElement>('route-clear'),
+  recipe: $('recipe'),
+  routeHint: $('route-hint'),
   ribbon: $('ribbon'),
   map: document.getElementById('map') as unknown as SVGSVGElement,
 };
@@ -58,10 +64,19 @@ let noteText = '';
 let noteOnce: NoteKind | null = null;
 /** Identifiant du minuteur de l'écoute en cours (null hors écoute). */
 let playing: number | null = null;
+/** La tonalité choisie sur l’anneau (jamais dans l’URL), et celle qu’on vient d’atteindre (pour la légende d’arrivée). */
+let destination: number | null = null;
+let arrived: number | null = null;
+/** L’état du chemin pour lequel la légende d’arrivée est affichée. */
+let arrivalFor: string | null = null;
+let arrivalNote = '';
+/** La route affichée dans le panneau (pour les pas de la recette). */
+let shownRoute: Route | null = null;
 
 const map = new ChordMap(els.map, {
   onPick: (c) => pick(c),
   onHover: (c) => hover(c),
+  onKey: (t) => chooseKey(t),
   reducedMotion,
 });
 
@@ -98,26 +113,86 @@ function render(n = store.get().path.length) {
   const cands = candidates(last, j.key, rows);
   rotation = ringRotation(rotation, rotationKey, j.key);
   rotationKey = j.key;
-  map.render({ key: j.key, home, leaning: j.leaning, rotation, current: last, candidates: cands, trail: trailOf(j) });
+  // La destination ne vaut que pour le chemin complet (ni écoute, ni consultation d’un pas).
+  let route: Route | null = null;
+  const complete = n === path.length;
+  if (complete) {
+    if (destination !== null && j.key === destination && j.leaning === null) {
+      arrived = destination;
+      destination = null;
+    }
+    const dest = destination ?? j.leaning;
+    route = dest !== null ? routeTo(j, dest) : null;
+  }
+  map.render({ key: j.key, home, leaning: j.leaning, rotation, current: last, candidates: cands, trail: trailOf(j), route });
   renderRibbon(els.ribbon, j);
   renderPanel(j, cands);
+  renderRoute(route, j, complete && destination !== null);
   // La légende ne parle que du chemin complet : pendant l'écoute, on la vide.
   if (n === path.length) {
     // Un nouveau rendu du même état (survol, chargement des parts) garde la légende affichée, même « une seule fois » ;
     // si seul le nombre de satellites change, on la recalcule sans compter comme « vue » celle qui s'affichait pour cet état.
     const satellites = cands.filter((c) => c.satellite).length;
-    const key = `${home}|${path.map(chordId).join(',')}|${satellites}`;
+    const base = `${home}|${path.map(chordId).join(',')}`;
+    if (arrived !== null) {
+      arrivalFor = base;
+      arrivalNote = arrivalText(arrived);
+      arrived = null;
+    }
+    const key = `${base}|${arrivalFor === base ? 'arrivee' : ''}|${satellites}`;
     if (key !== noteKey) {
       if (noteKey.startsWith(key.slice(0, key.lastIndexOf('|') + 1)) && noteOnce) seen.delete(noteOnce);
       noteKey = key;
-      const note = noteFor(j, { share: lastShare, satellites, seen });
-      noteText = note?.text ?? '';
+      const note = arrivalFor === base ? null : noteFor(j, { share: lastShare, satellites, seen });
+      noteText = arrivalFor === base ? arrivalNote : (note?.text ?? '');
       noteOnce = note?.once ? note.kind : null;
       if (noteOnce) seen.add(noteOnce);
     }
     els.note.textContent = noteText;
   } else els.note.textContent = '';
 }
+
+/** Le bloc « Destination » : la recette de l’étape, ou l’indice quand il n’y a pas de route. */
+function renderRoute(route: Route | null, j: Journey, explicit: boolean) {
+  shownRoute = route;
+  els.routeClear.hidden = !explicit;
+  els.recipe.hidden = !route;
+  els.routeTitle.hidden = !route;
+  els.routeHint.textContent = route ? '' : DEST_HINT;
+  els.routeHint.hidden = !!route;
+  if (!route) {
+    els.recipe.replaceChildren();
+    els.routeTitle.textContent = 'Destination';
+    return;
+  }
+  const via = route.hops.length > 1 ? ` (par ${route.hops.slice(0, -1).map((t) => nameOf({ root: t, cls: 'maj' })).join(', ')})` : '';
+  els.routeTitle.textContent = explicit ? `Vers ${keyName(route.target)}${via}` : `On penche vers ${keyName(route.hop)}${via}`;
+  els.recipe.innerHTML = route.recipe
+    .map(
+      (step, i) =>
+        `<li><button type="button" class="recipe-step${i === 0 ? ' is-next' : ''}" data-i="${i}"><span class="recipe-num">${i + 1}</span><span class="recipe-name">${escapeHtml(nameOf(step.chord))}</span><span>${escapeHtml(recipeText(step, j.key, route.hop, j.home, route.target))}</span></button></li>`,
+    )
+    .join('');
+}
+
+/** Toucher une tonalité de l’anneau : en faire la destination (ou l’abandonner). */
+function chooseKey(t: number) {
+  if (playing !== null) return;
+  const { home, path } = store.get();
+  const j = journeyOf(home, path);
+  destination = t === destination || t === j.key ? null : t;
+  render();
+}
+
+els.recipe.addEventListener('click', (e) => {
+  const b = (e.target as HTMLElement).closest<HTMLElement>('.recipe-step');
+  const step = b && shownRoute?.recipe[Number(b.dataset.i)];
+  if (step) pick(step.chord);
+});
+els.routeClear.addEventListener('click', () => {
+  destination = null;
+  render();
+});
 
 function renderPanel(j: Journey, cands: Candidate[]) {
   els.home.value = String(j.home);
@@ -191,11 +266,13 @@ els.restart.addEventListener('click', () => {
   if (playing !== null) stopListening();
   lastShare = null;
   lastVoicing = null;
+  destination = null;
   store.set({ path: [] });
 });
 els.home.addEventListener('change', () => {
   if (playing !== null) stopListening();
   lastShare = null;
+  destination = null;
   store.set({ home: Number(els.home.value), path: [] });
 });
 

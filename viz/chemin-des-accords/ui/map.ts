@@ -3,12 +3,13 @@
  * Les disques sont identifiés par l'accord réel : à une modulation, un accord commun glisse à sa nouvelle place
  * (transition CSS sur `transform`), et son degré se réécrit.
  */
-import { chordId, diatonicChords, keyName, nameOf, roleOf, type Chord } from '../../suis-les-fleches/domain/harmony';
+import { chordId, diatonicChords, fifthsOffset, keyName, nameOf, roleOf, type Chord } from '../../suis-les-fleches/domain/harmony';
 import { arrowPath, FN_LABELS, layoutOf, type Point } from '../../suis-les-fleches/domain/layout';
 import { roleText } from '../../suis-les-fleches/domain/moves';
 import { arcPath, CHORD_RING, DISK, diatonicPoint, HOME_ARC, homeArc, KEY_RING, keyAngle, polar, SAT_DISK, satellitePoints, TONIC_DISK } from '../domain/geometry';
 import type { Candidate } from '../domain/halos';
 import { haloTip, pct, RING_TIP } from '../domain/notes';
+import { guideOf, type Route } from '../domain/route';
 
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -29,11 +30,15 @@ export interface MapView {
   candidates: Candidate[];
   /** Les derniers accords joués dans la tonalité du moment, du plus ancien au plus récent. */
   trail: Chord[];
+  /** La route vers la destination (choisie, ou celle vers laquelle on penche), ou rien. */
+  route: Route | null;
 }
 
 export interface MapOptions {
   onPick: (c: Chord) => void;
   onHover: (c: Chord | null) => void;
+  /** Toucher une tonalité de l’anneau : en faire la destination. */
+  onKey: (tonic: number) => void;
   reducedMotion: boolean;
 }
 
@@ -52,6 +57,7 @@ export class ChordMap {
   private ring: SVGGElement;
   private ringLabels = new Map<number, SVGGElement>();
   private arc: SVGPathElement;
+  private routeArc: SVGPathElement;
   private halos: SVGGElement;
   private trail: SVGGElement;
   private previewLayer: SVGGElement;
@@ -78,9 +84,17 @@ export class ChordMap {
     this.drawSectors(el('g', { class: 'map-sectors' }, svg));
     this.ring = el('g', { class: 'map-ring', 'data-tip': RING_TIP }, svg);
     this.arc = el('path', { class: 'map-home-arc' }, this.ring);
+    this.routeArc = el('path', { class: 'map-route-arc' }, this.ring);
     for (const t of KEYS) {
       const a = polar(KEY_RING, keyAngle(t));
-      const g = el('g', { class: 'ring-key', transform: `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})` }, this.ring);
+      const g = el('g', { class: 'ring-key', transform: `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})`, tabindex: 0, role: 'button', 'aria-label': `Aller vers ${keyName(t)}` }, this.ring);
+      g.addEventListener('click', () => this.opts.onKey(t));
+      g.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.opts.onKey(t);
+        }
+      });
       el('circle', { class: 'ring-key-mark', r: 30 }, g);
       el('text', { class: 'ring-key-name', 'text-anchor': 'middle', 'dominant-baseline': 'central' }, g).textContent = nameOf({ root: t, cls: 'maj' });
       this.ringLabels.set(t, g);
@@ -127,6 +141,11 @@ export class ChordMap {
     if (v.current) extra(v.current);
     const previous = v.trail[v.trail.length - 2];
     if (previous) extra(previous);
+    // Les accords de la route (ceux qui mènent à l’étape) passent avant les candidats ; ils se posent près de leur place future.
+    if (v.route) {
+      const hopName = nameOf({ root: v.route.hop, cls: 'maj' });
+      for (const c of v.route.pass) add(c, `→ ${hopName}`, roleOf(c, v.route.hop).label);
+    }
     for (const c of v.candidates.filter((x) => x.satellite).sort((x, y) => (y.share ?? 0) - (x.share ?? 0))) add(c.chord, c.label, c.anchor);
     const pts = satellitePoints(outside.map((o) => ({ id: chordId(o.chord), anchor: o.anchor })));
     for (const o of outside) out.set(chordId(o.chord), { chord: o.chord, p: pts.get(chordId(o.chord))!, r: SAT_DISK, label: o.label, kind: 'satellite' });
@@ -149,10 +168,13 @@ export class ChordMap {
       g.classList.toggle('is-current', t === v.key);
       g.classList.toggle('is-home', t === v.home);
       g.classList.toggle('is-leaning', t === v.leaning);
+      g.classList.toggle('is-destination', t === v.route?.target);
       g.querySelector('text')!.style.transform = `rotate(${-v.rotation}deg)`;
     }
     const arc = homeArc(v.home, v.key);
     this.arc.setAttribute('d', arc ? arcPath(HOME_ARC, arc.from, arc.to) : '');
+    const from = keyAngle(v.key);
+    this.routeArc.setAttribute('d', v.route ? arcPath(HOME_ARC, from, from + 30 * fifthsOffset(v.key, v.route.target)) : '');
     this.ring.setAttribute('aria-label', `Tonalité du moment : ${keyName(v.key)}`);
   }
 
@@ -169,6 +191,7 @@ export class ChordMap {
       let fresh = false;
       if (!g) {
         g = el('g', { tabindex: 0, role: 'button' }, this.nodeLayer);
+        el('circle', { class: 'map-node-ring' }, g);
         el('circle', { class: 'map-node-disc' }, g);
         el('text', { class: 'map-node-name', 'text-anchor': 'middle' }, g);
         el('text', { class: 'map-node-sub', 'text-anchor': 'middle' }, g);
@@ -198,13 +221,16 @@ export class ChordMap {
         fresh = true;
         this.nodes.set(id, g);
       }
-      g.setAttribute('class', `map-node map-node--${s.kind}${id === current ? ' is-current' : ''}${fresh ? ' is-entering' : ''}`);
+      const guide = v.route ? ` map-node--guide-${guideOf(s.chord, v.route, v.key)}` : '';
+      const next = v.route?.recipe[0] && chordId(v.route.recipe[0].chord) === id ? ' is-next' : '';
+      g.setAttribute('class', `map-node map-node--${s.kind}${guide}${next}${id === current ? ' is-current' : ''}${fresh ? ' is-entering' : ''}`);
       if (fresh) {
         const node = g;
         requestAnimationFrame(() => requestAnimationFrame(() => node.classList.remove('is-entering')));
       }
       g.style.transform = `translate(${s.p.x.toFixed(1)}px, ${s.p.y.toFixed(1)}px)`;
-      const [disc, name, sub] = [g.children[0]!, g.children[1]!, g.children[2]!];
+      const [ring, disc, name, sub] = [g.children[0]!, g.children[1]!, g.children[2]!, g.children[3]!];
+      ring.setAttribute('r', String(s.r + 10));
       disc.setAttribute('r', String(s.r));
       name.setAttribute('y', String(s.kind === 'satellite' ? -2 : -6));
       name.textContent = nameOf(s.chord);
@@ -212,7 +238,12 @@ export class ChordMap {
       sub.textContent = s.label;
       const cand = v.candidates.find((c) => chordId(c.chord) === id);
       const base = cand && v.current ? haloTip(v.current, cand) : `${nameOf(s.chord)} : ${s.label} en ${keyName(v.key)}.`;
-      g.dataset.tip = s.kind === 'satellite' ? `${base} ${nameOf(s.chord)} : ${roleText(s.chord, v.key)}.` : base;
+      const door = v.route?.pass.some((c) => chordId(c) === id);
+      g.dataset.tip = door
+        ? `${nameOf(s.chord)} : ${roleOf(s.chord, v.route!.hop).label} en ${nameOf({ root: v.route!.hop, cls: 'maj' })} ; il n’existe pas en ${nameOf({ root: v.key, cls: 'maj' })}.`
+        : s.kind === 'satellite'
+          ? `${base} ${nameOf(s.chord)} : ${roleText(s.chord, v.key)}.`
+          : base;
       g.setAttribute('aria-label', `${nameOf(s.chord)}, ${s.label}${cand?.share != null ? `, ${pct(cand.share)} des chansons` : ''}`);
     }
   }
@@ -228,7 +259,8 @@ export class ChordMap {
       const s = this.spots.get(chordId(c.chord));
       if (!s) continue;
       const r = s.r + 6 + 54 * Math.sqrt(c.share);
-      el('circle', { class: 'map-halo', cx: s.p.x, cy: s.p.y, r, style: `--share:${c.share.toFixed(3)}` }, this.halos);
+      const muted = v.route && guideOf(c.chord, v.route, v.key) !== 'mene' && chordId(c.chord) !== chordId(v.route.recipe[0]?.chord ?? c.chord) ? ' map-halo--muted' : '';
+      el('circle', { class: `map-halo${muted}`, cx: s.p.x, cy: s.p.y, r, style: `--share:${c.share.toFixed(3)}` }, this.halos);
       const t = el('text', { class: 'map-pct', 'text-anchor': 'middle' }, this.pcts);
       t.textContent = pct(c.share);
       placed.push(this.placePct(t, s, r, placed, ringKeys));
