@@ -38,7 +38,9 @@ function anchorAngle(anchor: string | null): number {
   return (Math.atan2(p.y - CENTER, p.x - CENTER) * 180) / Math.PI;
 }
 
-/** Les satellites, groupés par ancre, s'écartent en éventail au-delà de leur ancre. */
+/** Les satellites, groupés par ancre, s'écartent en éventail au-delà de leur ancre.
+ * La page en affiche au plus quatre (trois candidats hors gamme + l'accord du moment s'il est hors gamme),
+ * ce qui garantit un écart de 23° au moins entre deux groupes voisins — le test le vérifie. */
 export function satellitePoints(items: readonly { id: string; anchor: string | null }[]): Map<string, Point> {
   const groups = new Map<number, string[]>();
   for (const it of items) {

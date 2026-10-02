@@ -29,6 +29,26 @@ describe('cercle', () => {
     }
     for (let i = 0; i < all.length; i++) for (let j = i + 1; j < all.length; j++) expect(dist(all[i]!, all[j]!)).toBeGreaterThan(2 * SAT_DISK);
   });
+
+  it("au plus quatre satellites, même sur des ancres voisines, sans chevauchement", () => {
+    const verifySatellites = (items: readonly { id: string; anchor: string | null }[]) => {
+      const sat = satellitePoints(items);
+      const all = [...sat.values()];
+      for (const p of all) {
+        for (const c of DIATONIC) expect(dist(p, diatonicPoint(c.label))).toBeGreaterThan(SAT_DISK + DISK);
+        expect(Math.hypot(p.x - CENTER, p.y - CENTER) + SAT_DISK).toBeLessThan(KEY_RING - 15);
+      }
+      for (let i = 0; i < all.length; i++) for (let j = i + 1; j < all.length; j++) expect(dist(all[i]!, all[j]!)).toBeGreaterThan(2 * SAT_DISK);
+    };
+    // trois sur 'V' + un sur 'vii°' (ancres voisines)
+    verifySatellites([{ id: 'a', anchor: 'V' }, { id: 'b', anchor: 'V' }, { id: 'c', anchor: 'V' }, { id: 'd', anchor: 'vii°' }]);
+    // deux sur 'vi' + deux sur 'I' (ancres voisines)
+    verifySatellites([{ id: 'a', anchor: 'vi' }, { id: 'b', anchor: 'vi' }, { id: 'c', anchor: 'I' }, { id: 'd', anchor: 'I' }]);
+    // deux sur 'V' + deux sur 'vii°'
+    verifySatellites([{ id: 'a', anchor: 'V' }, { id: 'b', anchor: 'V' }, { id: 'c', anchor: 'vii°' }, { id: 'd', anchor: 'vii°' }]);
+    // quatre sur 'ii'
+    verifySatellites([{ id: 'a', anchor: 'ii' }, { id: 'b', anchor: 'ii' }, { id: 'c', anchor: 'ii' }, { id: 'd', anchor: 'ii' }]);
+  });
 });
 
 describe('anneau des tonalités', () => {
