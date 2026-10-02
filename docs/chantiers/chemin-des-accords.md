@@ -87,11 +87,11 @@ Bibliothèque de progressions, autres dispositions (grille, bande), tonalités e
 ## Tâches
 
 - [x] Cadrage avec l'auteur (maquettes : modulation, possibilités, écran complet)
-- [ ] Domaine : `journey.ts` ✓, `halos.ts`, `geometry.ts`, `notes.ts` ; tests
-- [ ] Squelette de la page (`npm run new:viz`), carte + anneau + halos, geste toucher-poser, son
-- [ ] Traînée, ruban, panneau, annulation, bascule animée
-- [ ] URL, écoute du chemin, textes (comment lire, méthode, sources, limites)
-- [ ] Vérification navigateur : clair, sombre, 375 px ; image d'aperçu
+- [x] Domaine : `journey.ts`, `halos.ts`, `geometry.ts`, `notes.ts` ; tests
+- [x] Squelette de la page (`npm run new:viz`), carte + anneau + halos, geste toucher-poser, son
+- [x] Traînée, ruban, panneau, annulation, bascule animée
+- [x] URL, écoute du chemin, textes (comment lire, méthode, sources, limites)
+- [x] Vérification navigateur : clair, sombre, 375 px ; image d'aperçu
 - [ ] Relecture de l'auteur
 
 ## Décisions
@@ -103,7 +103,12 @@ Bibliothèque de progressions, autres dispositions (grille, bande), tonalités e
 - Toucher = jouer et poser, avec annulation (choix de l'auteur).
 - Une dominante secondaire de cible mineure (V/ii, V/iii, V/vi) est une couleur, comme un emprunt : elle éclaire un accord sans quitter la tonalité (pas de tonalités mineures dans cette page). Seuls V/V et les accords d’ailleurs frôlent. Un accord répété ne change rien. (Construction, 2 octobre 2026.)
 - `ring.ts` devient `geometry.ts` : satellites et anneau partagent la même géométrie.
+- Une dominante secondaire de cible mineure est une couleur, pas une porte (déjà notée plus haut). (2 octobre 2026)
+- Une couleur jouée pendant un frôlement éteint le frôlement. (2 octobre 2026)
+- Au plus quatre accords en pointillés : l'accord du moment et le précédent, s'ils sont hors gamme, passent avant les candidats. (2 octobre 2026)
+- Toucher un accord pendant l'écoute l'arrête sans l'ajouter au chemin. (2 octobre 2026)
+- Au premier accord, la légende des halos passe avant celle des pointillés. (2 octobre 2026)
 
 ## Prochaine action
 
-Domaine : `halos.ts`, `geometry.ts`, `notes.ts` (tests d’abord).
+Relecture de l’auteur sur http://localhost:5173/viz/chemin-des-accords/ ; ensuite seulement `status: 'published'` dans `src/shell/site.ts`.

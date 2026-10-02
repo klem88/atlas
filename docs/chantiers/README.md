@@ -39,7 +39,7 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | 3f | [ou-le-solo-respire](ou-le-solo-respire.md) : Où le solo respire | construite sur `feat/ou-le-solo-respire`, **page non vérifiée en navigateur** ; courriel Weimar à envoyer |
 | 3g | [compose-ta-progression](compose-ta-progression.md) : Compose ta progression | publiée le 2 octobre 2026, en attente de relecture |
 | 3h | [suis-les-fleches](suis-les-fleches.md) : Suis les flèches | brouillon sur `feat/suis-les-fleches` : carte, voisins, modulation, bande des quintes ; en attente de relecture |
-| 3i | [chemin-des-accords](chemin-des-accords.md) : Le chemin des accords | cadrage validé le 2 octobre 2026 sur `feat/chemin-des-accords` (depuis `feat/suis-les-fleches`) ; prochaine étape : domaine |
+| 3i | [chemin-des-accords](chemin-des-accords.md) : Le chemin des accords | brouillon construit sur `feat/chemin-des-accords`, en attente de relecture |
 | 4 | [Qui chante autour de chez toi](qui-chante.md) | publiée (2026-09-30) ; restent l'image de partage et le test sur téléphone |
 | 5 | [Sous tes pieds](sous-tes-pieds.md) | cadrage validé, sondes faites |
 
