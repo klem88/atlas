@@ -42,22 +42,22 @@ export function noteFor(j: Journey, ctx: NoteContext): Note | null {
       const p = j.steps[e.pivot]!;
       return ev(
         'confirme',
-        `${nameOf(c)} n'existe qu'en ${keyName(e.to)} : on y est. ${nameOf(p.chord)} a servi de pivot : ${p.pivot!.before} en ${short(e.from)}, ${p.pivot!.after} en ${short(e.to)}.`,
+        `${nameOf(c)} n’existe qu’en ${keyName(e.to)} : on y est. ${nameOf(p.chord)} a servi de pivot : ${p.pivot!.before} en ${short(e.from)}, ${p.pivot!.after} en ${short(e.to)}.`,
       );
     }
     case 'eteint': {
       const frolant = nameOf(j.steps[e.frole]!.chord);
-      const head = roleOf(c, j.key).kind === 'diatonique' ? `${nameOf(c)} n'existe qu'en ${keyName(j.key)}` : `${nameOf(c)} ramène en ${keyName(j.key)}`;
-      return ev('eteint', `${head} : ${frolant} n'était qu'un détour vers ${keyName(e.target)} (on dit une tonicisation).`);
+      const head = roleOf(c, j.key).kind === 'diatonique' ? `${nameOf(c)} n’existe qu’en ${keyName(j.key)}` : `${nameOf(c)} ramène en ${keyName(j.key)}`;
+      return ev('eteint', `${head} : ${frolant} n’était qu’un détour vers ${keyName(e.target)} (on dit une tonicisation).`);
     }
     case 'frole':
-      return ev('frole', `${nameOf(c)} n'est pas dans ${keyName(last.key)} : il tire vers ${keyName(e.target)}. Si un accord propre à ${short(e.target)} suit, on aura modulé.`);
+      return ev('frole', `${nameOf(c)} n’est pas dans ${keyName(last.key)} : il tire vers ${keyName(e.target)}. Si un accord propre à ${short(e.target)} suit, on aura modulé.`);
     case 'suspens':
       return ev('suspens', `${nameOf(c)} est en ${short(last.key)} comme en ${short(e.target)} : on ne sait pas encore.`);
     case 'couleur': {
       if (e.cause === 'dominante') {
         const target = chordAt(j.key, chordByLabel(e.anchor)!.degree);
-        return ev('couleur', `${nameOf(c)} pointe vers ${nameOf(target)} : il l'éclaire sans quitter ${keyName(j.key)} (une dominante secondaire).`);
+        return ev('couleur', `${nameOf(c)} pointe vers ${nameOf(target)} : il l’éclaire sans quitter ${keyName(j.key)} (une dominante secondaire).`);
       }
       const before = j.steps[n - 2];
       const twoBefore = j.steps[n - 3];
@@ -71,7 +71,7 @@ export function noteFor(j: Journey, ctx: NoteContext): Note | null {
     default:
       break;
   }
-  if (ctx.share !== null && ctx.share < 0.01 && n > 1) return ev('rare', 'Peu de chansons font ce pas. Rien n\'est interdit : à toi de juger à l\'oreille.');
+  if (ctx.share !== null && ctx.share < 0.01 && n > 1) return ev('rare', `Peu de chansons font ce pas. Rien n'est interdit : à toi de juger à l'oreille.`);
   if (ctx.satellites > 0 && !ctx.seen.has('satellite'))
     return { kind: 'satellite', text: 'En pointillés : un accord hors de la gamme, que les chansons jouent souvent ici.', once: true };
   if (n === 1 && !ctx.seen.has('halos'))
@@ -84,7 +84,7 @@ export function whereText(j: Journey): string {
   if (j.leaning !== null) return `on penche vers ${keyName(j.leaning)}`;
   const off = fifthsOffset(j.home, j.key);
   if (off === 0) return 'la maison';
-  if (Math.abs(off) === 6) return `parti de ${keyName(j.home)}, à l'autre bout du cycle des quintes`;
+  if (Math.abs(off) === 6) return `parti de ${keyName(j.home)}, à l’autre bout du cycle des quintes`;
   const crans = Math.abs(off) === 1 ? 'un cran' : `${Math.abs(off)} crans`;
   return `parti de ${keyName(j.home)}, ${crans} vers les ${off > 0 ? 'dièses' : 'bémols'}`;
 }
@@ -94,5 +94,5 @@ export const haloTip = (from: Chord, c: Candidate) =>
 
 export const pivotTip = (chord: Chord, before: string, after: string) => `${nameOf(chord)} appartient aux deux tonalités : ${before} avant, ${after} après.`;
 
-export const RING_TIP = 'Les douze tonalités majeures, rangées par quintes : deux voisines partagent presque tous leurs accords. En pointillés, la maison ; en couleur, où tu es.';
-export const RIBBON_TIP = 'Ta progression, accord par accord. Chaque bande est une tonalité ; un accord pivot est à cheval sur deux bandes.';
+export const RING_TIP = `Les douze tonalités majeures, rangées par quintes : deux voisines partagent presque tous leurs accords. En pointillés, la maison ; en couleur, où tu es.`;
+export const RIBBON_TIP = `Ta progression, accord par accord. Chaque bande est une tonalité ; un accord pivot est à cheval sur deux bandes.`;

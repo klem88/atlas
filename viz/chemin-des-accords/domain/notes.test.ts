@@ -17,21 +17,21 @@ describe('noteFor', () => {
   });
 
   it('frôlement, suspens, extinction', () => {
-    expect(note([M(0), M(2)])!.text).toBe('Ré n\'est pas dans Do majeur : il tire vers Sol majeur. Si un accord propre à Sol suit, on aura modulé.');
+    expect(note([M(0), M(2)])!.text).toBe(`Ré n’est pas dans Do majeur : il tire vers Sol majeur. Si un accord propre à Sol suit, on aura modulé.`);
     expect(note([M(0), M(2), m(4)])!.text).toBe('Mi m est en Do comme en Sol : on ne sait pas encore.');
-    expect(note([M(0), M(2), M(5)])!.text).toBe('Fa n\'existe qu\'en Do majeur : Ré n\'était qu\'un détour vers Sol majeur (on dit une tonicisation).');
+    expect(note([M(0), M(2), M(5)])!.text).toBe(`Fa n’existe qu’en Do majeur : Ré n’était qu’un détour vers Sol majeur (on dit une tonicisation).`);
     expect(note([M(0), M(2), m(5)])!.text).toMatch(/^Fa m ramène en Do majeur/);
   });
 
   it('confirmation avec pivot, puis retour à la maison', () => {
-    expect(note([M(0), m(9), M(2), M(7), m(11)])!.text).toBe('Si m n\'existe qu\'en Sol majeur : on y est. Ré a servi de pivot : V/V en Do, V en Sol.');
+    expect(note([M(0), m(9), M(2), M(7), m(11)])!.text).toBe(`Si m n’existe qu’en Sol majeur : on y est. Ré a servi de pivot : V/V en Do, V en Sol.`);
     expect(note([M(0), M(2), M(7), m(11), dim(11), M(0), M(5)])!.kind).toBe('retour');
   });
 
   it('emprunt, emprunt en boucle, dominante vers un accord mineur', () => {
     expect(note([M(0), M(10)])!.text).toBe('Si♭ vient de Do mineur : une ombre passagère, on reste en Do.');
     expect(note([M(0), M(10), M(0), M(10)])!.text).toBe('Do – Si♭ en boucle : le son du rock (mode mixolydien). On reste en Do : Si♭ est une couleur, pas une destination.');
-    expect(note([M(0), M(4)])!.text).toBe('Mi pointe vers La m : il l\'éclaire sans quitter Do majeur (une dominante secondaire).');
+    expect(note([M(0), M(4)])!.text).toBe(`Mi pointe vers La m : il l’éclaire sans quitter Do majeur (une dominante secondaire).`);
   });
 
   it('pas rare et premier satellite, par priorité', () => {
