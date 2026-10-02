@@ -117,8 +117,11 @@ function render(n = store.get().path.length) {
   let route: Route | null = null;
   const complete = n === path.length;
   if (complete) {
-    if (destination !== null && j.key === destination && j.leaning === null) {
-      arrived = destination;
+    // Destination atteinte ou sans objet : on l’efface ; la légende d’arrivée seulement si le dernier pas y a mené.
+    if (destination !== null && j.key === destination) {
+      const lastStep = j.steps[j.steps.length - 1];
+      const before = j.steps[j.steps.length - 2]?.key ?? home;
+      if (j.leaning === null && lastStep && (lastStep.event.kind === 'confirme' || before !== j.key)) arrived = destination;
       destination = null;
     }
     const dest = destination ?? j.leaning;
@@ -134,6 +137,10 @@ function render(n = store.get().path.length) {
     // si seul le nombre de satellites change, on la recalcule sans compter comme « vue » celle qui s'affichait pour cet état.
     const satellites = cands.filter((c) => c.satellite).length;
     const base = `${home}|${path.map(chordId).join(',')}`;
+    if (arrivalFor !== null && arrivalFor !== base) {
+      arrivalFor = null;
+      arrivalNote = '';
+    }
     if (arrived !== null) {
       arrivalFor = base;
       arrivalNote = arrivalText(arrived);
@@ -155,7 +162,7 @@ function render(n = store.get().path.length) {
 /** Le bloc « Destination » : la recette de l’étape, ou l’indice quand il n’y a pas de route. */
 function renderRoute(route: Route | null, j: Journey, explicit: boolean) {
   shownRoute = route;
-  els.routeClear.hidden = !explicit;
+  els.routeClear.hidden = !(explicit && route);
   els.recipe.hidden = !route;
   els.routeTitle.hidden = !route;
   els.routeHint.textContent = route ? '' : DEST_HINT;
