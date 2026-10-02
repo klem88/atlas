@@ -10,6 +10,8 @@ let lastCount = -1;
 /** `selected` : l’indice du jeton consulté (fiche ouverte), ou null. */
 export function renderRibbon(root: HTMLElement, j: Journey, selected: number | null = null) {
   root.dataset.tip = RIBBON_TIP;
+  // Le ruban est réécrit à chaque rendu : on rend le focus clavier au jeton qui l’avait.
+  const focused = document.activeElement instanceof HTMLElement && root.contains(document.activeElement) ? document.activeElement.dataset.index : undefined;
   if (!j.steps.length) {
     lastCount = 0;
     root.innerHTML = `<p class="ribbon-empty">Ta progression s’écrira ici.</p>`;
@@ -25,7 +27,7 @@ export function renderRibbon(root: HTMLElement, j: Journey, selected: number | n
           const classes = ['token', i === last ? 'is-last' : '', s.pivot ? 'is-pivot' : '', j.pending !== null && i >= j.pending ? 'is-pending' : '', i === selected ? 'is-selected' : ''].filter(Boolean).join(' ');
           const sub = s.pivot ? `${s.pivot.before} → ${s.pivot.after}` : s.label;
           const tip = s.pivot ? ` data-tip="${escapeHtml(pivotTip(s.chord, s.pivot.before, s.pivot.after))}"` : '';
-          return `<li><button type="button" class="${classes}" data-index="${i}" aria-pressed="${i === selected}"${tip}><span class="token-name">${escapeHtml(nameOf(s.chord))}</span><span class="token-sub">${escapeHtml(sub)}</span></button></li>`;
+          return `<li${s.pivot ? ' class="is-pivot-item"' : ''}><button type="button" class="${classes}" data-index="${i}" aria-controls="step-card" aria-pressed="${i === selected}"${tip}><span class="token-name">${escapeHtml(nameOf(s.chord))}</span><span class="token-sub">${escapeHtml(sub)}</span></button></li>`;
         })
         .join('');
       return `<li class="band${b.key === j.key ? ' is-current' : ''}"><span class="band-name">${escapeHtml(keyName(b.key))}</span><ol class="band-tokens">${tokens}</ol></li>`;
@@ -36,4 +38,5 @@ export function renderRibbon(root: HTMLElement, j: Journey, selected: number | n
   // On ne recale à droite que si le chemin a changé (et pas pendant une consultation) : un simple survol ne ramène pas un ruban qu'on a fait défiler.
   if (selected === null && j.steps.length !== lastCount) root.scrollLeft = root.scrollWidth;
   lastCount = j.steps.length;
+  if (focused !== undefined) root.querySelector<HTMLElement>(`button[data-index="${focused}"]`)?.focus({ preventScroll: true });
 }

@@ -498,10 +498,8 @@
   margin: 0;
 }
 /* Le chevauchement n'a lieu que si une bande précède : en tout premier jeton, il déborderait à gauche. */
-li:has(> .token.is-pivot) {
-  display: contents;
-}
-.band + .band li:has(> .token.is-pivot) > .token {
+/* Le pivot chevauche la bande précédente : le décalage est porté par son <li>. */
+.band + .band .is-pivot-item {
   margin-left: calc(-1 * var(--space-4));
   box-shadow: 0 0 0 3px var(--surface-sunk);
 }

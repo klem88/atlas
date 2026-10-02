@@ -117,9 +117,10 @@ function trailOf(j: Journey): Chord[] {
 }
 
 /** Dessine le chemin jusqu'au pas `n` (tout le chemin par défaut ; l'écoute rejoue pas à pas). */
-function render(n = inspecting !== null ? inspecting + 1 : store.get().path.length) {
+function render(count?: number) {
   const { home, path } = store.get();
   if (inspecting !== null && inspecting >= path.length) inspecting = null;
+  const n = count ?? (inspecting !== null ? inspecting + 1 : path.length);
   const full = journeyOf(home, path);
   const j = journeyOf(home, path.slice(0, n));
   const last = j.steps[j.steps.length - 1]?.chord ?? null;
@@ -141,7 +142,7 @@ function render(n = inspecting !== null ? inspecting + 1 : store.get().path.leng
     route = dest !== null ? routeTo(j, dest) : null;
   }
   map.render({ key: j.key, home, leaning: j.leaning, rotation, current: last, candidates: cands, trail: trailOf(j), route });
-  renderRibbon(els.ribbon, full, inspecting);
+  renderRibbon(els.ribbon, inspecting !== null || n === path.length ? full : j, inspecting);
   renderCard(full);
   renderPanel(j, cands);
   renderRoute(route, j, complete && destination !== null);
@@ -193,16 +194,28 @@ els.ribbon.addEventListener('click', (e) => {
   inspecting = i === inspecting ? null : i;
   render();
 });
+/** Rend le focus au jeton `i` (ou au dernier s’il n’existe plus) quand la fiche se ferme. */
+function focusToken(i: number) {
+  const tokens = els.ribbon.querySelectorAll<HTMLElement>('button[data-index]');
+  (els.ribbon.querySelector<HTMLElement>(`button[data-index="${i}"]`) ?? tokens[tokens.length - 1])?.focus();
+}
 els.cardPresent.addEventListener('click', () => {
+  const i = inspecting;
   inspecting = null;
   render();
+  if (i !== null) focusToken(i);
 });
 els.cardResume.addEventListener('click', () => {
   if (inspecting === null) return;
-  const keep = store.get().path.slice(0, inspecting + 1);
+  const i = inspecting;
+  const keep = store.get().path.slice(0, i + 1);
   inspecting = null;
-  lastShare = null;
-  store.set({ path: keep });
+  if (keep.length === store.get().path.length) render();
+  else {
+    lastShare = null;
+    store.set({ path: keep });
+  }
+  focusToken(i);
 });
 
 /** Le bloc « Destination » : la recette de l’étape, ou l’indice quand il n’y a pas de route. */
