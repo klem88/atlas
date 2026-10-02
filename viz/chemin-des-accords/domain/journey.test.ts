@@ -8,11 +8,17 @@ const dim = (root: number): Chord => ({ root, cls: 'dim' });
 const [C, D, E, F, G, A, B] = [0, 2, 4, 5, 7, 9, 11];
 
 describe('leanOf : vers où un accord fait pencher', () => {
-  it('rien pour la gamme, les emprunts et les dominantes de cibles mineures', () => {
+  it('rien pour la gamme, les emprunts sombres et les dominantes de cibles mineures', () => {
     expect(leanOf(M(G), C)).toBeNull();
-    expect(leanOf(m(F), C)).toBeNull(); // iv emprunté
-    expect(leanOf(M(10), C)).toBeNull(); // ♭VII emprunté
+    expect(leanOf(m(F), C)).toBeNull(); // iv emprunté : une couleur
+    expect(leanOf(M(8), C)).toBeNull(); // ♭VI emprunté
     expect(leanOf(M(E), C)).toBeNull(); // V/vi
+  });
+
+  it('vers les bémols : ♭VII et v penchent vers la sous-dominante', () => {
+    expect(leanOf(M(10), C)).toBe(F);
+    expect(leanOf(m(G), C)).toBe(F);
+    expect(leanOf(M(F), G)).toBe(C); // Fa est le ♭VII de Sol
   });
   it('V/V penche vers la dominante, un accord d’ailleurs vers la tonalité la plus proche qui le contient', () => {
     expect(leanOf(M(D), C)).toBe(G);
@@ -98,5 +104,56 @@ describe('journeyOf', () => {
   it('un départ hors de la maison frôle dès le premier accord', () => {
     const j = journeyOf(C, [M(D)]);
     expect(j.steps[0]!.event).toEqual({ kind: 'frole', target: G });
+  });
+});
+
+describe('règle symétrique et boucle', () => {
+  it('Si♭ fait pencher vers Fa, Sol m confirme', () => {
+    const j = journeyOf(C, [M(C), M(10), M(F), m(G)]);
+    expect(j.steps.map((s) => s.event)).toEqual([
+      { kind: 'gamme' },
+      { kind: 'frole', target: F },
+      { kind: 'suspens', target: F },
+      { kind: 'confirme', from: C, to: F, pivot: 1 },
+    ]);
+    expect(j.key).toBe(F);
+    expect(j.steps[1]!.pivot).toEqual({ before: '♭VII', after: 'IV' });
+  });
+
+  it('Si♭ rejoué après un accord commun autre que la tonique confirme', () => {
+    expect(journeyOf(C, [M(C), M(10), M(F), M(10)]).steps[3]!.event).toEqual({ kind: 'confirme', from: C, to: F, pivot: 1 });
+  });
+
+  it('Do – Si♭ – Do – Si♭ : une boucle, on reste en Do, et Si♭ n’y frôle plus', () => {
+    const j = journeyOf(C, [M(C), M(10), M(C), M(10)]);
+    expect(j.steps[3]!.event).toEqual({ kind: 'boucle', target: F, frole: 1 });
+    expect([j.key, j.leaning, j.pending]).toEqual([C, null, null]);
+    const longer = journeyOf(C, [M(C), M(10), M(C), M(10), M(C), M(10)]);
+    expect(longer.steps[5]!.event).toEqual({ kind: 'couleur', cause: 'emprunt', anchor: 'vii°' });
+    expect(longer.leaning).toBeNull();
+  });
+
+  it('la boucle vaut aussi côté dièses ; après un autre accord que la tonique, Ré confirme', () => {
+    expect(journeyOf(C, [M(C), M(D), M(C), M(D)]).steps[3]!.event).toEqual({ kind: 'boucle', target: G, frole: 1 });
+    expect(journeyOf(C, [M(C), M(D), M(G), M(D)]).steps[3]!.event).toEqual({ kind: 'confirme', from: C, to: G, pivot: 1 });
+  });
+
+  it('la mémoire des boucles s’oublie quand on change de tonalité', () => {
+    const j = journeyOf(C, [M(C), M(10), M(C), M(10), M(D), M(G), m(B), M(F)]);
+    expect(j.steps[6]!.event.kind).toBe('confirme');
+    expect(j.key).toBe(G);
+    expect(j.steps[7]!.event).toEqual({ kind: 'frole', target: C });
+  });
+
+  it('[C, Bb, C, Bb, D, Bb] : après la boucle, Si♭ relancé est éteint', () => {
+    expect(journeyOf(C, [M(C), M(10), M(C), M(10), M(D), M(10)]).steps[5]!.event).toEqual({ kind: 'eteint', target: G, frole: 4 });
+  });
+
+  it('m(G) en boucle reste une couleur', () => {
+    expect(journeyOf(C, [M(C), m(G), M(C), m(G)]).steps[3]!.event).toEqual({ kind: 'boucle', target: F, frole: 1 });
+  });
+
+  it('[C, D, Bb, C, Bb] : Si♭ après Ré frôleur boucle', () => {
+    expect(journeyOf(C, [M(C), M(D), M(10), M(C), M(10)]).steps[4]!.event).toEqual({ kind: 'boucle', target: F, frole: 2 });
   });
 });

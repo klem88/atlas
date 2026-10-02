@@ -37,8 +37,9 @@ describe('noteFor', () => {
   });
 
   it('emprunt, emprunt en boucle, dominante vers un accord mineur', () => {
-    expect(note([M(0), M(10)])!.text).toBe('Si♭ vient de Do mineur : une ombre passagère, on reste en Do.');
+    expect(note([M(0), m(5)])!.text).toBe('Fa m vient de Do mineur : une ombre passagère, on reste en Do.');
     expect(note([M(0), M(10), M(0), M(10)])!.text).toBe('Do – Si♭ en boucle : le son du rock (mode mixolydien). On reste en Do : Si♭ est une couleur, pas une destination.');
+    expect(note([M(0), M(10), M(0), M(10)])!.kind).toBe('boucle');
     expect(note([M(0), M(4)])!.text).toBe(`Mi pointe vers La m : il l’éclaire sans quitter Do majeur (une dominante secondaire).`);
   });
 

@@ -26,6 +26,12 @@ export interface NoteContext {
 /** « Sol », pour une tonalité dite en court. */
 const short = (tonic: number) => nameOf({ root: tonic, cls: 'maj' });
 
+/** « Do – Si♭ en boucle : le son du rock (mode mixolydien). On reste en Do : Si♭ est une couleur, pas une destination. » */
+function loopText(tonic: Chord, c: Chord, label: string, key: number): string {
+  const why = label === '♭VII' ? 'le son du rock (mode mixolydien)' : 'une couleur qui revient';
+  return `${nameOf(tonic)} – ${nameOf(c)} en boucle : ${why}. On reste en ${short(key)} : ${nameOf(c)} est une couleur, pas une destination.`;
+}
+
 export const pct = (share: number) => (share < 0.01 ? '< 1 %' : `${Math.round(share * 100)} %`);
 
 export function noteFor(j: Journey, ctx: NoteContext): Note | null {
@@ -54,6 +60,8 @@ export function noteFor(j: Journey, ctx: NoteContext): Note | null {
       return ev('frole', `${nameOf(c)} n’est pas dans ${keyName(last.key)} : il tire vers ${keyName(e.target)}. Si un accord propre à ${short(e.target)} suit, on aura modulé.`);
     case 'suspens':
       return ev('suspens', `${nameOf(c)} est en ${short(last.key)} comme en ${short(e.target)} : on ne sait pas encore.`);
+    case 'boucle':
+      return ev('boucle', loopText(j.steps[n - 2]!.chord, c, last.label, j.key));
     case 'couleur': {
       if (e.cause === 'dominante') {
         const target = chordAt(j.key, chordByLabel(e.anchor)!.degree);
@@ -62,9 +70,7 @@ export function noteFor(j: Journey, ctx: NoteContext): Note | null {
       const before = j.steps[n - 2];
       const twoBefore = j.steps[n - 3];
       if (before && twoBefore && before.label === 'I' && sameChord(twoBefore.chord, c)) {
-        const loop = `${nameOf(before.chord)} – ${nameOf(c)} en boucle`;
-        const why = last.label === '♭VII' ? 'le son du rock (mode mixolydien)' : `une couleur qui revient`;
-        return ev('boucle', `${loop} : ${why}. On reste en ${short(j.key)} : ${nameOf(c)} est une couleur, pas une destination.`);
+        return ev('boucle', loopText(before.chord, c, last.label, j.key));
       }
       return ev('emprunt', `${nameOf(c)} vient de ${short(j.key)} mineur : une ombre passagère, on reste en ${short(j.key)}.`);
     }
