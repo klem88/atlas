@@ -1,15 +1,13 @@
 /** Ce qui se passe entre deux accords : le mouvement de la fondamentale, les notes communes, et une phrase pour le dire. */
-import type { TriadClass } from '@shell/music/chords';
-import type { Degree } from '@shell/music/degrees';
-import { chordName } from '../../compose-ta-progression/domain/next';
-import { chordOfDegree, FN_LABELS, type Fn } from './layout';
+import { FN_LABELS, type Fn } from './layout';
+import { mod12, nameOf, noteName, pitchClassesOf, roleOf, sameChord, type Chord, type Role } from './harmony';
 
 export type MoveKind = 'meme' | 'quinte-desc' | 'quinte-asc' | 'seconde-asc' | 'seconde-desc' | 'tierce-asc' | 'tierce-desc' | 'triton';
 
 /** Demi-tons montés par la fondamentale (0 à 11). */
-export const rootMotion = (a: Degree, b: Degree) => (((b.step - a.step) % 12) + 12) % 12;
+export const rootMotion = (a: Chord, b: Chord) => mod12(b.root - a.root);
 
-export function moveKind(a: Degree, b: Degree): MoveKind {
+export function moveKind(a: Chord, b: Chord): MoveKind {
   const d = rootMotion(a, b);
   if (d === 0) return 'meme';
   if (d === 5) return 'quinte-desc'; // monter d'une quarte = descendre d'une quinte
@@ -21,15 +19,10 @@ export function moveKind(a: Degree, b: Degree): MoveKind {
   return 'triton';
 }
 
-const INTERVALS: Record<TriadClass, number[]> = { maj: [0, 4, 7], min: [0, 3, 7], dim: [0, 3, 6], aug: [0, 4, 8], sus: [0, 5, 7], other: [0, 7] };
-
-/** Classes de hauteur d'un degré (0 = tonique). */
-export const pitchClasses = (d: Degree): number[] => INTERVALS[d.cls].map((i) => (d.step + i) % 12);
-
-/** Notes communes à deux accords, en classes de hauteur relatives à la tonique, dans l'ordre du premier accord. */
-export function commonTones(a: Degree, b: Degree): number[] {
-  const other = new Set(pitchClasses(b));
-  return pitchClasses(a).filter((pc) => other.has(pc));
+/** Notes communes à deux accords (classes de hauteur), dans l'ordre du premier accord. */
+export function commonTones(a: Chord, b: Chord): number[] {
+  const other = new Set(pitchClassesOf(b));
+  return pitchClassesOf(a).filter((pc) => other.has(pc));
 }
 
 const KIND_TEXT: Record<MoveKind, string> = {
@@ -43,32 +36,52 @@ const KIND_TEXT: Record<MoveKind, string> = {
   triton: 'un saut de triton, le plus lointain',
 };
 
-/** Le nom d'une note (classe de hauteur relative) dans la tonalité, en minuscules : « sol », « si♭ ». */
-export const noteName = (pc: number, tonic: number) => chordName({ step: pc, cls: 'maj' }, tonic).toLowerCase();
-
 const FROM: Record<Fn, string> = { repos: 'du repos', depart: 'du départ', tension: 'de la tension' };
 const TO: Record<Fn, string> = { repos: 'au repos', depart: 'au départ', tension: 'à la tension' };
 
+/** Ce que l'accord est dans la tonalité, en une proposition : « le V, zone tension (dominante) ». */
+export function roleText(c: Chord, tonic: number): string {
+  const r = roleOf(c, tonic);
+  if (r.kind === 'diatonique') return `le ${r.label}, ${r.label === 'I' ? 'la maison, ' : ''}zone « ${FN_LABELS[r.fn!].name} » (${FN_LABELS[r.fn!].learned})`;
+  if (r.kind === 'dominante') return `${r.label}, une dominante secondaire : hors de la gamme, il tire vers ${r.anchor}`;
+  if (r.kind === 'emprunt') return `${r.label}, emprunté au mineur : la couleur sombre de ${r.anchor}`;
+  return `${r.label}, hors de la tonalité et de ses voisins`;
+}
+
 /** Pourquoi ce pas « marche », en une phrase courte. */
-function functionText(a: Degree, b: Degree): string | null {
-  const fa = chordOfDegree(a)?.fn;
-  const fb = chordOfDegree(b)?.fn;
+function functionText(ra: Role, rb: Role, b: Chord, tonic: number): string | null {
+  if (ra.kind === 'dominante' && rb.label === ra.anchor) return `la dominante secondaire se résout sur ${ra.anchor}`;
+  if (ra.kind === 'dominante') return `la dominante secondaire ne va pas où elle pointait (${ra.anchor}) : une surprise`;
+  if (rb.kind === 'dominante') return `on sort de la gamme : ${rb.label}, qui pointe vers ${nameOf(roleTarget(rb, tonic) ?? b)}`;
+  if (rb.kind === 'emprunt') return `on emprunte ${rb.label} au mineur, une ombre sur ${rb.anchor}`;
+  if (rb.kind === 'ailleurs') return 'on quitte la tonalité';
+  if (ra.kind === 'emprunt' && rb.label === 'I') return 'l’emprunt rentre à la maison';
+  const fa = ra.fn;
+  const fb = rb.fn;
   if (!fa || !fb) return null;
-  if (b.step === 0 && b.cls === 'maj' && fa === 'tension') return 'la tension se résout : retour à la maison';
-  if (b.step === 0 && b.cls === 'maj' && a.step === 5 && a.cls === 'maj') return 'retour à la maison en douceur, sans passer par la tension (la cadence « amen »)';
-  if (b.step === 0 && b.cls === 'maj') return 'retour à la maison';
-  if (a.step === 0 && a.cls === 'maj') return `on quitte la maison vers ${fb === 'tension' ? 'la tension' : fb === 'depart' ? 'le départ' : 'un autre repos'}`;
+  if (rb.label === 'I' && fa === 'tension') return 'la tension se résout : retour à la maison';
+  if (rb.label === 'I' && ra.label === 'IV') return 'retour à la maison en douceur, sans passer par la tension (la cadence « amen »)';
+  if (rb.label === 'I') return 'retour à la maison';
+  if (ra.label === 'I') return `on quitte la maison vers ${fb === 'tension' ? 'la tension' : fb === 'depart' ? 'le départ' : 'un autre repos'}`;
   if (fa === fb) return `on reste dans la zone « ${FN_LABELS[fa].name} »`;
   return `${FROM[fa]} ${TO[fb]}`;
 }
 
+/** L'accord de la gamme visé par une dominante secondaire. */
+function roleTarget(r: Role, tonic: number): Chord | null {
+  if (r.kind !== 'dominante' || !r.anchor) return null;
+  const steps: Record<string, [number, Chord['cls']]> = { ii: [2, 'min'], iii: [4, 'min'], IV: [5, 'maj'], V: [7, 'maj'], vi: [9, 'min'] };
+  const s = steps[r.anchor];
+  return s ? { root: mod12(tonic + s[0]), cls: s[1] } : null;
+}
+
 /** « Sol → Do : quinte descendante, le pas le plus naturel ; la tension se résout : retour à la maison. 1 note en commun : sol. » */
-export function moveSentence(a: Degree, b: Degree, tonic: number): string {
-  const head = `${chordName(a, tonic)} → ${chordName(b, tonic)}`;
+export function moveSentence(a: Chord, b: Chord, tonic: number): string {
+  const head = `${nameOf(a)} → ${nameOf(b)}`;
+  if (sameChord(a, b)) return `${head} : on reste sur le même accord.`;
   const kind = moveKind(a, b);
-  if (kind === 'meme') return `${head} : on reste sur le même accord.`;
-  const fn = functionText(a, b);
+  const fn = functionText(roleOf(a, tonic), roleOf(b, tonic), b, tonic);
   const common = commonTones(a, b);
-  const tones = common.length === 0 ? 'Aucune note en commun.' : `${common.length} note${common.length > 1 ? 's' : ''} en commun : ${common.map((pc) => noteName(pc, tonic)).join(', ')}.`;
+  const tones = common.length === 0 ? 'Aucune note en commun.' : `${common.length} note${common.length > 1 ? 's' : ''} en commun : ${common.map(noteName).join(', ')}.`;
   return `${head} : ${KIND_TEXT[kind]}${fn ? ` ; ${fn}` : ''}. ${tones}`;
 }
