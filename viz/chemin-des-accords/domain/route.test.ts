@@ -52,6 +52,38 @@ describe('routeTo', () => {
     expect(routeTo(journeyOf(C, [M(C), M(D)]), G)!.recipe.map((s) => s.chord)).toEqual([m(B), M(G)]);
   });
 
+  it('ne fait jamais rejouer le dernier accord : il cède la place à celui qui fait pencher', () => {
+    expect(routeTo(journeyOf(C, [M(C), m(B)]), G)!.recipe.map((s) => [s.chord, s.why])).toEqual([
+      [M(D), 'confirme'],
+      [M(G), 'arrivee'],
+    ]);
+    expect(routeTo(journeyOf(C, [M(C), m(G)]), F)!.recipe.map((s) => [s.chord, s.why])).toEqual([
+      [M(10), 'confirme'],
+      [M(F), 'arrivee'],
+    ]);
+  });
+
+  it('jouer la recette mène vraiment à l’étape', () => {
+    const starts: [number, Chord[]][] = [
+      [C, [M(C)]],
+      [C, [M(C), M(G)]],
+      [C, [M(C), m(A)]],
+      [C, [M(C), M(D)]],
+      [C, [M(C), m(B)]],
+      [C, [M(C), m(G)]],
+      [G, [M(G)]],
+    ];
+    for (const [home, path] of starts) {
+      const key = journeyOf(home, path).key;
+      for (const target of [key + 7, key + 5]) {
+        const r = routeTo(journeyOf(home, path), target % 12)!;
+        const played = [...path];
+        for (const s of r.recipe) played.push(s.chord);
+        expect(journeyOf(home, played).key, `${path.length} accords, vers ${target % 12}`).toBe(r.hop);
+      }
+    }
+  });
+
   it('une destination lointaine guide vers la première voisine', () => {
     const r = routeTo(journeyOf(C, [M(C)]), A)!;
     expect([r.hop, r.hops]).toEqual([G, [G, D, A]]);

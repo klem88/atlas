@@ -55,6 +55,10 @@ export function doors(from: number, to: number): { pass: Chord[]; back: Chord[] 
   };
 }
 
+/**
+ * Limite acceptée : si la page penche vers une autre tonalité que l’étape (par un accord chromatique),
+ * la recette part quand même de la tonalité du moment ; cas rare.
+ */
 export function routeTo(j: Journey, target: number): Route | null {
   const t = mod12(target);
   if (j.key === t) return null;
@@ -69,7 +73,8 @@ export function routeTo(j: Journey, target: number): Route | null {
   const plan: [Chord, RecipeWhy][] =
     j.leaning === hop
       ? [
-          [confirm, 'confirme'],
+          // Si le dernier accord est déjà celui qui confirme, on ne le rejoue pas : l’accord qui fait pencher confirme à sa place.
+          [last && sameChord(last, confirm) ? frolant : confirm, 'confirme'],
           [M(hop), 'arrivee'],
         ]
       : [...(last && sameChord(last, pivot) ? [] : [[pivot, 'pivot'] as [Chord, RecipeWhy]]), [frolant, 'frole'], [confirm, 'confirme'], [M(hop), 'arrivee']];
