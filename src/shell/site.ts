@@ -142,7 +142,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'Suis les flèches',
     summary: 'La carte d’une tonalité : sept accords, des flèches qui disent qui tire vers qui, et les progressions les plus jouées qui s’y dessinent pendant qu’elles sonnent.',
     tags: ['Musique', 'Harmonie', 'Apprendre'],
-    status: 'draft',
+    status: 'published',
     published: '2026-10',
   },
   {
@@ -150,7 +150,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'Le chemin des accords',
     summary: 'Compose une progression sur la carte d’une tonalité : à chaque accord, vois où tu es, où tu peux aller, et d’où tu viens.',
     tags: ['Musique', 'Harmonie', 'Apprendre'],
-    status: 'draft',
+    status: 'published',
     published: '2026-10',
   },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
