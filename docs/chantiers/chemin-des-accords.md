@@ -108,6 +108,23 @@ Bibliothèque de progressions, autres dispositions (grille, bande), tonalités e
 - Toucher un accord pendant l'écoute l'arrête sans l'ajouter au chemin. (2 octobre 2026)
 - Au premier accord, la légende des halos passe avant celle des pointillés. (2 octobre 2026)
 
+## Piste B : guidage (validée par l'auteur le 2 octobre 2026)
+
+Retour de l'auteur après publication : « je ne comprends pas comment on module ». En Do, après Sol puis Ré, la page penche vers Sol, mais rien ne dit quel accord confirme (Si m, Fa♯°), et ces accords ne sont pas sur la carte. Il veut pouvoir toucher une tonalité de l'anneau et être guidé, et comprendre chaque accord de sa progression.
+
+**1. Règle symétrique.** Vers les dièses, V/V fait pencher vers la dominante (inchangé). Vers les bémols, ♭VII et v (emprunts) font pencher vers la sous-dominante : Si♭ et Sol m mènent vers Fa. Confirmation inchangée (premier accord propre à l'une des deux tonalités, y compris l'accord qui a frôlé, rejoué après un accord commun). **Boucle** : si l'accord qui confirmerait est celui qui a frôlé et qu'il revient juste après la tonique (Do – Si♭ – Do – Si♭), c'est un aller-retour autour de la tonique : le frôlement s'éteint (événement `boucle`), et cet accord ne frôle plus tant qu'on reste dans cette tonalité. Les autres emprunts (iv, ♭VI, ♭III, i, ii°) restent des couleurs.
+
+**2. Guidage (une seule mécanique).** Une **destination** : choisie en touchant une tonalité de l'anneau, ou implicite quand la page penche (la tonalité frôlée). La route va de voisine en voisine sur l'anneau ; on guide vers la prochaine (« l'étape »).
+- Carte : les accords qui mènent à l'étape (ceux qui n'existent que là : Ré, Si m, Fa♯° vers Sol ; Si♭, Sol m, Mi° vers Fa) sont à l'accent, posés en satellites près de la place qu'ils prendront (leur degré dans l'étape), marqués « → Sol » ; les accords communs ont un cercle pointillé ; ceux qui ramènent sont estompés. Les halos du corpus restent, colorés seulement sur ce qui mène (et le prochain pas de la recette), gris ailleurs.
+- Anneau : destination cerclée en pointillés à l'accent, route en pointillés dans le prolongement de l'arc maison → ici.
+- Panneau : une **recette** de trois ou quatre pas touchables (accord commun, accord qui fait pencher, accord qui confirme, nouvelle tonique), recalculée après chaque accord ; « ✕ » pour l'abandonner ; retoucher la tonalité aussi. À l'arrivée, la destination s'éteint et la légende le dit.
+- Légende : le frôlement et le suspens nomment les accords qui confirment et ceux qui ramènent.
+- La destination n'entre pas dans l'URL : elle guide, elle ne change pas la lecture des accords.
+
+**3. Fiche d'un accord.** Toucher un jeton du ruban ramène la carte à ce moment (comme pendant l'écoute) et ouvre une fiche : tonalité, degré, rôle (repos, départ, tension), ce qu'il a fait (penché, pivot, confirmé, éteint, couleur, boucle). Boutons « Revenir au présent » et « Reprendre d'ici » (efface la suite). Toucher un accord de la carte pendant la consultation la quitte, sans rien ajouter (comme l'écoute).
+
+Branche `feat/chemin-guidage` (depuis `main`). Plan : `docs/superpowers/plans/2026-10-02-chemin-guidage.md`.
+
 ## Prochaine action
 
-Relecture de l’auteur sur http://localhost:5173/viz/chemin-des-accords/ ; ensuite seulement `status: 'published'` dans `src/shell/site.ts`.
+Piste B (guidage) : exécuter le plan `docs/superpowers/plans/2026-10-02-chemin-guidage.md`. La page est publiée depuis le 2 octobre 2026.
