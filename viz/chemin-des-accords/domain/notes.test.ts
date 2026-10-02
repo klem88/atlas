@@ -37,6 +37,9 @@ describe('noteFor', () => {
   it('pas rare et premier satellite, par priorité', () => {
     expect(note([M(0), M(7)], { share: 0.004 })!.text).toBe(`Peu de chansons font ce pas. Rien n’est interdit : à toi de juger à l’oreille.`);
     expect(note([M(0), M(7)], { share: 0.004 })!.kind).toBe('rare');
+    // Au premier accord, les halos s'expliquent avant les satellites.
+    expect(note([M(0)], { satellites: 2, seen: new Set<NoteKind>() })).toMatchObject({ kind: 'halos', once: true });
+    expect(note([M(0)], { satellites: 2, seen: new Set<NoteKind>(['halos']) })).toMatchObject({ kind: 'satellite', once: true });
     expect(note([M(0), M(7)], { satellites: 2 })).toMatchObject({ kind: 'satellite', once: true });
     expect(note([M(0), M(7)], { satellites: 2, seen: new Set<NoteKind>(['halos', 'satellite']) })).toBeNull();
     // Un événement l'emporte sur une légende d'apprentissage.

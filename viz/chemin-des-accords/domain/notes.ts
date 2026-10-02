@@ -72,10 +72,10 @@ export function noteFor(j: Journey, ctx: NoteContext): Note | null {
       break;
   }
   if (ctx.share !== null && ctx.share < 0.01 && n > 1) return ev('rare', `Peu de chansons font ce pas. Rien n’est interdit : à toi de juger à l’oreille.`);
-  if (ctx.satellites > 0 && !ctx.seen.has('satellite'))
-    return { kind: 'satellite', text: 'En pointillés : un accord hors de la gamme, que les chansons jouent souvent ici.', once: true };
   if (n === 1 && !ctx.seen.has('halos'))
     return { kind: 'halos', text: `Les halos montrent où vont les chansons après ${nameOf(c)} : plus il est grand, plus le pas est courant.`, once: true };
+  if (ctx.satellites > 0 && !ctx.seen.has('satellite'))
+    return { kind: 'satellite', text: 'En pointillés : un accord hors de la gamme, que les chansons jouent souvent ici.', once: true };
   return null;
 }
 
