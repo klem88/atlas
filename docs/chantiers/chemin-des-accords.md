@@ -31,6 +31,24 @@ Composer une progression sur la carte d'une tonalité en sachant **toujours où 
 4. Un accord qui n'appartient à aucune des deux relance un frôlement vers sa propre tonalité.
 5. À la confirmation, les accords en suspens et l'accord qui avait frôlé passent dans la bande de la nouvelle tonalité ; le premier d'entre eux est le **pivot** (deux degrés).
 
+**Légendes au fil du jeu** (demande de l'auteur : expliquer ce qui se passe, sans envahir). Une seule légende à la fois, une ligne en italique sous le panneau (sous la carte sur mobile), qui s'efface au pas suivant ; jamais de fenêtre qui bloque. Les légendes d'apprentissage (marquées « 1re fois ») ne paraissent qu'une fois par visite ; celles d'événement paraissent chaque fois que l'événement se produit. Par ordre de priorité quand plusieurs s'appliquent :
+
+| Moment | Légende (exemple en Do) |
+| --- | --- |
+| Modulation confirmée | « Si m n'existe qu'en Sol majeur : on y est. Ré a servi de pivot : V/V en Do, V en Sol. » |
+| Frôlement éteint | « Fa n'existe qu'en Do : Ré n'était qu'un détour vers Sol (on dit une tonicisation). » |
+| Frôlement | « Ré n'est pas dans Do majeur : il tire vers Sol. Si un accord propre à Sol suit, on aura modulé. » |
+| Suspens | « Mi m est en Do comme en Sol : on ne sait pas encore. » |
+| Emprunt en boucle (même emprunt deux fois avec la tonique entre) | « Do – Si♭ en boucle : le son du rock (mode mixolydien). On reste en Do : Si♭ est une couleur, pas une destination. » |
+| Emprunt | « Si♭ vient de Do mineur : une ombre passagère, on reste en Do. » |
+| Retour à la maison après une modulation | « De retour en Do majeur, la maison. » |
+| Pas rare (< 1 %) | « Peu de chansons font ce pas. Rien n'est interdit : à toi de juger à l'oreille. » |
+| Premier satellite (1re fois) | « En pointillés : un accord hors de la gamme, que les chansons jouent souvent ici. » |
+| Premier accord (1re fois) | « Les halos montrent où vont les chansons après Do : plus il est grand, plus le pas est courant. » |
+| Départ | « Touche un accord pour commencer. Depuis la maison, tout est possible. » |
+
+**Petites bulles** (au survol sur ordinateur, au toucher long sur mobile, et un « ? » discret à côté de l'élément) sur : l'anneau (« les douze tonalités, rangées par quintes : voisines = presque les mêmes accords »), un halo (« 35 % des chansons qui jouent Sol font ensuite Mi m »), un jeton pivot (« cet accord appartient aux deux tonalités »), une bande du ruban, un satellite (son rôle : « V/vi, la dominante de La m »).
+
 **Mobile (375 px)** : anneau et cercle en pleine largeur (disques ≥ 44 px), panneau court dessous (« Sol majeur · Sol → Si m … »), ruban qui défile horizontalement et se cale sur le dernier accord.
 
 **URL** : `?t=C&p=C,Am,D,G,Bm` (tonalité de départ, chemin en accords réels) ; le chemin se rejoue à l'ouverture.
@@ -48,6 +66,7 @@ Importé de `viz/suis-les-fleches/` **sans le modifier** (dépendance assumée, 
 Nouveau :
 - `domain/journey.ts` : le parcours, réduit pas à pas depuis `(maison, accords[])` : tonalité de chaque pas, frôlement, suspens, confirmation, pivot, bandes du ruban ; annuler = rejouer sans le dernier. Pur.
 - `domain/halos.ts` : les candidats après un accord dans une tonalité (sept de la gamme + trois satellites au plus) et leurs parts, depuis une part `p2`.
+- `domain/notes.ts` : la légende d'un pas (d'après le parcours avant et après), par priorité ; textes des bulles. Pur.
 - `domain/ring.ts` : positions de l'anneau, arc maison → tonalité du moment.
 - `ui/map.ts` (cercle, anneau, halos, traînée, glissement à la bascule), `ui/ribbon.ts` (ruban), `state.ts` (URL), `main.ts`.
 
@@ -55,6 +74,7 @@ Nouveau :
 
 - `journey.ts` testé sur les cas : diatonique pur ; détour (Do – Ré – Sol – Fa : frôle Sol puis s'éteint) ; modulation confirmée (Do – La m – Ré – Sol – Si m : bascule en Sol, pivot Ré) ; suspens prolongé (Do – Ré – Sol – Mi m – Do) ; frôlement relancé ; annulation ; aller-retour vers la maison.
 - `journey.ts` : un emprunt (Do – Fa m – Do) ne frôle rien.
+- `notes.ts` testé : chaque ligne du tableau des légendes sur son cas, priorité quand plusieurs s'appliquent, « 1re fois » respecté.
 - `halos.ts` testé : parts calculées sur toutes les suites du corpus (la somme des candidats affichés est ≤ 100 %), sept accords de la gamme toujours présents, trois satellites au plus, lecture en degrés de la tonalité du moment après modulation.
 - On répond à vue aux trois questions (où je suis, où je peux aller, où j'étais) à 375 px, en clair et en sombre.
 - `prefers-reduced-motion` : pas de glissement ni de pâlissement animé, les états apparaissent d'un coup.
