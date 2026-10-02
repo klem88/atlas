@@ -14,6 +14,7 @@ import { journeyOf, type Journey } from './domain/journey';
 import { pct, whereText } from './domain/notes';
 import { readStateFromUrl, stateToSearch, type VizState } from './state';
 import { ChordMap } from './ui/map';
+import { renderRibbon } from './ui/ribbon';
 import './viz.css';
 
 mountShell({ currentSlug: 'chemin-des-accords' });
@@ -88,6 +89,7 @@ function render(n = store.get().path.length) {
   rotation = ringRotation(rotation, rotationKey, j.key);
   rotationKey = j.key;
   map.render({ key: j.key, home, leaning: j.leaning, rotation, current: last, candidates: cands, trail: trailOf(j) });
+  renderRibbon(els.ribbon, j);
   renderPanel(j, cands);
 }
 

@@ -275,3 +275,74 @@
     order: 2;
   }
 }
+
+/* Ruban */
+.ribbon {
+  overflow-x: auto;
+  padding: var(--space-2) 0 var(--space-3);
+  scrollbar-width: thin;
+}
+.ribbon-empty {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+.ribbon-bands,
+.band-tokens {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ribbon-bands {
+  width: max-content;
+  align-items: stretch;
+}
+.band {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius);
+  background: var(--surface-sunk);
+}
+.band.is-current {
+  background: var(--accent-soft);
+}
+.band--leaning {
+  background: none;
+  border: 1px dashed var(--accent);
+  align-content: center;
+}
+.band-name {
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+.token {
+  display: grid;
+  justify-items: center;
+  min-width: 3.5rem;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.token-name {
+  font-weight: 700;
+  color: var(--ink);
+}
+.token-sub {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+.token.is-last {
+  border: 2px solid var(--accent);
+}
+.token.is-pending {
+  border-style: dashed;
+}
+.token.is-pivot {
+  margin-left: calc(-1 * var(--space-4));
+  box-shadow: 0 0 0 3px var(--surface-sunk);
+}
