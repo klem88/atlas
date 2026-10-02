@@ -40,12 +40,34 @@
       </header>
 
       <section class="viz-workspace" aria-label="Visualisation">
-        <!-- Réglages et résultat. Pour une visualisation sans panneau, supprimer ce bloc :
-             la scène prend alors toute la largeur (voir viz.css). -->
-        <div class="viz-panel" id="panel"></div>
+        <div class="viz-panel" id="panel">
+          <label class="home-field">Tonalité de départ <select id="home"></select></label>
+          <div class="where">
+            <p class="where-kicker">Tu es en</p>
+            <p class="where-key" id="where-key">Do majeur</p>
+            <p class="where-sub" id="where-sub">la maison</p>
+          </div>
+          <div class="panel-block">
+            <p class="panel-label">Dernier pas</p>
+            <p class="step-text" id="step"></p>
+          </div>
+          <div class="panel-block">
+            <p class="panel-label">Où aller <span class="panel-hint">part des chansons</span></p>
+            <p class="next-text" id="next"></p>
+          </div>
+          <div class="actions">
+            <button type="button" id="undo">↶ Annuler</button>
+            <button type="button" id="listen">▶ Écouter</button>
+            <button type="button" id="restart">Recommencer</button>
+          </div>
+        </div>
 
         <div class="viz-stage">
-          <div class="stage-frame" id="stage"></div>
+          <div class="stage-frame" id="stage">
+            <svg id="map" class="map" viewBox="-20 -20 1040 1040" role="group" aria-label="Carte de la tonalité : touche un accord pour le jouer"></svg>
+            <p class="note" id="note" aria-live="polite"></p>
+          </div>
+          <div class="ribbon" id="ribbon" aria-label="Ta progression"></div>
         </div>
       </section>
 

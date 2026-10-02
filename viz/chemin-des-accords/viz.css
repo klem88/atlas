@@ -2,14 +2,249 @@
 
 .stage-frame {
   position: relative;
-  min-height: clamp(360px, 60vh, 720px);
   display: grid;
-  place-items: center;
-  color: var(--ink-3);
-  font-size: var(--text-sm);
+  gap: var(--space-3);
+  justify-items: center;
 }
 
-/* Sans panneau de réglages : la scène occupe toute la largeur. */
-.viz-workspace:not(:has(.viz-panel)) {
-  grid-template-columns: 1fr;
+.map {
+  width: 100%;
+  max-width: 680px;
+  height: auto;
+  overflow: visible;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+/* Secteurs (rampe ardoise : repos clair, départ moyen, tension foncé) */
+.map-sector {
+  stroke: none;
+}
+.map-sector--repos {
+  fill: var(--seq-0);
+}
+.map-sector--depart {
+  fill: color-mix(in srgb, var(--seq-1) 70%, transparent);
+}
+.map-sector--tension {
+  fill: color-mix(in srgb, var(--seq-2) 60%, transparent);
+}
+.map-sector-name {
+  font: 600 22px var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  fill: var(--ink-3);
+}
+
+/* Anneau des tonalités */
+.map-ring {
+  transform-origin: 500px 500px;
+  transition: transform 0.9s var(--ease);
+}
+.ring-key-name {
+  font: 400 26px var(--font-ui);
+  fill: var(--ink-3);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.9s var(--ease);
+}
+.ring-key-mark {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 2.5;
+}
+.ring-key.is-home .ring-key-mark {
+  stroke: var(--ink-3);
+  stroke-dasharray: 5 5;
+}
+.ring-key.is-leaning .ring-key-mark {
+  stroke: var(--accent);
+  stroke-dasharray: 5 5;
+}
+.ring-key.is-current .ring-key-mark {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-dasharray: none;
+}
+.ring-key.is-current .ring-key-name {
+  font-weight: 700;
+  fill: var(--ink);
+}
+.map-home-arc {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  marker-end: url(#map-head-accent);
+}
+
+/* Halos : les possibilités */
+.map-halo {
+  fill: var(--accent);
+  fill-opacity: calc(0.08 + var(--share) * 0.5);
+  stroke: none;
+  transition: r 0.4s var(--ease);
+}
+.map-pct {
+  font: 400 22px var(--font-ui);
+  fill: var(--ink-2);
+  pointer-events: none;
+  /* Un liseré de la couleur du fond garde les pourcentages lisibles par-dessus secteurs et disques. */
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}
+
+/* Le chemin */
+.map-step {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.map-step--age0 {
+  stroke: var(--accent);
+  stroke-width: 6;
+}
+.map-step--age1 {
+  opacity: 0.7;
+}
+.map-step--age2 {
+  opacity: 0.45;
+}
+.map-step--age3 {
+  opacity: 0.25;
+}
+.map-step--preview {
+  stroke: var(--accent);
+  stroke-dasharray: 10 10;
+  opacity: 0.8;
+}
+.map-head {
+  fill: var(--ink-3);
+}
+.map-head--accent {
+  fill: var(--accent);
+}
+
+/* Disques */
+.map-node {
+  cursor: pointer;
+  outline: none;
+  transition:
+    transform 0.8s var(--ease),
+    opacity 0.35s;
+}
+.map-node.is-entering,
+.map-node.is-leaving {
+  opacity: 0;
+}
+.map-node-disc {
+  stroke: var(--surface);
+  stroke-width: 4;
+}
+.map-node--repos .map-node-disc {
+  fill: var(--seq-1);
+}
+.map-node--depart .map-node-disc {
+  fill: var(--seq-3);
+}
+.map-node--tension .map-node-disc {
+  fill: var(--seq-5);
+}
+.map-node--satellite .map-node-disc {
+  fill: var(--surface);
+  stroke: var(--seq-4);
+  stroke-width: 3;
+  stroke-dasharray: 7 5;
+}
+.map-node.is-current .map-node-disc {
+  stroke: var(--accent);
+  stroke-width: 7;
+}
+.map-node:focus-visible .map-node-disc {
+  stroke: var(--focus);
+  stroke-width: 6;
+}
+.map-node-name {
+  font: 700 28px var(--font-ui);
+  fill: var(--ink);
+  pointer-events: none;
+}
+.map-node-sub {
+  font: 400 22px var(--font-ui);
+  fill: var(--ink-2);
+  pointer-events: none;
+}
+.map-node--tension .map-node-name,
+.map-node--tension .map-node-sub {
+  fill: var(--surface);
+}
+
+/* Panneau */
+.home-field {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+.where-kicker,
+.panel-label {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.panel-hint {
+  text-transform: none;
+  letter-spacing: 0;
+}
+.where-key {
+  margin: 0;
+  font: 400 var(--text-xl) var(--font-display);
+  color: var(--ink);
+}
+.where-sub,
+.step-text,
+.next-text {
+  margin: 0;
+  color: var(--ink-2);
+}
+.where,
+.panel-block {
+  display: grid;
+  gap: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.note {
+  margin: 0;
+  max-width: 40rem;
+  min-height: 1.5em;
+  font-style: italic;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-ring,
+  .ring-key-name,
+  .map-node,
+  .map-halo {
+    transition: none;
+  }
+}
+
+/* Mobile : la carte avant le panneau */
+@media (max-width: 999px) {
+  .viz-panel {
+    order: 2;
+  }
 }
