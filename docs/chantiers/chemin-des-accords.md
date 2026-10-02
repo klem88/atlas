@@ -103,7 +103,6 @@ Bibliothèque de progressions, autres dispositions (grille, bande), tonalités e
 - Toucher = jouer et poser, avec annulation (choix de l'auteur).
 - Une dominante secondaire de cible mineure (V/ii, V/iii, V/vi) est une couleur, comme un emprunt : elle éclaire un accord sans quitter la tonalité (pas de tonalités mineures dans cette page). Seuls V/V et les accords d’ailleurs frôlent. Un accord répété ne change rien. (Construction, 2 octobre 2026.)
 - `ring.ts` devient `geometry.ts` : satellites et anneau partagent la même géométrie.
-- Une dominante secondaire de cible mineure est une couleur, pas une porte (déjà notée plus haut). (2 octobre 2026)
 - Une couleur jouée pendant un frôlement éteint le frôlement. (2 octobre 2026)
 - Au plus quatre accords en pointillés : l'accord du moment et le précédent, s'ils sont hors gamme, passent avant les candidats. (2 octobre 2026)
 - Toucher un accord pendant l'écoute l'arrête sans l'ajouter au chemin. (2 octobre 2026)
