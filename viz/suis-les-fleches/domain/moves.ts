@@ -36,6 +36,7 @@ const KIND_TEXT: Record<MoveKind, string> = {
   triton: 'un saut de triton, le plus lointain',
 };
 
+const COLOR: Record<Chord['cls'], string> = { maj: 'majeur', min: 'mineur', dim: 'diminué' };
 const FROM: Record<Fn, string> = { repos: 'du repos', depart: 'du départ', tension: 'de la tension' };
 const TO: Record<Fn, string> = { repos: 'au repos', depart: 'au départ', tension: 'à la tension' };
 
@@ -81,7 +82,8 @@ export function moveSentence(a: Chord, b: Chord, tonic: number): string {
   if (sameChord(a, b)) return `${head} : on reste sur le même accord.`;
   const kind = moveKind(a, b);
   const fn = functionText(roleOf(a, tonic), roleOf(b, tonic), b, tonic);
+  const motion = kind === 'meme' ? `même basse, seule la tierce bouge (${COLOR[a.cls]} → ${COLOR[b.cls]})` : KIND_TEXT[kind];
   const common = commonTones(a, b);
   const tones = common.length === 0 ? 'Aucune note en commun.' : `${common.length} note${common.length > 1 ? 's' : ''} en commun : ${common.map(noteName).join(', ')}.`;
-  return `${head} : ${KIND_TEXT[kind]}${fn ? ` ; ${fn}` : ''}. ${tones}`;
+  return `${head} : ${motion}${fn ? ` ; ${fn}` : ''}. ${tones}`;
 }

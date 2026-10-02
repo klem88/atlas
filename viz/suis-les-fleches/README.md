@@ -4,11 +4,13 @@ La carte d’une tonalité : sept accords, des flèches qui disent qui tire vers
 
 ## Structure
 
-- `domain/layout.ts` : les sept accords, leur fonction (repos, départ, tension), trois dispositions (cercle, ligne de quintes, grille), la géométrie des flèches.
-- `domain/library.ts` : les progressions courantes (nom, degrés, phrase, tempo).
+- `domain/layout.ts` : les sept accords, leur fonction (repos, départ, tension), les dispositions locales (cercle, grille), la géométrie des flèches.
+- `domain/harmony.ts` : accords réels, rôle dans une tonalité (gamme, dominante secondaire, emprunt, ailleurs), voisins, portes, bilan d'une modulation.
+- `domain/scene.ts` : ce que la carte montre (disques identifiés par l'accord réel, flèches, secteurs, fenêtres) pour le cercle, la grille et la bande des quintes.
+- `domain/library.ts` : les progressions en trois familles (dans la gamme, avec des voisins, qui modulent), lues pas à pas avec leur tonalité.
 - `domain/moves.ts` : mouvement de la basse, notes communes, phrase d’un pas.
-- `ui/map.ts` : la carte SVG (secteurs, flèches de fond, accords qui glissent, traînée et comète).
-- `state.ts` : `?p=pop&vue=cercle&t=C`.
+- `ui/map.ts` : la carte SVG d'après une scène (entrées, glissements, sorties, traînée et comète).
+- `state.ts` : `?p=pop&vue=cercle&t=C` (`t` : la tonalité du moment ; l'ancienne `vue=ligne` mène à la bande).
 
 ## Dépendances
 

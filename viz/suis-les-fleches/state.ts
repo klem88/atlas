@@ -1,4 +1,4 @@
-/** État dans l'URL : `?p=pop&vue=ligne&t=G` (les valeurs par défaut sont omises). */
+/** État dans l'URL : `?p=pop&vue=bande&t=G` (les valeurs par défaut sont omises ; `t` est la tonalité du moment). */
 import { parsePitch } from '@shell/music/chords';
 import { KEY_NAMES } from '../compose-ta-progression/state';
 import { VIEWS, type View } from './domain/layout';
@@ -13,7 +13,9 @@ export interface VizState {
 export function readStateFromUrl(search: string): VizState {
   const q = new URLSearchParams(search);
   const p = q.get('p');
-  const v = q.get('vue') as View | null;
+  // « ligne » : l'ancienne ligne de quintes, devenue la bande.
+  const raw = q.get('vue');
+  const v = (raw === 'ligne' ? 'bande' : raw) as View | null;
   return {
     progression: progressionById(p) ? p! : DEFAULT_PROGRESSION,
     view: v && VIEWS.includes(v) ? v : 'cercle',

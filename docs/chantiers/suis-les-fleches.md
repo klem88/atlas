@@ -55,8 +55,25 @@ Apprendre l'harmonie en la **voyant**, dans l'esprit des livres de Brian Calli (
 - Toucher un accord de la carte sort de la progression : on l'entend, et le pas depuis l'accord précédent se dessine et se raconte (exploration libre).
 - Sur mobile, la carte passe avant la bibliothèque.
 - En sombre, la rampe s'inverse (la tension devient la plus claire) : le texte dit « plus la tension monte, plus le disque tranche sur le fond ».
-- Limite connue : en ligne de quintes à 375 px, les disques font environ 38 px (sept accords sur une ligne) ; le cercle et la grille respectent les 44 px.
+- (Remplacée le 2 octobre par la bande des quintes.) En ligne de quintes à 375 px, les disques faisaient environ 38 px.
+
+## Piste B : voisins et modulation (2 octobre 2026)
+
+Demande de l'auteur : « naviguer parmi tous les accords », montrer les accords voisins qui permettent de moduler, et faire paraître la nouvelle tonalité si l'on prend ce chemin. Proposition validée (« vas-y avec tes recos ») : éclosion au toucher, ordre B1 → B2 → B3.
+
+- [x] **B1, voisins** : les accords deviennent réels (fondamentale + couleur, `domain/harmony.ts`) ; rôle d'un accord dans une tonalité : gamme, dominante secondaire (V/x), emprunt au mineur (même degré dans la gamme mineure de même tonique), ailleurs. Toucher un accord de la gamme fait éclore sa dominante secondaire et son ombre ; les accords hors gamme de la progression choisie paraissent en satellites. Cinq progressions « avec des voisins » (Mario, ♭VII du rock, Creep, II majeur, chaîne du ragtime).
+- [x] **B2, modulation** : les portes d'un accord sont les autres tonalités majeures qui le contiennent, par proximité sur le cycle des quintes (boutons sous la carte, avec le rôle qu'il y prend) ; un voisin touché montre sur la carte la porte où il mène. Passer une porte change la tonalité : les accords communs glissent (même disque, identifié par l'accord réel), leur degré se réécrit, la phrase dit ce qui reste, part et arrive. Trajet (fil d'Ariane) et « Rentrer à la maison ». Quatre progressions qui modulent (pivot vers la dominante, porte de V/V, côté bémol, camion) ; la carte bascule pendant la lecture, et chaque tour revient à la tonalité de départ.
+- [x] **B3, bande des quintes** : remplace la ligne de quintes. Trois rangées (majeurs, relatifs mineurs, diminués) rangées par quintes, neuf colonnes autour de la tonalité ; la tonalité est une fenêtre de trois colonnes, les dominantes secondaires à sa droite, les emprunts à sa gauche ; les portes d'un accord touché sont des fenêtres en pointillés (cliquables). Sur mobile, la bande défile et se recentre sur la fenêtre.
+
+### Décisions (piste B)
+
+- **Correction de la proposition** : moduler d'un cran garde six *notes* sur sept, mais seulement quatre *accords* sur sept (de Do à Sol : Ré m, Fa, Si° partent ; Si m, Ré, Fa♯° arrivent). Les tests l'ont montré ; la page le dit.
+- Les portes d'un accord de la gamme (modulation par pivot) restent en boutons sous la carte ; seuls les voisins montrent leur porte sur la carte (sinon quatre satellites s'entassaient).
+- `t` dans l'URL est la tonalité du moment ; le sélecteur du panneau choisit la maison (le trajet repart d'elle). Après une porte, la progression choisie se lit dans la nouvelle tonalité.
+- Une modulation directe (le camion) n'a pas de flèche : l'accord d'avant n'existe pas dans la nouvelle carte, le saut est franc.
+- Tonalités majeures seulement ; le mineur (et ses accords propres, comme V majeur de La mineur) est la suite naturelle.
+- Limite connue : dans la bande, les deux diminués voisins du vii° tombent dans la fenêtre (grisés) ; les fenêtres de portes chevauchent la fenêtre principale (deux colonnes sur trois sont communes, c'est le propos).
 
 ## Prochaine action
 
-Relecture de l'auteur : http://localhost:5173/viz/suis-les-fleches/ (`npm run dev`). Ensuite, au choix : la piste B (anneau extérieur des accords voisins : dominantes secondaires V/x, emprunts ♭VII, ♭VI, iv, avec les progressions qui les utilisent) ou la piste C (panneau « la colle » : notes communes et mouvements d'un demi-ton entre deux accords, sur un mini-clavier).
+Relecture de l'auteur : http://localhost:5173/viz/suis-les-fleches/ (`npm run dev`). Ensuite, au choix : le mineur (maison mineure, relatif, V majeur du mineur harmonique comme porte) ou la piste C (« la colle » : notes communes et demi-tons entre deux accords, sur un mini-clavier).

@@ -123,12 +123,14 @@ describe('scènes', () => {
     }
   });
 
-  it('un accord touché fait éclore ses voisins et ses portes', () => {
+  it('un accord de la gamme touché fait éclore ses voisins ; un voisin touché, sa porte', () => {
     const s = sceneOf({ view: 'cercle', tonic: C, extras: [], focus: Gmaj });
     expect(ids(s)).toContain(chordId(ch(2)));
     expect(ids(s)).toContain(chordId(ch(7, 'min')));
-    expect(s.nodes.filter((n) => n.kind === 'porte').map((n) => n.door)).toEqual([G, 2]);
-    expect(ids(s)).toContain(doorId(G));
+    expect(s.nodes.filter((n) => n.kind === 'porte')).toHaveLength(0);
+    const d = sceneOf({ view: 'cercle', tonic: C, extras: [], focus: ch(2) });
+    expect(d.nodes.filter((n) => n.kind === 'porte').map((n) => n.door)).toEqual([G]);
+    expect(ids(d)).toContain(doorId(G));
   });
 
   it('les accords communs gardent leur identifiant d’une tonalité à l’autre (ils glissent)', () => {
@@ -218,5 +220,6 @@ describe('mouvements', () => {
     expect(moveSentence(ch(2), Gmaj, C)).toContain('la dominante secondaire se résout sur V');
     expect(moveSentence(Cmaj, ch(10), C)).toContain('on emprunte ♭VII au mineur');
     expect(moveSentence(ch(4), Fmaj, C)).toContain('une surprise');
+    expect(moveSentence(Fmaj, ch(5, 'min'), C)).toBe('Fa → Fa m : même basse, seule la tierce bouge (majeur → mineur) ; on emprunte iv au mineur, une ombre sur IV. 2 notes en commun : fa, do.');
   });
 });

@@ -33,8 +33,9 @@
         <h1>Suis les flèches</h1>
         <p class="viz-lede">
           Sept accords, toujours à la même place : la maison au centre, et autour, les accords du repos, du départ et de la tension.
-          Les flèches disent qui tire vers qui. Choisis une progression : elle se dessine sur la carte pendant qu’elle sonne. Ou
-          touche deux accords à la suite pour voir le pas qui les relie.
+          Les flèches disent qui tire vers qui. Choisis une progression : elle se dessine sur la carte pendant qu’elle sonne. Touche
+          un accord : ses voisins hors de la gamme éclosent, et avec eux les portes vers d’autres tonalités. Passe une porte, et la
+          carte bascule : tu peux voyager de proche en proche jusqu’aux douze tonalités.
         </p>
         <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
@@ -54,13 +55,16 @@
             <h2 class="field-label">Les progressions courantes</h2>
             <ul class="library" id="library"></ul>
           </div>
-          <p class="note detail">Le son ne part que quand tu le demandes. « Écouter » joue la progression en boucle une vingtaine de secondes ; les flèches ◀ ▶ avancent d’un accord à la fois.</p>
+          <p class="note detail">Le son ne part que quand tu le demandes. « Écouter » joue la progression en boucle une vingtaine de secondes ; les flèches ◀ ▶ avancent d’un accord à la fois. La tonalité choisie ici est la maison : le trajet repart d’elle.</p>
         </div>
 
         <div class="viz-stage">
           <div class="stage-frame">
             <fieldset class="segmented views" id="views" aria-label="Disposition de la carte"></fieldset>
-            <svg class="map" id="map" role="group" aria-label="La carte des sept accords de la tonalité"></svg>
+            <nav class="trip" id="trip" aria-label="Ton trajet entre les tonalités"></nav>
+            <div class="map-scroll" id="map-scroll">
+              <svg class="map" id="map" role="group" aria-label="La carte des accords de la tonalité"></svg>
+            </div>
             <div class="sequence" id="sequence" aria-label="La progression"></div>
             <div class="transport">
               <button class="button button--icon" type="button" id="prev" aria-label="Accord précédent">
@@ -72,6 +76,7 @@
               </button>
             </div>
             <p class="legend" id="legend" aria-live="polite"></p>
+            <div class="doors" id="doors"></div>
           </div>
         </div>
       </section>
@@ -107,10 +112,25 @@
               partagent.
             </p>
             <p>
+              Les <strong>voisins</strong>, en pointillés, sont des accords hors de la gamme qu’on entend pourtant partout. Une
+              <strong>dominante secondaire</strong> (V/V, V/vi…) est la dominante d’un autre accord que la maison : Ré, dans Do,
+              pousse vers Sol comme Sol pousse vers Do. Un <strong>emprunt</strong> (♭VII, ♭VI, iv…) est le même degré pris dans la
+              gamme mineure : une ombre posée sur la maison. Touche un accord de la gamme pour voir ses deux voisins éclore.
+            </p>
+            <p>
+              Les <strong>portes</strong> mènent ailleurs. Un accord appartient à plusieurs tonalités : La m est vi de Do, ii de Sol
+              et iii de Fa. Les boutons sous la carte proposent d’y passer, avec ce rôle-là ; un voisin touché montre aussi, sur la
+              carte, la tonalité où il mène (Ré, dominante de Sol, ouvre sur Sol majeur). Passer une porte, c’est <strong>moduler</strong> :
+              les accords communs glissent à leur nouvelle place et leur degré se réécrit, les autres s’effacent ou apparaissent. Le
+              trajet, au-dessus de la carte, garde la trace des tonalités traversées.
+            </p>
+            <p>
               Trois dispositions de la même carte. Le <strong>cercle</strong> met la maison au centre, entourée de ses trois zones.
-              La <strong>ligne de quintes</strong> range les accords de façon qu’un pas vers la droite descende d’une quinte :
-              beaucoup de progressions avancent alors vers la droite, vers la maison. La <strong>grille</strong> est disposée à la
-              main, comme un schéma de livre, avec la cadence IV – I – V au milieu.
+              La <strong>grille</strong> est disposée à la main, comme un schéma de livre, avec la cadence IV – I – V au milieu. La
+              <strong>bande des quintes</strong> montre tous les accords à la fois, rangés par quintes : les majeurs en haut, leurs
+              relatifs mineurs dessous, les diminués en bas. Une tonalité y est une fenêtre de trois colonnes. Les dominantes
+              secondaires sont juste à sa droite, côté dièses ; les emprunts à sa gauche, côté bémols. Moduler vers la dominante, c’est
+              faire glisser la fenêtre d’un cran à droite.
             </p>
           </section>
           <section id="methode">
@@ -120,7 +140,9 @@
               <li><strong>Mouvement de la basse</strong> : l’écart entre les fondamentales des deux accords. Monter d’une quarte ou descendre d’une quinte mène au même accord : la page parle de « quinte descendante », le pas qui donne le plus nettement l’impression d’aller quelque part.</li>
               <li><strong>Notes communes</strong> : celles que partagent les deux triades. Deux accords à une tierce l’un de l’autre en partagent deux, d’où leur glissement doux ; deux voisins comme IV et V n’en partagent aucune, d’où leur élan.</li>
               <li><strong>Son</strong> : la fondamentale à la basse, et les trois notes de l’accord placées au plus près de l’accord précédent, en synthèse additive dans ton navigateur.</li>
-              <li><strong>Compte des chansons</strong> : la suite exacte, cherchée dans les comptes de <a href="../progression-jouee/">Ta progression a déjà été jouée</a>. Elle peut apparaître n’importe où dans le morceau.</li>
+              <li><strong>Voisins</strong> : la dominante secondaire d’un accord est l’accord majeur une quinte au-dessus de lui, s’il n’est pas déjà dans la gamme (V/IV serait I, V/I serait V). L’ombre d’un accord est le même degré dans la gamme mineure de même tonique : iv pour IV, ♭VI pour vi, ♭VII pour vii°.</li>
+              <li><strong>Portes</strong> : les tonalités majeures qui contiennent l’accord, rangées par proximité sur le cycle des quintes. Moduler d’un cran (de Do à Sol) garde six notes sur sept, mais seulement quatre accords sur sept : Ré m, Fa et Si° s’en vont, Si m, Ré et Fa♯° arrivent. La page compte et nomme ces accords à chaque passage.</li>
+              <li><strong>Compte des chansons</strong> : la suite exacte, cherchée dans les comptes de <a href="../progression-jouee/">Ta progression a déjà été jouée</a>. Elle peut apparaître n’importe où dans le morceau. Les progressions qui modulent ne sont pas comptées : les comptes sont lus dans une seule tonalité.</li>
             </ul>
           </section>
           <section id="sources">
@@ -134,8 +156,9 @@
           <section id="limites">
             <h2>Ce que ça ne dit pas</h2>
             <ul>
-              <li><strong>Seulement la gamme majeure</strong> : les accords empruntés (♭VII, ♭VI, iv), les dominantes secondaires et le mode mineur viendront dans une suite de la page.</li>
-              <li><strong>Triades seulement</strong> : les septièmes et les couleurs (Sol 7, Do maj 7) changent la tension sans changer la place sur la carte.</li>
+              <li><strong>Tonalités majeures seulement</strong> : la maison est toujours majeure, et les portes ne mènent qu’à des tonalités majeures. Le mineur, avec ses accords propres (le V majeur de La mineur, par exemple), viendra dans une suite de la page.</li>
+              <li><strong>Une modulation est plus qu’un accord</strong> : il faut le plus souvent quelques mesures, une cadence et une mélodie qui confirme pour que l’oreille accepte la nouvelle maison. La page montre le chemin, pas la durée du séjour.</li>
+              <li><strong>Triades seulement</strong> : les septièmes et les couleurs (Sol 7, Do maj 7) changent la tension sans changer la place sur la carte. Les dominantes secondaires se jouent presque toujours avec leur septième (Ré 7) : ici, elles sonnent en triade.</li>
               <li><strong>Les flèches ne sont pas des règles</strong> : elles disent les attractions les plus fréquentes. Toutes les suites sont permises, et beaucoup de belles chansons les contredisent.</li>
               <li><strong>Une chanson ne se résume pas à sa grille</strong> : mélodie, rythme et timbre comptent autant.</li>
             </ul>

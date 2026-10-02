@@ -3,8 +3,8 @@
  * des disques identifiés par l'accord réel (un même accord garde son disque d'une tonalité à l'autre, ce qui fait
  * glisser les accords communs pendant une modulation), des flèches, des secteurs ou la fenêtre de la tonalité.
  *
- * - Cercle et grille : les sept accords de la tonalité ; autour d'un accord touché, ses voisins (dominante secondaire,
- *   ombre mineure) et ses portes (les tonalités proches qui le contiennent aussi).
+ * - Cercle et grille : les sept accords de la tonalité ; autour d'un accord de la gamme touché, ses voisins (dominante
+ *   secondaire, ombre mineure) ; autour d'un voisin touché, la porte où il mène (la tonalité la plus proche qui le contient).
  * - Bande des quintes : tous les accords rangés par quintes (majeurs, mineurs, diminués) ; la tonalité est une fenêtre
  *   de trois colonnes ; moduler, c'est la faire glisser.
  */
@@ -47,7 +47,9 @@ export interface Scene {
   sectorRadii: Layout['sectorRadii'];
   /** La fenêtre de la tonalité (bande), et celles des portes de l'accord touché. */
   window: Rect | null;
-  ghostWindows: (Rect & { tonic: number; name: string })[];
+  /** Le nom de la tonalité, sous sa fenêtre. */
+  windowName: string | null;
+  ghostWindows: (Rect & { tonic: number; name: string; side: -1 | 1 })[];
 }
 
 export interface SceneInput {
@@ -104,9 +106,11 @@ function localScene(view: LocalView, input: SceneInput): Scene {
     const p = satellite(l, role.anchor ?? 'I', SLOT[role.kind === 'diatonique' ? 'ailleurs' : role.kind]);
     nodes.set(id, { id, chord: c, door: null, ...p, r: l.satelliteRadius, kind: role.kind === 'ailleurs' ? 'ailleurs' : 'voisin', fn: role.fn, name: nameOf(c), sub: role.label });
   }
-  if (focus && focusAnchor) {
-    doorsOf(focus, tonic, 2).forEach((d, i) => {
-      const p = satellite(l, focusAnchor, i === 0 ? SLOT.porteA : SLOT.porteB);
+  // Les portes d'un accord de la gamme (modulation par accord pivot) restent sous la carte, pour ne pas l'encombrer.
+  const focusRole = focus ? roleOf(focus, tonic) : null;
+  if (focus && focusAnchor && focusRole && focusRole.kind !== 'diatonique') {
+    doorsOf(focus, tonic, 1).forEach((d) => {
+      const p = satellite(l, focusAnchor, focusRole.kind === 'emprunt' ? SLOT.porteB : SLOT.porteA);
       const id = doorId(d.tonic);
       nodes.set(id, { id, chord: null, door: d.tonic, ...p, r: l.satelliteRadius, kind: 'porte', fn: null, name: nameOf({ root: d.tonic, cls: 'maj' }), sub: 'majeur' });
     });
@@ -122,6 +126,7 @@ function localScene(view: LocalView, input: SceneInput): Scene {
     sectors: l.sectors,
     sectorRadii: l.sectorRadii,
     window: null,
+    windowName: null,
     ghostWindows: [],
   };
 }
@@ -130,8 +135,9 @@ function localScene(view: LocalView, input: SceneInput): Scene {
 
 export const BAND_HALF = 4;
 const BAND_COLS = BAND_HALF * 2 + 1;
-const BAND_ROWS = [0.1, 0.235, 0.37];
-const BAND_ASPECT = 0.47;
+// Une marge en haut pour les étiquettes des portes, en bas pour le nom de la tonalité.
+const BAND_ROWS = [0.145, 0.28, 0.415];
+const BAND_ASPECT = 0.54;
 const BAND_RADIUS = 0.043;
 
 /** La colonne `c` du cycle des quintes : son accord majeur, son relatif mineur, et le diminué qui sert de vii°. */
@@ -142,7 +148,7 @@ export const bandColumn = (c: number): Chord[] => [
 ];
 
 const columnX = (j: number) => (j + BAND_HALF + 0.5) / BAND_COLS;
-const windowAt = (offset: number): Rect => ({ x: columnX(offset - 1) - 0.5 / BAND_COLS + 0.004, y: 0.035, w: 3 / BAND_COLS - 0.008, h: BAND_ROWS[2]! + 0.065 - 0.035 });
+const windowAt = (offset: number, grow = 0): Rect => ({ x: columnX(offset - 1) - 0.5 / BAND_COLS + 0.004 - grow, y: 0.08 - grow, w: 3 / BAND_COLS - 0.008 + 2 * grow, h: BAND_ROWS[2]! + 0.065 - 0.08 + 2 * grow });
 
 function bandScene(input: SceneInput): Scene {
   const { tonic, focus } = input;
@@ -157,7 +163,7 @@ function bandScene(input: SceneInput): Scene {
   }
   const ghostWindows = focus
     ? doorsOf(focus, tonic, 2)
-        .map((d) => ({ ...windowAt(fifthsOffset(tonic, d.tonic)), tonic: d.tonic, name: keyName(d.tonic), off: fifthsOffset(tonic, d.tonic) }))
+        .map((d) => ({ ...windowAt(fifthsOffset(tonic, d.tonic), 0.012), tonic: d.tonic, name: keyName(d.tonic), off: fifthsOffset(tonic, d.tonic), side: (fifthsOffset(tonic, d.tonic) < 0 ? -1 : 1) as -1 | 1 }))
         .filter((g) => Math.abs(g.off) <= BAND_HALF - 1)
         .map(({ off: _off, ...g }) => g)
     : [];
@@ -172,6 +178,7 @@ function bandScene(input: SceneInput): Scene {
     sectors: [],
     sectorRadii: [0, 0],
     window: windowAt(0),
+    windowName: keyName(tonic),
     ghostWindows,
   };
 }

@@ -8,8 +8,9 @@ describe('état dans l’URL', () => {
   });
 
   it('aller-retour', () => {
-    const s = readStateFromUrl('?p=blues&vue=ligne&t=F%23');
-    expect(s).toEqual({ progression: 'blues', view: 'ligne', tonic: 6 });
+    const s = readStateFromUrl('?p=blues&vue=bande&t=F%23');
+    expect(s).toEqual({ progression: 'blues', view: 'bande', tonic: 6 });
+    expect(readStateFromUrl('?vue=ligne').view).toBe('bande');
     expect(readStateFromUrl(stateToSearch(s))).toEqual(s);
   });
 
