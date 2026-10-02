@@ -5,6 +5,7 @@ Compose une progression sur la carte d’une tonalité : à chaque accord, vois 
 ## Structure
 
 - `domain/journey.ts` : le parcours, réduit pas à pas (tonalité de chaque pas, frôlement, suspens, confirmation, pivot, bandes du ruban).
+- `domain/route.ts` : le guidage (destination, route de voisine en voisine, accords qui mènent, communs, qui ramènent, recette).
 - `domain/halos.ts` : les suites possibles après un accord (sept de la gamme, satellites hors gamme) et leurs parts.
 - `domain/notes.ts` : la légende de chaque pas, par priorité, et les textes des bulles.
 - `domain/geometry.ts` : positions des disques, des satellites et de l’anneau des tonalités, arc maison vers tonalité du moment.

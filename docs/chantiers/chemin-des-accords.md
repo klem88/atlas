@@ -125,6 +125,17 @@ Retour de l'auteur après publication : « je ne comprends pas comment on module
 
 Branche `feat/chemin-guidage` (depuis `main`). Plan : `docs/superpowers/plans/2026-10-02-chemin-guidage.md`.
 
+- [x] Piste B construite et vérifiée au navigateur (clair, sombre, 375 px).
+
+### Décisions de construction (piste B)
+
+- Une couleur ou un accord qui ne frôle plus (après une boucle) éteint un frôlement en cours ; la mémoire des boucles s'oublie à chaque changement de tonalité. (2 octobre 2026)
+- Quand on penche déjà et que le dernier accord est celui qui confirmerait, la recette confirme par l'accord qui fait pencher (Si m → Ré → Sol). (2 octobre 2026)
+- Un frôlement vers une tonalité non voisine ne liste pas les portes (phrase générale). (2 octobre 2026)
+- La dernière étape d'une route lointaine se dit « Sol, une étape vers La ». (2 octobre 2026)
+- Pendant la consultation d'un accord : ni route, ni recette, ni légende ; la destination est gardée ; toucher la carte quitte la consultation sans rien ajouter ; choisir une tonalité quitte d'abord la consultation. (2 octobre 2026)
+- La destination choisie s'efface quand on est dans sa tonalité (légende d'arrivée seulement si le dernier pas y a mené). (2 octobre 2026)
+
 ## Prochaine action
 
-Piste B (guidage) : exécuter le plan `docs/superpowers/plans/2026-10-02-chemin-guidage.md`. La page est publiée depuis le 2 octobre 2026.
+Relecture de l'auteur (guidage). La page est publiée depuis le 2 octobre 2026 ; la piste B est sur `feat/chemin-guidage`.
