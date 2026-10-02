@@ -11,10 +11,11 @@ import { moveSentence, roleText } from '../suis-les-fleches/domain/moves';
 import { ringRotation } from './domain/geometry';
 import { candidates, type Candidate, type Rows } from './domain/halos';
 import { journeyOf, type Journey } from './domain/journey';
-import { pct, whereText } from './domain/notes';
+import { noteFor, pct, RIBBON_TIP, RING_TIP, whereText, type NoteKind } from './domain/notes';
 import { readStateFromUrl, stateToSearch, type VizState } from './state';
 import { ChordMap } from './ui/map';
 import { renderRibbon } from './ui/ribbon';
+import { mountTips } from './ui/tip';
 import './viz.css';
 
 mountShell({ currentSlug: 'chemin-des-accords' });
@@ -49,6 +50,10 @@ let rotation = 0;
 let rotationKey = store.get().home;
 /** Part du corpus du dernier pas posé (pour la légende « pas rare »). */
 let lastShare: number | null = null;
+/** Légendes d'apprentissage déjà vues pendant cette visite. */
+const seen = new Set<NoteKind>();
+let noteKey = '';
+let noteText = '';
 /** Identifiant du minuteur de l'écoute en cours (null hors écoute). */
 let playing: number | null = null;
 
@@ -94,6 +99,19 @@ function render(n = store.get().path.length) {
   map.render({ key: j.key, home, leaning: j.leaning, rotation, current: last, candidates: cands, trail: trailOf(j) });
   renderRibbon(els.ribbon, j);
   renderPanel(j, cands);
+  // La légende ne parle que du chemin complet : pendant l'écoute, on la vide.
+  if (n === path.length) {
+    // Un nouveau rendu du même état (survol, chargement des parts) garde la légende affichée, même « une seule fois ».
+    const satellites = cands.filter((c) => c.satellite).length;
+    const key = `${home}|${path.map(chordId).join(',')}|${satellites}`;
+    if (key !== noteKey) {
+      noteKey = key;
+      const note = noteFor(j, { share: lastShare, satellites, seen });
+      noteText = note?.text ?? '';
+      if (note?.once) seen.add(note.kind);
+    }
+    els.note.textContent = noteText;
+  } else els.note.textContent = '';
 }
 
 function renderPanel(j: Journey, cands: Candidate[]) {
@@ -145,7 +163,11 @@ function listen() {
 }
 
 function pick(c: Chord) {
-  if (playing !== null) stopListening();
+  // Toucher un accord pendant l'écoute l'arrête seulement, sans l'ajouter au chemin.
+  if (playing !== null) {
+    stopListening();
+    return;
+  }
   const { home, path } = store.get();
   const j = journeyOf(home, path);
   const last = j.steps[j.steps.length - 1]?.chord ?? null;
@@ -178,6 +200,10 @@ store.subscribe(() => {
   render();
 });
 
+document.querySelector<HTMLElement>('.tip-q--ring')!.dataset.tip = RING_TIP;
+document.querySelector<HTMLElement>('.ribbon-head .tip-q')!.dataset.tip = RIBBON_TIP;
+mountTips(document.querySelector('.viz-stage') as HTMLElement);
+
 render();
 loadShard(2)
   .then((s) => {
@@ -189,6 +215,3 @@ loadShard(2)
     shardState = 'echec';
     render();
   });
-
-// Servi par la tâche 9 (légende « pas rare ») ; retiré à ce moment-là.
-void lastShare;
