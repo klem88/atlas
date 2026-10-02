@@ -54,6 +54,7 @@ let lastShare: number | null = null;
 const seen = new Set<NoteKind>();
 let noteKey = '';
 let noteText = '';
+let noteOnce: NoteKind | null = null;
 /** Identifiant du minuteur de l'écoute en cours (null hors écoute). */
 let playing: number | null = null;
 
@@ -101,14 +102,17 @@ function render(n = store.get().path.length) {
   renderPanel(j, cands);
   // La légende ne parle que du chemin complet : pendant l'écoute, on la vide.
   if (n === path.length) {
-    // Un nouveau rendu du même état (survol, chargement des parts) garde la légende affichée, même « une seule fois ».
+    // Un nouveau rendu du même état (survol, chargement des parts) garde la légende affichée, même « une seule fois » ;
+    // si seul le nombre de satellites change, on la recalcule sans compter comme « vue » celle qui s'affichait pour cet état.
     const satellites = cands.filter((c) => c.satellite).length;
     const key = `${home}|${path.map(chordId).join(',')}|${satellites}`;
     if (key !== noteKey) {
+      if (noteKey.startsWith(key.slice(0, key.lastIndexOf('|') + 1)) && noteOnce) seen.delete(noteOnce);
       noteKey = key;
       const note = noteFor(j, { share: lastShare, satellites, seen });
       noteText = note?.text ?? '';
-      if (note?.once) seen.add(note.kind);
+      noteOnce = note?.once ? note.kind : null;
+      if (noteOnce) seen.add(noteOnce);
     }
     els.note.textContent = noteText;
   } else els.note.textContent = '';
