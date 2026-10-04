@@ -263,3 +263,8 @@
 .panel-block > .button {
   min-height: 44px;
 }
+
+.carte.vide .carte-resume,
+.carte.vide .carte-compte {
+  color: var(--ink-3);
+}

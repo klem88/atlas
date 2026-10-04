@@ -79,7 +79,21 @@ function dessiner() {
   });
 }
 
+const CLES_FOCUS = ['data-ficelle', 'data-degre', 'data-i', 'data-retirer'];
+/** Où remettre le focus au prochain rendu (sélecteur), si une action le déplace d’elle-même. */
+let focusVers: string | null = null;
+
+/** Le focus survit aux reconstructions en innerHTML : on retrouve l’élément par son attribut de donnée. */
+function focusActuel(): string | null {
+  const a = document.activeElement;
+  if (!a || a === document.body) return null;
+  for (const k of CLES_FOCUS) if (a.hasAttribute(k)) return `[${k}="${a.getAttribute(k)}"]`;
+  return null;
+}
+
 function render() {
+  const vers = focusVers ?? focusActuel();
+  focusVers = null;
   const s = store.get();
   const { grille, f, apercu } = vue();
   els.home.value = String(s.home);
@@ -114,6 +128,7 @@ function render() {
   if (f && apercu) els.apercuTexte.textContent = f.explique(grille, apercu.index);
   els.consigne.textContent = f && !apercu ? 'Touche un endroit allumé sur la portée.' : '';
   dessiner();
+  if (vers) document.querySelector<HTMLElement>(vers)?.focus();
 }
 
 store.subscribe(() => {
@@ -186,6 +201,7 @@ function choisirEndroit(cible: EventTarget | null) {
   const e = f.endroits(grille).find((x) => f.zone(grille, x).includes(i));
   if (e === undefined) return;
   choix = { id: choix.id, index: e };
+  focusVers = '#garder';
   render();
 }
 els.portee.addEventListener('click', (e) => choisirEndroit(e.target));
@@ -198,11 +214,13 @@ els.portee.addEventListener('keydown', (e) => {
 els.garder.addEventListener('click', () => {
   if (!choix || choix.index === null) return;
   const geste = { id: choix.id, index: choix.index };
+  focusVers = `[data-ficelle="${choix.id}"]`;
   choix = null;
   message = '';
   store.set({ pile: [...store.get().pile, geste] });
 });
 els.annuler.addEventListener('click', () => {
+  if (choix) focusVers = `[data-ficelle="${choix.id}"]`;
   choix = choix ? { id: choix.id, index: null } : null;
   render();
 });
