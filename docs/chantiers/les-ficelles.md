@@ -91,7 +91,7 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 - [x] Réalisation des voix dans le socle ; tests
 - [x] Ficelles 1 et 2 : la basse qui descend, l'emprunt mineur ; tests
 - [x] Ficelles 3 et 4 : la dominante qui annonce, le Sol suspendu ; tests
-- [ ] Ficelles 5 et 6 : les accords enrichis, la montée finale ; tests
+- [x] Ficelles 5 et 6 : les accords enrichis, la montée finale ; tests
 - [ ] La portée en SVG : deux clés, fils de voix, retour à la ligne mobile
 - [ ] L'interaction : cartes, endroits allumés, avant / après, pile
 - [ ] Le son : écoute, curseur, avant / après
