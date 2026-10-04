@@ -78,6 +78,7 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 - **Pose des ficelles** : l'outil allume les endroits possibles, on écoute, on garde ou non.
 - **Réalisation des voix** : le socle gagne `src/shell/music/realisation.ts` (quatre voix, enchaînement le plus court, sans parallèles) ; `voicing.ts` n'est pas touché.
 - **Emprunt mineur** : on accepte IV→I et IV→V, pas seulement IV→I. (IV→V est aussi courant et plus riche pour la grille de départ.)
+- **Retrait dans la pile** : retirer une ficelle rejoue les suivantes à leur indice d’origine ; celles dont l’endroit a disparu tombent (message), une ficelle dont l’indice reste valide peut s’appliquer à un autre accord : accepté en v1.
 
 ## À décider
 
@@ -87,7 +88,7 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 
 - [x] Cadrage et fiche (4 octobre 2026)
 - [x] `npm run new:viz -- les-ficelles` (brouillon)
-- [ ] Grille, orthographe, état dans l'URL ; tests (grille et orthographe faites, URL en tâche 7)
+- [x] Grille, orthographe, état dans l'URL ; tests
 - [x] Réalisation des voix dans le socle ; tests
 - [x] Ficelles 1 et 2 : la basse qui descend, l'emprunt mineur ; tests
 - [x] Ficelles 3 et 4 : la dominante qui annonce, le Sol suspendu ; tests
