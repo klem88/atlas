@@ -1,5 +1,7 @@
 import { escapeHtml } from '@shell/html';
+import { Player, type Step } from '@shell/music/player';
 import { realiser, type Voix } from '@shell/music/realisation';
+import { Synth } from '@shell/music/synth';
 import { mountShell } from '@shell/shell';
 import { createStore } from '@shell/store';
 import { FICELLES, ficelle, type FicelleId } from './domain/ficelles';
@@ -36,6 +38,9 @@ const els = {
   pile: $('pile'),
   message: $('message'),
   cartes: $('cartes'),
+  ecouter: $<HTMLButtonElement>('ecouter'),
+  avant: $<HTMLButtonElement>('avant'),
+  apres: $<HTMLButtonElement>('apres'),
 };
 
 const store = createStore<VizState>(readStateFromUrl(location.search));
@@ -92,6 +97,7 @@ function focusActuel(): string | null {
 }
 
 function render() {
+  if (player.playing) player.stop();
   const vers = focusVers ?? focusActuel();
   focusVers = null;
   const s = store.get();
@@ -128,8 +134,65 @@ function render() {
   if (f && apercu) els.apercuTexte.textContent = f.explique(grille, apercu.index);
   els.consigne.textContent = f && !apercu ? 'Touche un endroit allumé sur la portée.' : '';
   dessiner();
+  majBoutons();
   if (vers) document.querySelector<HTMLElement>(vers)?.focus();
 }
+
+const SECONDES = 1.5;
+type Ecoute = 'tout' | 'avant' | 'apres';
+let ecoute: Ecoute | null = null;
+
+const synth = new Synth();
+const player = new Player(synth, (step) => {
+  curseur = typeof step?.tag === 'number' ? step.tag : null;
+  if (!step) ecoute = null;
+  dessiner();
+  majBoutons();
+});
+
+/** Les accords de `de` à `a` ; `suit` : le curseur avance sur la portée (seulement si c’est la grille affichée). */
+function etapes(voix: readonly Voix[], de: number, a: number, suit: boolean): Step[] {
+  const out: Step[] = [];
+  for (let i = Math.max(0, de); i <= Math.min(voix.length - 1, a); i++) {
+    const midis = [...voix[i]!];
+    out.push(suit ? { midis, seconds: SECONDES, tag: i } : { midis, seconds: SECONDES });
+  }
+  return out;
+}
+
+function ecouter(quoi: Ecoute) {
+  if (player.playing && ecoute === quoi) {
+    player.stop();
+    return;
+  }
+  const { grille, f, apercu } = vue();
+  let steps: Step[] = [];
+  if (quoi === 'tout') {
+    const g = apercu ? apercu.grille : grille;
+    steps = etapes(voixDe(g), 0, g.length - 1, true);
+  } else if (f && apercu && quoi === 'avant') {
+    const z = f.zone(grille, apercu.index);
+    steps = etapes(voixDe(grille), Math.min(...z) - 1, Math.max(...z) + 1, false);
+  } else if (apercu && quoi === 'apres') {
+    steps = etapes(voixDe(apercu.grille), Math.min(...apercu.touches) - 1, Math.max(...apercu.touches) + 1, true);
+  }
+  if (!steps.length) return;
+  player.play(steps);
+  ecoute = quoi;
+  majBoutons();
+}
+
+function majBoutons() {
+  const en = (q: Ecoute) => player.playing && ecoute === q;
+  els.ecouter.textContent = en('tout') ? 'Arrêter' : 'Écouter';
+  els.avant.textContent = en('avant') ? 'Arrêter' : 'Écouter avant';
+  els.apres.textContent = en('apres') ? 'Arrêter' : 'Écouter après';
+  els.ecouter.disabled = vue().grille.length === 0;
+}
+
+els.ecouter.addEventListener('click', () => ecouter('tout'));
+els.avant.addEventListener('click', () => ecouter('avant'));
+els.apres.addEventListener('click', () => ecouter('apres'));
 
 store.subscribe(() => {
   history.replaceState(null, '', `${location.pathname}${stateToSearch(store.get())}${location.hash}`);
