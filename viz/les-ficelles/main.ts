@@ -4,6 +4,7 @@ import { realiser, type Voix } from '@shell/music/realisation';
 import { Synth } from '@shell/music/synth';
 import { mountShell } from '@shell/shell';
 import { createStore } from '@shell/store';
+import { ecouteUrl, signaturesDe } from './data/signatures';
 import { FICELLES, ficelle, type FicelleId } from './domain/ficelles';
 import { accordDuDegre, basseDe, cliche, decouper, LABELS, lireAccord, MAX_DEPART, MIN_DEPART, notesDe, transposer, type Accord, type Grille } from './domain/grille';
 import { nomAccord } from './domain/orthographe';
@@ -112,12 +113,19 @@ function render() {
   els.cartes.innerHTML = FICELLES.map((x) => {
     const n = assez ? x.endroits(grille).length : 0;
     const compte = !assez ? 'Pose au moins deux accords.' : n === 0 ? x.pourquoiPas(grille) : `${n} endroit${n > 1 ? 's' : ''}`;
+    const sig = signaturesDe(x.id);
+    const signature = sig.length
+      ? `<p class="carte-signature">On l’entend chez ${sig
+          .map((s) => `${escapeHtml(s.auteur)}, <a href="${escapeHtml(ecouteUrl(s))}" target="_blank" rel="noopener">« ${escapeHtml(s.titre)} »</a> (${escapeHtml(s.passage)})`)
+          .join(' ; ')}.</p>`
+      : '';
     return `<article class="carte${n === 0 ? ' vide' : ''}">
       <button type="button" class="carte-choisir" data-ficelle="${x.id}" aria-pressed="${choix?.id === x.id}"${n === 0 ? ' aria-disabled="true"' : ''}>
         <span class="carte-nom">${escapeHtml(x.nom)}</span>
         <span class="carte-resume">${escapeHtml(x.resume)}</span>
         <span class="carte-compte">${escapeHtml(compte)}</span>
       </button>
+      ${signature}
     </article>`;
   }).join('');
 
