@@ -10,14 +10,14 @@ const TRIPLES: Grille[] = LABELS.flatMap((a) => LABELS.flatMap((b) => LABELS.map
 const LONGUES: Grille[] = [cliche(0), cliche(7), cliche(3), ['I', 'iii', 'vi', 'IV', 'ii', 'V', 'I', 'V'].map(deg)];
 
 describe('le registre', () => {
-  it(`a six ficelles, dans l'ordre de la page`, () => {
+  it(`a six ficelles, dans l’ordre de la page`, () => {
     expect(IDS).toEqual(['descend', 'emprunt', 'dominante', 'suspendu', 'enrichis', 'montee']);
     expect(ficelle('montee').id).toBe('montee');
   });
 });
 
 describe('le contrat, sur toutes les paires et triples de la gamme', () => {
-  it(`chaque endroit s'applique, reste dans les bornes et s'explique`, () => {
+  it(`chaque endroit s’applique, reste dans les bornes et s’explique`, () => {
     for (const g of [...PAIRES, ...TRIPLES, ...LONGUES])
       for (const f of FICELLES)
         for (const e of f.endroits(g)) {

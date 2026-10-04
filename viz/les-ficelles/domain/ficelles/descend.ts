@@ -1,5 +1,5 @@
 /**
- * La basse qui descend : entre deux accords dont la basse descend d'une tierce (ou d'une quarte), l'accord reste et la
+ * La basse qui descend : entre deux accords dont la basse descend d’une tierce (ou d’une quarte), l’accord reste et la
  * basse passe par les notes de la gamme (Do – Do/Si – La m). La basse devient une mélodie.
  */
 import { accordDuDegre, avecBasse, basseDe, mod12, type Grille } from '../grille';
@@ -18,7 +18,7 @@ export function passages(haut: number, bas: number, key: number): number[] {
   return out;
 }
 
-/** Les notes de passage d'un endroit, ou `null` s'il n'en est pas un. */
+/** Les notes de passage d’un endroit, ou `null` s’il n’en est pas un. */
 function chemin(g: Grille, i: number): number[] | null {
   const a = g[i];
   const b = g[i + 1];
@@ -32,7 +32,7 @@ function chemin(g: Grille, i: number): number[] | null {
 export const descend: Ficelle = {
   id: 'descend',
   nom: 'La basse qui descend',
-  resume: `L'accord reste, la basse descend note à note jusqu'au suivant.`,
+  resume: `L’accord reste, la basse descend note à note jusqu’au suivant.`,
   endroits: (g) => g.flatMap((_, i) => (chemin(g, i) ? [i] : [])),
   zone: (_g, i) => [i, i + 1],
   appliquer(g, i) {
@@ -44,10 +44,10 @@ export const descend: Ficelle = {
     const a = g[i]!;
     const b = g[i + 1]!;
     const notes = [...[basseDe(a), ...chemin(g, i)!].map((n) => ecrireDans(n, a)), ecrireDans(basseDe(b), b)].map(nomNote);
-    return `${nomAccord(a)} reste, la basse descend note à note : ${notes.join(', ')}, jusqu'à ${nomAccord(b)}. La basse devient une mélodie.`;
+    return `${nomAccord(a)} reste, la basse descend note à note : ${notes.join(', ')}, jusqu’à ${nomAccord(b)}. La basse devient une mélodie.`;
   },
   pourquoiPas(g) {
     const k = g[0]?.key ?? 0;
-    return `Il faut deux accords dont la basse descend d'une tierce ou d'une quarte (par exemple ${nomAccord(accordDuDegre('I', k))} puis ${nomAccord(accordDuDegre('vi', k))}).`;
+    return `Il faut deux accords dont la basse descend d’une tierce ou d’une quarte (par exemple ${nomAccord(accordDuDegre('I', k))} puis ${nomAccord(accordDuDegre('vi', k))}).`;
   },
 };

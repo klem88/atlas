@@ -1,6 +1,6 @@
 /**
  * La montée finale : la progression rejouée un ton plus haut, amenée par la dominante de la nouvelle tonalité
- * (… Sol – La7 – Ré …). Le geste des derniers refrains. Une seule fois : ensuite, la grille n'a plus une seule tonalité.
+ * (… Sol – La7 – Ré …). Le geste des derniers refrains. Une seule fois : ensuite, la grille n’a plus une seule tonalité.
  */
 import { accordDuDegre, mod12, transposer, type Accord, type Grille } from '../grille';
 import { nomAccord } from '../orthographe';
@@ -25,7 +25,7 @@ export const montee: Ficelle = {
   },
   explique(g) {
     const k = nouvelle(g);
-    return `${nomAccord(dominanteDe(k))}, la dominante de ${nomAccord(accordDuDegre('I', k))}, fait monter toute la progression d'un ton : le même chemin, plus haut, plus lumineux. C'est le geste des derniers refrains.`;
+    return `${nomAccord(dominanteDe(k))}, la dominante de ${nomAccord(accordDuDegre('I', k))}, fait monter toute la progression d’un ton : le même chemin, plus haut, plus lumineux. C’est le geste des derniers refrains.`;
   },
   pourquoiPas: () => 'La progression est déjà montée une fois, ou elle est trop longue pour être rejouée plus haut.',
 };

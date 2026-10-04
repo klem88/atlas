@@ -1,5 +1,5 @@
 /**
- * L'emprunt mineur : après un IV qui va vers le I ou le V, on glisse le iv (Fa – Fa m – Do). Sa tierce descend d'un
+ * L’emprunt mineur : après un IV qui va vers le I ou le V, on glisse le iv (Fa – Fa m – Do). Sa tierce descend d’un
  * demi-ton : une note prise au mode mineur, la lumière baisse un instant.
  */
 import { accordDuDegre, degre, type Accord, type Grille } from '../grille';
@@ -16,8 +16,8 @@ function estEndroit(g: Grille, i: number): boolean {
 
 export const emprunt: Ficelle = {
   id: 'emprunt',
-  nom: `L'emprunt mineur`,
-  resume: `Le IV devient mineur un instant : une note descend d'un demi-ton, la lumière baisse.`,
+  nom: `L’emprunt mineur`,
+  resume: `Le IV devient mineur un instant : une note descend d’un demi-ton, la lumière baisse.`,
   endroits: (g) => g.flatMap((_, i) => (estEndroit(g, i) ? [i] : [])),
   zone: (_g, i) => [i, i + 1],
   appliquer(g, i) {

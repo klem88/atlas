@@ -22,7 +22,7 @@ export const suspendu: Ficelle = {
     const s = suspenduDe(a);
     const [basse, sensible] = ecrireAccord(a);
     const iv = nomAccord(accordDuDegre('IV', a.key));
-    return `${nomAccord(s)} garde la basse ${nomNote(basse!)} mais pose dessus l'accord de ${iv} : plus de ${nomNote(sensible!)}, la sensible. La tension reste, en plus doux.`;
+    return `${nomAccord(s)} garde la basse ${nomNote(basse!)} mais pose dessus l’accord de ${iv} : plus de ${nomNote(sensible!)}, la sensible. La tension reste, en plus doux.`;
   },
   pourquoiPas: (g) => `Il faut un accord de dominante, le V (par exemple ${nomAccord(accordDuDegre('V', g[0]?.key ?? 0))}).`,
 };
