@@ -76,6 +76,7 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 - **Auteurs** : ficelles signées par une petite liste vérifiée à la main (pas d'empreinte mesurée ; possible plus tard si une sonde Chordonomicon montre assez de chansons de ces auteurs).
 - **Écriture** : une vraie portée à deux clés, mais la musique est stockée une seule fois (voix MIDI) pour qu'un clavier puisse se brancher plus tard.
 - **Pose des ficelles** : l'outil allume les endroits possibles, on écoute, on garde ou non.
+- **Réalisation des voix** : le socle gagne `src/shell/music/realisation.ts` (quatre voix, enchaînement le plus court, sans parallèles) ; `voicing.ts` n'est pas touché.
 
 ## À décider
 
@@ -86,7 +87,7 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 - [x] Cadrage et fiche (4 octobre 2026)
 - [x] `npm run new:viz -- les-ficelles` (brouillon)
 - [ ] Grille, orthographe, état dans l'URL ; tests (grille et orthographe faites, URL en tâche 7)
-- [ ] Réalisation des voix dans le socle ; tests
+- [x] Réalisation des voix dans le socle ; tests
 - [ ] Ficelles 1 et 2 : la basse qui descend, l'emprunt mineur ; tests
 - [ ] Ficelles 3 et 4 : la dominante qui annonce, le Sol suspendu ; tests
 - [ ] Ficelles 5 et 6 : les accords enrichis, la montée finale ; tests
