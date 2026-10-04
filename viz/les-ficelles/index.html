@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Music&display=swap"
     />
   </head>
   <body>
@@ -32,20 +32,49 @@
         <p class="viz-kicker">Musique · Harmonie · Apprendre</p>
         <h1>Les ficelles</h1>
         <p class="viz-lede">Six procédés de la chanson française des années 70 pour transformer une progression simple : à voir sur la portée, à écouter, à garder ou non.</p>
-        <!-- Affiche les éléments de classe « detail » (aides, notes de calcul) : voir src/shell/details.ts. -->
-        <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
-          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
-          <span class="details-toggle-label">Plus de détails</span>
-        </button>
       </header>
 
       <section class="viz-workspace" aria-label="Visualisation">
-        <!-- Réglages et résultat. Pour une visualisation sans panneau, supprimer ce bloc :
-             la scène prend alors toute la largeur (voir viz.css). -->
-        <div class="viz-panel" id="panel"></div>
+        <div class="viz-panel" id="panel">
+          <div class="panel-block">
+            <p class="panel-label">Ta progression de départ</p>
+            <label class="field">
+              <span class="field-label">Tonalité</span>
+              <select id="home"></select>
+            </label>
+            <div class="degres" id="degres" aria-label="Ajouter un accord de la gamme"></div>
+            <form class="saisie" id="saisie">
+              <input id="saisie-texte" type="text" placeholder="Do Lam Fa Sol" aria-label="Écrire une progression" autocomplete="off" />
+              <button class="button" type="submit">Poser</button>
+            </form>
+            <p class="hint" id="saisie-erreur" hidden></p>
+            <div class="actions">
+              <button class="button" type="button" id="cliche">Le cliché</button>
+              <button class="button" type="button" id="effacer">Effacer</button>
+            </div>
+          </div>
+          <div class="panel-block">
+            <p class="panel-label">Le résultat</p>
+            <p class="resultat" id="resultat"></p>
+            <button class="button" type="button" id="copier">Copier la grille</button>
+          </div>
+        </div>
 
         <div class="viz-stage">
-          <div class="stage-frame" id="stage"></div>
+          <div class="stage-head">
+            <p class="hint" id="consigne"></p>
+          </div>
+          <div class="portee" id="portee"></div>
+          <div class="apercu" id="apercu" hidden>
+            <p id="apercu-texte"></p>
+            <div class="actions">
+              <button class="button button--primary" type="button" id="garder">Garder</button>
+              <button class="button" type="button" id="annuler">Annuler</button>
+            </div>
+          </div>
+          <ol class="pile" id="pile" aria-label="Ficelles gardées"></ol>
+          <p class="hint" id="message" hidden></p>
+          <div class="cartes" id="cartes"></div>
         </div>
       </section>
 
@@ -54,26 +83,28 @@
           <ol>
             <li><a href="#lire">Comment lire</a></li>
             <li><a href="#methode">La méthode</a></li>
-            <li><a href="#sources">D’où viennent les chiffres</a></li>
+            <li><a href="#sources">D’où viennent les exemples</a></li>
             <li><a href="#limites">Ce que ça ne dit pas</a></li>
           </ol>
         </nav>
         <div class="prose">
           <section id="lire">
             <h2>Comment lire</h2>
-            <p>À écrire : ce que représentent les formes, les couleurs, les interactions.</p>
+            <p>La portée montre un accord par mesure, en rondes : la clé de sol pour la main droite, la clé de fa pour la basse. Les fils relient les notes d’une même voix d’un accord à l’autre. Un fil à plat, c’est une note tenue ; un fil qui penche, une note qui bouge. Le fil de la basse est plus marqué, parce que ces auteurs la font chanter.</p>
+            <p>Touche une ficelle : les endroits où elle peut s’appliquer s’allument sur la portée. Touche un endroit pour voir l’après ; les notes qui bougent prennent la couleur. Garde-la si elle te plaît, retire-la plus tard si tu changes d’avis.</p>
           </section>
           <section id="methode">
             <h2>La méthode</h2>
-            <p>À écrire : le calcul, pas à pas, idéalement avec les valeurs de l’utilisateur.</p>
+            <p>Chaque ficelle est une règle écrite à la main, pas une statistique. La basse qui descend glisse un accord renversé sur la note de passage. L’emprunt mineur place le iv entre le IV et le I (ou le V). La dominante qui annonce ajoute la septième de dominante d’un accord juste avant lui. Le Sol suspendu remplace le V par IV/V. Les accords enrichis ajoutent une septième : majeure sur I et IV, mineure sur ii, iii et vi, de dominante sur V. La montée finale rejoue la progression un ton plus haut, amenée par la dominante de la nouvelle tonalité.</p>
+            <p>Les voix sont disposées par un calcul simple : pour chaque accord, parmi toutes les façons de le jouer (une basse, trois notes au-dessus dans une octave), on garde celle qui bouge le moins depuis la précédente, sans quintes ni octaves parallèles. C’est la règle de l’enchaînement le plus court, celle des pianistes et des choristes. Chaque note est écrite d’après l’accord : Fa m prend un la♭, Mi7 un sol♯.</p>
           </section>
           <section id="sources">
-            <h2>D’où viennent les chiffres</h2>
-            <p>À écrire : chaque source avec son lien, sa licence et sa période.</p>
+            <h2>D’où viennent les exemples</h2>
+            <p>Les titres cités sous les ficelles ont été cherchés dans des sources publiées, puis vérifiés à l’oreille au piano. On ne reproduit pas leurs grilles : on nomme le geste et on renvoie vers l’enregistrement. Une ficelle sans titre vérifié n’en affiche pas.</p>
           </section>
           <section id="limites">
             <h2>Ce que ça ne dit pas</h2>
-            <p>À écrire : les angles morts, les approximations, les territoires manquants.</p>
+            <p>Six ficelles ne font pas une chanson de Michel Berger : il manque la mélodie, le rythme, l’arrangement, et surtout le goût de savoir quand ne pas s’en servir. Les règles sont simplifiées : une seule façon de faire descendre la basse, une seule couleur de septième par degré. Les accords sont tenus en rondes, sans rythme. Pas d’armure à la clé : toutes les altérations sont écrites devant les notes.</p>
           </section>
         </div>
       </section>

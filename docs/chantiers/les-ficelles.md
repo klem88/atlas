@@ -94,7 +94,7 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 - [x] Ficelles 3 et 4 : la dominante qui annonce, le Sol suspendu ; tests
 - [x] Ficelles 5 et 6 : les accords enrichis, la montée finale ; tests
 - [x] La portée en SVG : deux clés, fils de voix, retour à la ligne mobile
-- [ ] L'interaction : cartes, endroits allumés, avant / après, pile
+- [x] L'interaction : cartes, endroits allumés, avant / après, pile
 - [ ] Le son : écoute, curseur, avant / après
 - [ ] Les titres signés : recherche des sources, puis validation à l'oreille par l'auteur
 - [ ] Vérifications clair / sombre / 375 px, image d'aperçu
