@@ -90,7 +90,7 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 - [ ] Grille, orthographe, état dans l'URL ; tests (grille et orthographe faites, URL en tâche 7)
 - [x] Réalisation des voix dans le socle ; tests
 - [x] Ficelles 1 et 2 : la basse qui descend, l'emprunt mineur ; tests
-- [ ] Ficelles 3 et 4 : la dominante qui annonce, le Sol suspendu ; tests
+- [x] Ficelles 3 et 4 : la dominante qui annonce, le Sol suspendu ; tests
 - [ ] Ficelles 5 et 6 : les accords enrichis, la montée finale ; tests
 - [ ] La portée en SVG : deux clés, fils de voix, retour à la ligne mobile
 - [ ] L'interaction : cartes, endroits allumés, avant / après, pile
