@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Les ficelles — Atlas</title>
+    <meta name="description" content="Six procédés de la chanson française des années 70 pour transformer une progression simple : à voir sur la portée, à écouter, à garder ou non." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/les-ficelles/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="Les ficelles" />
+    <meta property="og:description" content="Six procédés de la chanson française des années 70 pour transformer une progression simple : à voir sur la portée, à écouter, à garder ou non." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/les-ficelles/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/les-ficelles.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Musique · Harmonie · Apprendre</p>
+        <h1>Les ficelles</h1>
+        <p class="viz-lede">Six procédés de la chanson française des années 70 pour transformer une progression simple : à voir sur la portée, à écouter, à garder ou non.</p>
+        <!-- Affiche les éléments de classe « detail » (aides, notes de calcul) : voir src/shell/details.ts. -->
+        <button class="details-toggle" type="button" data-details-toggle aria-pressed="false" hidden>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.5" fill="none" /></svg>
+          <span class="details-toggle-label">Plus de détails</span>
+        </button>
+      </header>
+
+      <section class="viz-workspace" aria-label="Visualisation">
+        <!-- Réglages et résultat. Pour une visualisation sans panneau, supprimer ce bloc :
+             la scène prend alors toute la largeur (voir viz.css). -->
+        <div class="viz-panel" id="panel"></div>
+
+        <div class="viz-stage">
+          <div class="stage-frame" id="stage"></div>
+        </div>
+      </section>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#methode">La méthode</a></li>
+            <li><a href="#sources">D’où viennent les chiffres</a></li>
+            <li><a href="#limites">Ce que ça ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>À écrire : ce que représentent les formes, les couleurs, les interactions.</p>
+          </section>
+          <section id="methode">
+            <h2>La méthode</h2>
+            <p>À écrire : le calcul, pas à pas, idéalement avec les valeurs de l’utilisateur.</p>
+          </section>
+          <section id="sources">
+            <h2>D’où viennent les chiffres</h2>
+            <p>À écrire : chaque source avec son lien, sa licence et sa période.</p>
+          </section>
+          <section id="limites">
+            <h2>Ce que ça ne dit pas</h2>
+            <p>À écrire : les angles morts, les approximations, les territoires manquants.</p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -84,7 +84,7 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 ## Tâches
 
 - [x] Cadrage et fiche (4 octobre 2026)
-- [ ] `npm run new:viz -- les-ficelles` (brouillon)
+- [x] `npm run new:viz -- les-ficelles` (brouillon)
 - [ ] Grille, orthographe, état dans l'URL ; tests
 - [ ] Réalisation des voix dans le socle ; tests
 - [ ] Ficelles 1 et 2 : la basse qui descend, l'emprunt mineur ; tests
