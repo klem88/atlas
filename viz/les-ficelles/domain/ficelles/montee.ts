@@ -25,7 +25,7 @@ export const montee: Ficelle = {
   },
   explique(g) {
     const k = nouvelle(g);
-    return `${nomAccord(dominanteDe(k))}, la dominante de ${nomAccord(accordDuDegre('I', k))}, fait monter toute la progression d\'un ton : le même chemin, plus haut, plus lumineux. C\'est le geste des derniers refrains.`;
+    return `${nomAccord(dominanteDe(k))}, la dominante de ${nomAccord(accordDuDegre('I', k))}, fait monter toute la progression d'un ton : le même chemin, plus haut, plus lumineux. C'est le geste des derniers refrains.`;
   },
   pourquoiPas: () => 'La progression est déjà montée une fois, ou elle est trop longue pour être rejouée plus haut.',
 };

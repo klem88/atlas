@@ -25,6 +25,6 @@ describe('la dominante qui annonce', () => {
   });
 
   it('dit quelle note tire vers la cible', () => {
-    expect(dominante.explique(cliche(0), 1)).toContain('sol♯ monte d\'un demi-ton vers le la');
+    expect(dominante.explique(cliche(0), 1)).toContain(`sol♯ monte d'un demi-ton vers le la`);
   });
 });

@@ -20,12 +20,12 @@ describe('la basse qui descend', () => {
     expect(descend.endroits(grille('Do Sol'))).toEqual([0]); // quarte descendante (do, si, la, sol)
   });
 
-  it('refuse les basses qui montent ou descendent d\'un pas', () => {
+  it(`refuse les basses qui montent ou descendent d'un pas`, () => {
     expect(descend.endroits(grille('Fa Sol'))).toEqual([]);
     expect(descend.endroits(grille('Do Si°'))).toEqual([]);
   });
 
-  it('garde l\'accord et fait passer la basse', () => {
+  it(`garde l'accord et fait passer la basse`, () => {
     const r = descend.appliquer(cliche(0), 0);
     expect(noms(r.grille)).toEqual(['Do', 'Do/Si', 'La m', 'Fa', 'Sol']);
     expect(r.touches).toEqual([1]);
@@ -33,7 +33,7 @@ describe('la basse qui descend', () => {
     expect(noms(descend.appliquer(cliche(0), 1).grille)).toEqual(['Do', 'La m', 'La m/Sol', 'Fa', 'Sol']);
   });
 
-  it('allume la paire et s\'explique', () => {
+  it(`allume la paire et s'explique`, () => {
     expect(descend.zone(cliche(0), 0)).toEqual([0, 1]);
     expect(descend.explique(cliche(0), 0)).toContain('do, si, la');
     expect(descend.pourquoiPas(grille('Fa Sol'))).toContain('Do puis La m');

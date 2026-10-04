@@ -6,7 +6,7 @@ import { emprunt } from './emprunt';
 const grille = (s: string, key = 0): Grille => s.split(' ').map((x) => lireAccord(x, key)!);
 const noms = (g: Grille) => g.map(nomAccord);
 
-describe('l\'emprunt mineur', () => {
+describe(`l'emprunt mineur`, () => {
   it('se place après un IV suivi du I ou du V', () => {
     expect(emprunt.endroits(cliche(0))).toEqual([2]); // Fa → Sol
     expect(emprunt.endroits(grille('Fa Do'))).toEqual([0]);

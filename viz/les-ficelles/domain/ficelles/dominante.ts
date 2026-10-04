@@ -18,7 +18,7 @@ function estEndroit(g: Grille, i: number): boolean {
 export const dominante: Ficelle = {
   id: 'dominante',
   nom: 'La dominante qui annonce',
-  resume: 'Juste avant un accord, sa dominante : une note monte d\'un demi-ton vers lui.',
+  resume: `Juste avant un accord, sa dominante : une note monte d'un demi-ton vers lui.`,
   endroits: (g) => g.flatMap((_, i) => (estEndroit(g, i) ? [i] : [])),
   zone: (_g, i) => [i - 1, i],
   appliquer(g, i) {
@@ -29,7 +29,7 @@ export const dominante: Ficelle = {
     const d = dominanteDe(a);
     const sensible = ecrireAccord(d)[1]!;
     const cible = ecrireAccord(a)[0]!;
-    return `${nomAccord(d)} annonce ${nomAccord(a)} : son ${nomNote(sensible)} monte d\'un demi-ton vers le ${nomNote(cible)}. On sent ${nomAccord(a)} arriver avant qu\'il sonne.`;
+    return `${nomAccord(d)} annonce ${nomAccord(a)} : son ${nomNote(sensible)} monte d'un demi-ton vers le ${nomNote(cible)}. On sent ${nomAccord(a)} arriver avant qu'il sonne.`;
   },
   pourquoiPas: () => 'Il faut un accord majeur ou mineur, après le premier, qui ne soit pas déjà précédé de sa dominante.',
 };

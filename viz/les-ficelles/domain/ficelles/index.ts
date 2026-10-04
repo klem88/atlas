@@ -1,4 +1,4 @@
-/** Les six ficelles, dans l\'ordre de la page. */
+/** Les six ficelles, dans l'ordre de la page. */
 import { descend } from './descend';
 import { dominante } from './dominante';
 import { emprunt } from './emprunt';

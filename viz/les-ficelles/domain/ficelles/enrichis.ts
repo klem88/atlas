@@ -16,7 +16,7 @@ function cible(a: Accord): Couleur | null {
 export const enrichis: Ficelle = {
   id: 'enrichis',
   nom: 'Les accords enrichis',
-  resume: 'Une septième sur un accord de la gamme : il s\'arrondit sans changer de rôle.',
+  resume: `Une septième sur un accord de la gamme : il s'arrondit sans changer de rôle.`,
   endroits: (g) => g.flatMap((a, i) => (cible(a) ? [i] : [])),
   zone: (_g, i) => [i],
   appliquer(g, i) {
@@ -27,8 +27,8 @@ export const enrichis: Ficelle = {
     const b: Accord = { ...a, couleur: cible(a)! };
     const septieme = nomNote(ecrireAccord(b)[3]!);
     if (degre(a) === 'V')
-      return `${nomAccord(a)} devient ${nomAccord(b)} : on ajoute ${septieme}, la septième. Elle veut descendre d\'un demi-ton : la dominante tire plus fort vers ${nomAccord(accordDuDegre('I', a.key))}.`;
-    return `${nomAccord(a)} devient ${nomAccord(b)} : on ajoute ${septieme}, la septième, une note de la gamme. L\'accord garde son rôle, il devient plus doux, plus rond.`;
+      return `${nomAccord(a)} devient ${nomAccord(b)} : on ajoute ${septieme}, la septième. Elle veut descendre d'un demi-ton : la dominante tire plus fort vers ${nomAccord(accordDuDegre('I', a.key))}.`;
+    return `${nomAccord(a)} devient ${nomAccord(b)} : on ajoute ${septieme}, la septième, une note de la gamme. L'accord garde son rôle, il devient plus doux, plus rond.`;
   },
   pourquoiPas: () => 'Tous les accords de la gamme sont déjà enrichis, ou renversés (un accord sur une autre basse reste tel quel).',
 };

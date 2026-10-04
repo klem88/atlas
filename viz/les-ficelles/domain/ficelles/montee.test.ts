@@ -4,7 +4,7 @@ import { nomAccord } from '../orthographe';
 import { montee } from './montee';
 
 describe('la montée finale', () => {
-  it('s\'applique une fois, à la fin', () => {
+  it(`s'applique une fois, à la fin`, () => {
     expect(montee.endroits(cliche(0))).toEqual([3]);
     const r = montee.appliquer(cliche(0), 3);
     expect(montee.endroits(r.grille)).toEqual([]);
