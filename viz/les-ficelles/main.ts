@@ -8,7 +8,7 @@ import { ecouteUrl, signaturesDe } from './data/signatures';
 import { FICELLES, ficelle, type FicelleId } from './domain/ficelles';
 import { accordDuDegre, basseDe, cliche, decouper, LABELS, lireAccord, MAX_DEPART, MIN_DEPART, notesDe, transposer, type Accord, type Grille } from './domain/grille';
 import { nomAccord } from './domain/orthographe';
-import { rejouer, retirer } from './domain/pile';
+import { lieux, rejouer, retirer, type Geste } from './domain/pile';
 import { readStateFromUrl, stateToSearch, type VizState } from './state';
 import { dessinerPortee } from './ui/portee';
 import './viz.css';
@@ -129,10 +129,13 @@ function render() {
     </article>`;
   }).join('');
 
+  const ou = lieux(s.depart, s.pile);
   els.pile.innerHTML = s.pile
     .map((g, k) => {
       const nom = escapeHtml(ficelle(g.id).nom);
-      return `<li>${nom} <button type="button" data-retirer="${k}" aria-label="Retirer ${nom}">✕</button></li>`;
+      const lieu = ou[k] ? escapeHtml(ou[k]) : '';
+      const quoi = lieu ? `${nom} ${lieu}` : nom;
+      return `<li>${nom}${lieu ? `<span class="pile-lieu"> · ${lieu}</span>` : ''} <button type="button" data-retirer="${k}" aria-label="Retirer ${quoi}">✕</button></li>`;
     })
     .join('');
   els.message.hidden = !message;
@@ -207,10 +210,18 @@ store.subscribe(() => {
   render();
 });
 
+/** Le message des ficelles qui tombent parce que leur endroit a disparu. */
+function messageTombes(tombes: readonly Geste[], aussi: boolean): string {
+  if (!tombes.length) return '';
+  const pl = tombes.length > 1;
+  const noms = tombes.map((t) => ficelle(t.id).nom).join(', ');
+  return `Retirée${pl ? 's' : ''}${aussi ? ' aussi' : ''} : ${pl ? 'leur' : 'son'} endroit n’existe plus (${noms}).`;
+}
+
 /** Changer de départ vide la pile : ses endroits ne voudraient plus rien dire. */
 function changerDepart(depart: Accord[]) {
   choix = null;
-  message = '';
+  message = store.get().pile.length ? 'Ficelles retirées : nouveau départ.' : '';
   store.set({ depart, pile: [] });
 }
 
@@ -237,7 +248,12 @@ els.degres.addEventListener('click', (e) => {
     render();
     return;
   }
-  changerDepart([...s.depart, accordDuDegre(b.dataset.degre!, s.home)]);
+  // Un accord ajouté au bout garde la pile : les endroits d’avant sont toujours là (sauf la montée, qui visait la fin).
+  const depart = [...s.depart, accordDuDegre(b.dataset.degre!, s.home)];
+  const r = rejouer(depart, s.pile);
+  choix = null;
+  message = messageTombes(r.tombes, false);
+  store.set({ depart, pile: r.gardes });
 });
 
 els.saisie.addEventListener('submit', (e) => {
@@ -301,7 +317,7 @@ els.pile.addEventListener('click', (e) => {
   if (!b) return;
   const s = store.get();
   const r = rejouer(s.depart, retirer(s.pile, Number(b.dataset.retirer)));
-  message = r.tombes.length ? `Retirée${r.tombes.length > 1 ? 's' : ''} aussi, faute de place : ${r.tombes.map((t) => ficelle(t.id).nom).join(', ')}.` : '';
+  message = messageTombes(r.tombes, true);
   choix = null;
   store.set({ pile: r.gardes });
 });

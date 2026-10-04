@@ -30,3 +30,6 @@ export interface Ficelle {
 
 /** Longueur maximale d’une grille après ficelles (huit accords au départ, et de la place pour broder). */
 export const MAX_GRILLE = 24;
+
+/** Le pourquoi-pas d’une ficelle qui s’appliquerait, si la grille n’était pas déjà à sa longueur maximale. */
+export const TROP_LONGUE = 'La progression est trop longue pour broder davantage.';

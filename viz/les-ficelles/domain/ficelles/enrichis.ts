@@ -30,5 +30,5 @@ export const enrichis: Ficelle = {
       return `${nomAccord(a)} devient ${nomAccord(b)} : on ajoute ${septieme}, la septième. Elle veut descendre d’un demi-ton : la dominante tire plus fort vers ${nomAccord(accordDuDegre('I', a.key))}.`;
     return `${nomAccord(a)} devient ${nomAccord(b)} : on ajoute ${septieme}, la septième, une note de la gamme. L’accord garde son rôle, il devient plus doux, plus rond.`;
   },
-  pourquoiPas: () => 'Tous les accords de la gamme sont déjà enrichis, ou renversés (un accord sur une autre basse reste tel quel).',
+  pourquoiPas: () => 'Tous les accords de la gamme sont déjà enrichis, ou posés sur une autre basse (ceux-là restent tels quels).',
 };

@@ -4,16 +4,18 @@
  */
 import { accordDuDegre, degre, type Accord, type Grille } from '../grille';
 import { ecrireAccord, nomAccord, nomNote } from '../orthographe';
-import { MAX_GRILLE, type Ficelle } from './type';
+import { MAX_GRILLE, TROP_LONGUE, type Ficelle } from './type';
 
 /** Le même accord en mineur (sa fondamentale garde sa lettre ; l’endroit n’a pas de basse écrite). */
 const ivDe = (a: Accord): Accord => ({ ...a, couleur: 'min' });
 
-function estEndroit(g: Grille, i: number): boolean {
+/** Un IV suivi du I ou du V, sans compter la place. */
+function convient(g: Grille, i: number): boolean {
   const a = g[i];
   const b = g[i + 1];
-  return !!a && !!b && degre(a) === 'IV' && a.bass === undefined && b.key === a.key && (degre(b) === 'I' || degre(b) === 'V') && g.length < MAX_GRILLE;
+  return !!a && !!b && degre(a) === 'IV' && a.bass === undefined && b.key === a.key && (degre(b) === 'I' || degre(b) === 'V');
 }
+const estEndroit = (g: Grille, i: number) => convient(g, i) && g.length < MAX_GRILLE;
 
 export const emprunt: Ficelle = {
   id: 'emprunt',
@@ -32,6 +34,7 @@ export const emprunt: Ficelle = {
     return `Entre ${nomAccord(a)} et ${nomAccord(g[i + 1]!)}, ${nomAccord(iv)} : le ${nomNote(tierce)} descend au ${nomNote(tierceMineure)}, une note empruntée au mode mineur. La lumière baisse un instant.`;
   },
   pourquoiPas(g) {
+    if (g.some((_, i) => convient(g, i))) return TROP_LONGUE;
     const k = g[0]?.key ?? 0;
     const [iv, i, v] = (['IV', 'I', 'V'] as const).map((l) => nomAccord(accordDuDegre(l, k)));
     return `Il faut un IV suivi du I ou du V (par exemple ${iv} puis ${i}, ou ${iv} puis ${v}).`;

@@ -29,10 +29,10 @@ Les ficelles se recalculent à chaque geste : en appliquer une ouvre ou ferme de
 
 | Ficelle | Où (règle v1) | Ce qu'elle fait | Exemple en Do |
 | --- | --- | --- | --- |
-| **La basse qui descend** | Deux accords dont la basse descend d'une tierce ou d'une quarte | Glisse un accord renversé sur la note de passage (tierce), deux pour une quarte | Do – La m → Do – Do/Si – La m |
+| **La basse qui descend** | Deux accords dont la basse descend d’une tierce ou d’une quarte | Glisse le même accord sur une autre basse, la note de passage (tierce), deux pour une quarte | Do – La m → Do – Do/Si – La m |
 | **L'emprunt mineur** | IV suivi de I | Insère iv entre les deux | Fa – Do → Fa – Fa m – Do |
 | **La dominante qui annonce** | Un accord majeur ou mineur, s'il n'est pas déjà précédé de sa dominante | Insère sa septième de dominante juste avant | Do – La m → Do – Mi7 – La m |
-| **Le Sol suspendu** | Un accord V | Le remplace par IV/V | Sol → Fa/Sol |
+| **La dominante suspendue** | Un accord V | Le remplace par IV/V | Sol → Fa/Sol |
 | **Les accords enrichis** | Un accord à trois sons | 7M sur I et IV, m7 sur ii, iii et vi, 7 sur V | Fa → Fa7M |
 | **La montée finale** | La fin de la progression (une fois) | Ajoute la dominante du ton au-dessus, puis la progression transposée d'un ton | … Sol – La7 → Ré – Si m – Sol – La |
 
@@ -79,6 +79,9 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 - **Réalisation des voix** : le socle gagne `src/shell/music/realisation.ts` (quatre voix, enchaînement le plus court, sans parallèles) ; `voicing.ts` n'est pas touché.
 - **Emprunt mineur** : on accepte IV→I et IV→V, pas seulement IV→I. (IV→V est aussi courant et plus riche pour la grille de départ.)
 - **Retrait dans la pile** : retirer une ficelle rejoue les suivantes à leur indice d’origine ; celles dont l’endroit a disparu tombent (message), une ficelle dont l’indice reste valide peut s’appliquer à un autre accord : accepté en v1.
+- **Lettre de la fondamentale** (revue finale, 4 octobre 2026) : un accord peut fixer la lettre de sa fondamentale quand la tonalité en donnerait une autre. La saisie garde la lettre tapée (« Do#m » reste Do♯ m, pas Ré♭ m) ; la dominante se place quatre lettres plus loin que sa cible (Do♯7 avant Fa♯7, mi♯ → fa♯) ; la montée finale avance d’une lettre (de Fa♯ à Sol♯ par Ré♯7, de Si à Do♯) ; l’URL écrit la vraie lettre (« C#m »). Au-delà d’un dièse ou d’un bémol sur la fondamentale (fa𝄪 au bout d’une longue chaîne), on revient à l’écriture de la tonalité.
+- **« La dominante suspendue »** remplace « Le Sol suspendu » : le nom n’était vrai qu’en Do (en Sol, la carte change Ré en Do/Ré). Les phrases de la carte gardent les noms d’accords réels ; le tableau ci-dessus garde l’exemple en Do.
+- **Ajouter un degré garde la pile** : un accord ajouté au bout du départ rejoue la pile ; seules les ficelles dont l’endroit a disparu tombent, avec un message (la montée finale, qui visait la fin). Saisir, revenir au cliché ou effacer repartent de zéro et le disent (« Ficelles retirées : nouveau départ. »).
 
 ## À décider
 
@@ -91,7 +94,7 @@ Recherche du 4 octobre 2026 : seules les entrées dont la page consultée décri
 - Dominante qui annonce : Michel Polnareff, « Lettre à France », l’enchaînement signalé par l’analyse (la page ne dit pas où : à situer à l’oreille), https://www.musiclic.com/cadences-et-progressions-d-accords
 - La basse qui descend : aucune source trouvée.
 - Emprunt mineur : aucune source trouvée.
-- Le Sol suspendu : aucune source trouvée.
+- La dominante suspendue : aucune source trouvée.
 - Accords enrichis : aucune source trouvée.
 - Montée finale : aucune source trouvée.
 
@@ -102,7 +105,7 @@ Recherche du 4 octobre 2026 : seules les entrées dont la page consultée décri
 - [x] Grille, orthographe, état dans l'URL ; tests
 - [x] Réalisation des voix dans le socle ; tests
 - [x] Ficelles 1 et 2 : la basse qui descend, l'emprunt mineur ; tests
-- [x] Ficelles 3 et 4 : la dominante qui annonce, le Sol suspendu ; tests
+- [x] Ficelles 3 et 4 : la dominante qui annonce, la dominante suspendue ; tests
 - [x] Ficelles 5 et 6 : les accords enrichis, la montée finale ; tests
 - [x] La portée en SVG : deux clés, fils de voix, retour à la ligne mobile
 - [x] L'interaction : cartes, endroits allumés, avant / après, pile

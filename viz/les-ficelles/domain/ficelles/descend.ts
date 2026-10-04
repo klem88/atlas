@@ -4,7 +4,7 @@
  */
 import { accordDuDegre, avecBasse, basseDe, mod12, type Grille } from '../grille';
 import { ecrireDans, nomAccord, nomNote } from '../orthographe';
-import { MAX_GRILLE, type Ficelle } from './type';
+import { MAX_GRILLE, TROP_LONGUE, type Ficelle } from './type';
 
 const GAMME = [0, 2, 4, 5, 7, 9, 11];
 
@@ -18,15 +18,21 @@ export function passages(haut: number, bas: number, key: number): number[] {
   return out;
 }
 
-/** Les notes de passage d’un endroit, ou `null` s’il n’en est pas un. */
-function chemin(g: Grille, i: number): number[] | null {
+/** Les notes de passage entre deux accords, sans compter la place ; `null` si ce n’est pas un endroit. */
+function passe(g: Grille, i: number): number[] | null {
   const a = g[i];
   const b = g[i + 1];
   if (!a || !b || a.key !== b.key) return null;
   const ecart = mod12(basseDe(a) - basseDe(b));
   if (ecart < 3 || ecart > 5) return null;
   const p = passages(basseDe(a), basseDe(b), a.key);
-  return p.length === (ecart === 5 ? 2 : 1) && g.length + p.length <= MAX_GRILLE ? p : null;
+  return p.length === (ecart === 5 ? 2 : 1) ? p : null;
+}
+
+/** Les notes de passage d’un endroit, ou `null` s’il n’en est pas un (ou s’il n’y a plus la place). */
+function chemin(g: Grille, i: number): number[] | null {
+  const p = passe(g, i);
+  return p && g.length + p.length <= MAX_GRILLE ? p : null;
 }
 
 export const descend: Ficelle = {
@@ -47,6 +53,7 @@ export const descend: Ficelle = {
     return `${nomAccord(a)} reste, la basse descend note à note : ${notes.join(', ')}, jusqu’à ${nomAccord(b)}. La basse devient une mélodie.`;
   },
   pourquoiPas(g) {
+    if (g.some((_, i) => passe(g, i))) return TROP_LONGUE;
     const k = g[0]?.key ?? 0;
     return `Il faut deux accords dont la basse descend d’une tierce ou d’une quarte (par exemple ${nomAccord(accordDuDegre('I', k))} puis ${nomAccord(accordDuDegre('vi', k))}).`;
   },

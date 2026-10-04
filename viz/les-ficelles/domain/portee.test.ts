@@ -27,6 +27,15 @@ describe('placerAccord', () => {
     expect(notes[3]).toMatchObject({ lettre: 5, alteration: -1, octave: 4 });
   });
 
+  it('écarte les altérations à une seconde ou une tierce sur la même portée', () => {
+    // Si7 : ré♯4 et fa♯4 en clé de sol, une tierce d’écart ; le si de la basse et le la n’ont pas d’altération.
+    const notes = placerAccord([47, 63, 66, 69], lu('Si7'));
+    expect(notes.map((n) => n.alteration)).toEqual([0, 1, 1, 0]);
+    expect(notes.map((n) => n.colonne)).toEqual([0, 1, 0, 0]);
+    // Une quarte d’écart : pas besoin de décaler.
+    expect(placerAccord([42, 61, 66, 73], lu('Fa#')).map((n) => n.colonne)).toEqual([0, 0, 0, 0]);
+  });
+
   it('décale la note du dessus d’une seconde', () => {
     const notes = placerAccord([43, 57, 59, 62], lu('Sol'));
     expect(notes.map((n) => n.decale)).toEqual([false, false, true, false]);

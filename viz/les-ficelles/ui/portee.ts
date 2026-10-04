@@ -76,7 +76,7 @@ export function dessinerPortee(v: VuePortee): string {
       const bouge = v.touches.has(i) && (i === 0 || v.voix[i]![note.voix] !== v.voix[i - 1]![note.voix]);
       for (const l of note.lignes) notes.push(`<line class="ligne" x1="${x - 11}" x2="${x + 11}" y1="${y0 + l}" y2="${y0 + l}"/>`);
       if (note.alteration !== 0)
-        notes.push(`<text class="alt${bouge ? ' bouge' : ''}" x="${cx(i) - 17}" y="${y0 + note.y + 5}" text-anchor="middle">${ALTERATION[note.alteration + 2]}</text>`);
+        notes.push(`<text class="alt${bouge ? ' bouge' : ''}" x="${cx(i) - 17 - 12 * note.colonne}" y="${y0 + note.y + 5}" text-anchor="middle">${ALTERATION[note.alteration + 2]}</text>`);
       notes.push(`<path class="ronde${bouge ? ' bouge' : ''}" d="${RONDE}" transform="translate(${x} ${y0 + note.y})"/>`);
       const avant = placees[i - 1]?.[note.voix];
       if (avant && ligneDe(i - 1) === ligneDe(i))

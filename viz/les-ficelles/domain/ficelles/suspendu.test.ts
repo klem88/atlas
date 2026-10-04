@@ -6,7 +6,11 @@ import { suspendu } from './suspendu';
 const grille = (s: string, key = 0): Grille => s.split(' ').map((x) => lireAccord(x, key)!);
 const noms = (g: Grille) => g.map(nomAccord);
 
-describe('le Sol suspendu', () => {
+describe('la dominante suspendue', () => {
+  it('porte un nom vrai dans toute tonalité', () => {
+    expect(suspendu.nom).toBe('La dominante suspendue');
+  });
+
   it('vise le V, avec ou sans septième', () => {
     expect(suspendu.endroits(cliche(0))).toEqual([3]);
     expect(suspendu.endroits(grille('Do Sol7'))).toEqual([1]);

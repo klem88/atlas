@@ -186,6 +186,10 @@
   font-size: var(--text-sm);
 }
 
+.pile-lieu {
+  color: var(--ink-3);
+}
+
 .pile button {
   min-width: 44px;
   min-height: 44px;

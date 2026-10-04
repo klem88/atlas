@@ -88,7 +88,7 @@ describe('une longue chaîne de dominantes', () => {
     expect(noms(g).slice(0, 8).join(' – ')).toBe('Do – La7 – Ré7 – Sol7 – Si♯7 – Mi♯7 – La♯7 – Ré♯7');
   });
 
-  it('suit la lettre dans le Sol suspendu d’une montée en dièses', () => {
+  it('suit la lettre dans la dominante suspendue d’une montée en dièses', () => {
     const r = montee.appliquer(cliche(6), 3);
     expect(nomAccord(suspendu.appliquer(r.grille, 8).grille[8]!)).toBe('Do♯/Ré♯');
   });

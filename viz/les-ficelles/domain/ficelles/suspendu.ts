@@ -1,5 +1,5 @@
 /**
- * Le Sol suspendu : le V devient IV/V (Sol → Fa/Sol). La basse de dominante reste, mais la sensible disparaît :
+ * La dominante suspendue : le V devient IV/V (en Do : Sol → Fa/Sol ; en Sol : Ré → Do/Ré). La basse de dominante reste, mais la sensible disparaît :
  * la tension demeure, sans le tiraillement. Un geste très « chanson » des années 70.
  */
 import { accordDuDegre, avecBasse, avecLettre, degre, lettreDe, mod12, type Accord } from '../grille';
@@ -12,7 +12,7 @@ const suspenduDe = (a: Accord): Accord => avecBasse(ivDe(a), a.root);
 
 export const suspendu: Ficelle = {
   id: 'suspendu',
-  nom: 'Le Sol suspendu',
+  nom: 'La dominante suspendue',
   resume: 'Le V devient IV sur la basse du V : la tension sans le tiraillement.',
   endroits: (g) => g.flatMap((a, i) => (degre(a) === 'V' && a.bass === undefined ? [i] : [])),
   zone: (_g, i) => [i],

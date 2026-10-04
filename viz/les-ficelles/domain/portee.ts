@@ -32,6 +32,8 @@ export interface NoteDessinee extends NotePlacee {
   lignes: number[];
   /** Décalée à droite (seconde avec la note du dessous). */
   decale: boolean;
+  /** Colonne de l'altération, 0 contre la note, 1 une colonne plus à gauche (deux altérations trop proches). */
+  colonne: number;
 }
 
 export const yDe = (r: number, cle: Cle): number => (cle === 'sol' ? Y_SOL + (SOL.haut - r) * DEMI : Y_FA + (FA.haut - r) * DEMI);
@@ -50,7 +52,7 @@ export function placerAccord(v: Voix, a: Accord): NoteDessinee[] {
     const n = placer(midi, ecrireDans(midi, a));
     const cle: Cle = midi >= 60 ? 'sol' : 'fa';
     const r = rang(n);
-    return { ...n, voix, midi, cle, y: yDe(r, cle), lignes: supplementaires(r, cle), decale: false };
+    return { ...n, voix, midi, cle, y: yDe(r, cle), lignes: supplementaires(r, cle), decale: false, colonne: 0 };
   });
   // Seconde sur une même portée : la note du dessus passe à droite (sauf si celle du dessous l'est déjà).
   for (let k = 1; k < notes.length; k++) {
@@ -58,5 +60,11 @@ export function placerAccord(v: Voix, a: Accord): NoteDessinee[] {
     const n = notes[k]!;
     if (dessous.cle === n.cle && rang(n) - rang(dessous) === 1 && !dessous.decale) n.decale = true;
   }
+  // Altérations à une seconde ou une tierce sur une même portée : de haut en bas, chacune prend la première colonne libre.
+  const alterees = notes.filter((n) => n.alteration !== 0).sort((x, y) => rang(y) - rang(x));
+  alterees.forEach((n, k) => {
+    const proches = alterees.slice(0, k).filter((m) => m.cle === n.cle && rang(m) - rang(n) <= 2);
+    while (proches.some((m) => m.colonne === n.colonne)) n.colonne++;
+  });
   return notes;
 }

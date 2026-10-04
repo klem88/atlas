@@ -4,6 +4,7 @@
  */
 import { ficelle, type FicelleId } from './ficelles';
 import type { Accord, Grille } from './grille';
+import { nomAccord } from './orthographe';
 
 export interface Geste {
   id: FicelleId;
@@ -28,6 +29,35 @@ export function rejouer(depart: Grille, pile: readonly Geste[]): Rejeu {
     } else tombes.push(g);
   }
   return { grille, gardes, tombes };
+}
+
+/** Où agit une ficelle, en mots : « entre Do et La m », « avant La m », « sur Sol », « après Sol ». */
+function lieu(g: Grille, geste: Geste): string {
+  const nom = (i: number) => nomAccord(g[i]!);
+  const i = geste.index;
+  switch (geste.id) {
+    case 'descend':
+    case 'emprunt':
+      return `entre ${nom(i)} et ${nom(i + 1)}`;
+    case 'dominante':
+      return `avant ${nom(i)}`;
+    case 'montee':
+      return `après ${nom(i)}`;
+    default:
+      return `sur ${nom(i)}`;
+  }
+}
+
+/** Pour chaque ficelle gardée, l’accord visé, lu sur la grille telle qu’elle était juste avant elle (vide si elle tombe). */
+export function lieux(depart: Grille, pile: readonly Geste[]): string[] {
+  let grille: Grille = depart;
+  return pile.map((g) => {
+    const f = ficelle(g.id);
+    if (!f.endroits(grille).includes(g.index)) return '';
+    const ici = lieu(grille, g);
+    grille = f.appliquer(grille, g.index).grille;
+    return ici;
+  });
 }
 
 export const retirer = (pile: readonly Geste[], k: number): Geste[] => pile.filter((_, j) => j !== k);
