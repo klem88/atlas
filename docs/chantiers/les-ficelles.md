@@ -98,4 +98,4 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 
 ## Prochaine action
 
-L'auteur relit cette fiche. Ensuite : écrire le plan d'implémentation, puis `npm run new:viz -- les-ficelles --title "Les ficelles" --summary "…" --tags "Musique"`.
+Plan d’implémentation écrit : [docs/superpowers/plans/2026-10-04-les-ficelles.md](../superpowers/plans/2026-10-04-les-ficelles.md). Commencer par sa tâche 1.
