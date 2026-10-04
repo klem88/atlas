@@ -28,7 +28,8 @@
 }
 
 .degres .button,
-.actions .button {
+.actions .button,
+.stage-head .button {
   min-height: 44px;
 }
 

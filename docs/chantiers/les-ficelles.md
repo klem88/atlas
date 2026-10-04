@@ -108,8 +108,8 @@ Recherche du 4 octobre 2026 : seules les entrées dont la page consultée décri
 - [x] L'interaction : cartes, endroits allumés, avant / après, pile
 - [x] Le son : écoute, curseur, avant / après
 - [ ] Les titres signés : recherche des sources, puis validation à l'oreille par l'auteur
-- [ ] Vérifications clair / sombre / 375 px, image d'aperçu
+- [x] Vérifications clair / sombre / 375 px, image d'aperçu
 
 ## Prochaine action
 
-Plan d’implémentation écrit : [docs/superpowers/plans/2026-10-04-les-ficelles.md](../superpowers/plans/2026-10-04-les-ficelles.md). Commencer par sa tâche 1.
+Page construite en brouillon sur `feat/les-ficelles`, vérifiée dans le navigateur (bureau, 375 px en sombre ; le son n’a pas pu être écouté). À toi : relire la page sur ton téléphone, valider les titres à l’oreille (un seul titre a été sourcé pour l’instant : voir « Titres à vérifier à l’oreille » plus haut), choisir le nom définitif, puis décider de la publication (`status` dans `src/shell/site.ts`).
