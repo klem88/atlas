@@ -29,7 +29,7 @@ Les ficelles se recalculent à chaque geste : en appliquer une ouvre ou ferme de
 
 | Ficelle | Où (règle v1) | Ce qu'elle fait | Exemple en Do |
 | --- | --- | --- | --- |
-| **La basse qui descend** | Deux accords dont la basse descend d'une tierce ou d'une quarte | Glisse un ou deux accords renversés sur les notes de passage | Do – La m → Do – Do/Si – La m |
+| **La basse qui descend** | Deux accords dont la basse descend d'une tierce ou d'une quarte | Glisse un accord renversé sur la note de passage (tierce), deux pour une quarte | Do – La m → Do – Do/Si – La m |
 | **L'emprunt mineur** | IV suivi de I | Insère iv entre les deux | Fa – Do → Fa – Fa m – Do |
 | **La dominante qui annonce** | Un accord majeur ou mineur, s'il n'est pas déjà précédé de sa dominante | Insère sa septième de dominante juste avant | Do – La m → Do – Mi7 – La m |
 | **Le Sol suspendu** | Un accord V | Le remplace par IV/V | Sol → Fa/Sol |
