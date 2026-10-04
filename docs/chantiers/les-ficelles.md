@@ -84,6 +84,17 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 
 - Le nom définitif de la page.
 
+### Titres à vérifier à l’oreille
+
+Recherche du 4 octobre 2026 : seules les entrées dont la page consultée décrit explicitement le procédé dans le titre sont retenues. Aucune n’est validée.
+
+- Dominante qui annonce : Michel Polnareff, « Lettre à France », l’enchaînement signalé par l’analyse (la page ne dit pas où : à situer à l’oreille), https://www.musiclic.com/cadences-et-progressions-d-accords
+- La basse qui descend : aucune source trouvée.
+- Emprunt mineur : aucune source trouvée.
+- Le Sol suspendu : aucune source trouvée.
+- Accords enrichis : aucune source trouvée.
+- Montée finale : aucune source trouvée.
+
 ## Tâches
 
 - [x] Cadrage et fiche (4 octobre 2026)

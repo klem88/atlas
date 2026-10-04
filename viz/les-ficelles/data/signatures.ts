@@ -18,7 +18,16 @@ export interface Signature {
   etat: 'a-verifier' | 'valide';
 }
 
-export const SIGNATURES: readonly Signature[] = [];
+export const SIGNATURES: readonly Signature[] = [
+  {
+    ficelle: 'dominante',
+    auteur: 'Michel Polnareff',
+    titre: 'Lettre à France',
+    passage: 'l’enchaînement que l’analyse signale (à situer à l’oreille)',
+    source: 'https://www.musiclic.com/cadences-et-progressions-d-accords',
+    etat: 'a-verifier',
+  },
+];
 
 export const signaturesDe = (id: FicelleId): Signature[] => SIGNATURES.filter((s) => s.ficelle === id && s.etat === 'valide');
 
