@@ -115,4 +115,4 @@ Recherche du 4 octobre 2026 : seules les entrées dont la page consultée décri
 
 ## Prochaine action
 
-Page construite en brouillon sur `feat/les-ficelles`, vérifiée dans le navigateur (bureau, 375 px en sombre ; le son n’a pas pu être écouté). À toi : relire la page sur ton téléphone, valider les titres à l’oreille (un seul titre a été sourcé pour l’instant : voir « Titres à vérifier à l’oreille » plus haut), choisir le nom définitif, puis décider de la publication (`status` dans `src/shell/site.ts`).
+Publiée le 4 octobre 2026 à la demande de l’auteur (fusion de `feat/les-ficelles` dans `main`), vérifiée dans le navigateur (bureau, 375 px en sombre ; le son n’a pas pu être écouté). À toi : relire la page sur ton téléphone, valider les titres à l’oreille (un seul titre a été sourcé pour l’instant : voir « Titres à vérifier à l’oreille » plus haut), puis choisir le nom définitif.

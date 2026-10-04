@@ -158,7 +158,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'Les ficelles',
     summary: 'Six procédés de la chanson française des années 70 pour transformer une progression simple : à voir sur la portée, à écouter, à garder ou non.',
     tags: ['Musique', 'Harmonie', 'Apprendre'],
-    status: 'draft',
+    status: 'published',
     published: '2026-10',
   },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
