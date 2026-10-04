@@ -85,7 +85,7 @@ Fichier versionné `viz/les-ficelles/data/signatures.ts` : auteur, titre, passag
 
 - [x] Cadrage et fiche (4 octobre 2026)
 - [x] `npm run new:viz -- les-ficelles` (brouillon)
-- [ ] Grille, orthographe, état dans l'URL ; tests
+- [ ] Grille, orthographe, état dans l'URL ; tests (grille et orthographe faites, URL en tâche 7)
 - [ ] Réalisation des voix dans le socle ; tests
 - [ ] Ficelles 1 et 2 : la basse qui descend, l'emprunt mineur ; tests
 - [ ] Ficelles 3 et 4 : la dominante qui annonce, le Sol suspendu ; tests
