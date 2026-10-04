@@ -6,7 +6,8 @@ import { accordDuDegre, degre, type Accord, type Grille } from '../grille';
 import { ecrireAccord, nomAccord, nomNote } from '../orthographe';
 import { MAX_GRILLE, type Ficelle } from './type';
 
-const ivDe = (a: Accord): Accord => ({ root: a.root, couleur: 'min', key: a.key });
+/** Le même accord en mineur (sa fondamentale garde sa lettre ; l’endroit n’a pas de basse écrite). */
+const ivDe = (a: Accord): Accord => ({ ...a, couleur: 'min' });
 
 function estEndroit(g: Grille, i: number): boolean {
   const a = g[i];
@@ -26,7 +27,7 @@ export const emprunt: Ficelle = {
   explique(g, i) {
     const a = g[i]!;
     const iv = ivDe(a);
-    const tierce = ecrireAccord({ root: a.root, couleur: 'maj', key: a.key })[1]!;
+    const tierce = ecrireAccord({ ...a, couleur: 'maj' })[1]!;
     const tierceMineure = ecrireAccord(iv)[1]!;
     return `Entre ${nomAccord(a)} et ${nomAccord(g[i + 1]!)}, ${nomAccord(iv)} : le ${nomNote(tierce)} descend au ${nomNote(tierceMineure)}, une note empruntée au mode mineur. La lumière baisse un instant.`;
   },

@@ -2,11 +2,10 @@
  * La dominante qui annonce : juste avant un accord, sa septième de dominante (Do – Mi7 – La m). Sa tierce est la
  * sensible de l’accord visé : elle monte d’un demi-ton vers lui, on le sent arriver.
  */
-import { mod12, type Accord, type Grille } from '../grille';
+import { dominanteDe, mod12, type Accord, type Grille } from '../grille';
 import { ecrireAccord, nomAccord, nomNote } from '../orthographe';
 import { MAX_GRILLE, type Ficelle } from './type';
 
-const dominanteDe = (a: Accord): Accord => ({ root: mod12(a.root + 7), couleur: '7', key: a.key });
 const annonceDeja = (avant: Accord, a: Accord) => avant.root === mod12(a.root + 7) && (avant.couleur === 'maj' || avant.couleur === '7');
 
 function estEndroit(g: Grille, i: number): boolean {

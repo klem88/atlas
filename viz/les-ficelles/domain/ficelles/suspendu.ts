@@ -2,11 +2,13 @@
  * Le Sol suspendu : le V devient IV/V (Sol → Fa/Sol). La basse de dominante reste, mais la sensible disparaît :
  * la tension demeure, sans le tiraillement. Un geste très « chanson » des années 70.
  */
-import { accordDuDegre, degre, mod12, type Accord } from '../grille';
+import { accordDuDegre, avecBasse, avecLettre, degre, lettreDe, mod12, type Accord } from '../grille';
 import { ecrireAccord, nomAccord, nomNote } from '../orthographe';
 import type { Ficelle } from './type';
 
-const suspenduDe = (a: Accord): Accord => ({ root: mod12(a.key + 5), couleur: 'maj', key: a.key, bass: a.root });
+/** Le IV posé sur la basse du V : un ton plus bas, une lettre plus bas (Ré♯ → Do♯/Ré♯ si le V s’écrit en dièses). */
+const ivDe = (a: Accord): Accord => avecLettre({ root: mod12(a.root - 2), couleur: 'maj', key: a.key }, lettreDe(a) - 1);
+const suspenduDe = (a: Accord): Accord => avecBasse(ivDe(a), a.root);
 
 export const suspendu: Ficelle = {
   id: 'suspendu',
@@ -21,7 +23,7 @@ export const suspendu: Ficelle = {
     const a = g[i]!;
     const s = suspenduDe(a);
     const [basse, sensible] = ecrireAccord(a);
-    const iv = nomAccord(accordDuDegre('IV', a.key));
+    const iv = nomAccord(ivDe(a));
     return `${nomAccord(s)} garde la basse ${nomNote(basse!)} mais pose dessus l’accord de ${iv} : plus de ${nomNote(sensible!)}, la sensible. La tension reste, en plus doux.`;
   },
   pourquoiPas: (g) => `Il faut un accord de dominante, le V (par exemple ${nomAccord(accordDuDegre('V', g[0]?.key ?? 0))}).`,

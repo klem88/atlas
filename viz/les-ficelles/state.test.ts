@@ -28,3 +28,12 @@ describe('état dans l’URL', () => {
     expect(readStateFromUrl('?f=descend.0,magie.2,emprunt.x').pile).toEqual([{ id: 'descend', index: 0 }]);
   });
 });
+
+describe('état dans l’URL, accords en dièses', () => {
+  it('garde la lettre tapée à l’aller-retour', () => {
+    const s = { home: 0, depart: ['C#m', 'G#', 'D#m'].map((x) => lireAccord(x, 0)!), pile: [] };
+    const q = stateToSearch(s);
+    expect(q).toBe('?p=C%23m,G%23,D%23m');
+    expect(readStateFromUrl(q)).toEqual(s);
+  });
+});
