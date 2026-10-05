@@ -1,0 +1,23 @@
+/* Styles propres à « Improviser sur trois grilles nostalgiques ». La grille en jetons et le tableau sont dans src/shell/music/score.css. */
+
+.grille-choix {
+  justify-self: start;
+  max-width: 100%;
+}
+
+.grille-choix label {
+  padding-inline: var(--space-3);
+}
+
+/* Sur téléphone, les trois grilles s'empilent. */
+@media (max-width: 480px) {
+  .grille-choix {
+    justify-self: stretch;
+    grid-auto-flow: row;
+  }
+}
+
+.grille-presentation {
+  max-width: var(--measure);
+  color: var(--ink-2);
+}

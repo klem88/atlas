@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Improviser sur trois grilles nostalgiques — Atlas</title>
+    <meta name="description" content="Trois grilles mélancoliques en La mineur et en Do, et une méthode en six étapes pour improviser dessus : la main gauche d’abord, puis la gamme, les notes cibles, le motif et la question-réponse." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/improviser-nostalgie/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="Improviser sur trois grilles nostalgiques" />
+    <meta property="og:description" content="Trois grilles mélancoliques en La mineur et en Do, et une méthode en six étapes pour improviser dessus : la main gauche d’abord, puis la gamme, les notes cibles, le motif et la question-réponse." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/improviser-nostalgie/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/improviser-nostalgie.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Piano · Improvisation · Exercice</p>
+        <h1>Improviser sur trois grilles nostalgiques</h1>
+        <p class="viz-lede">Trois grilles mélancoliques en La mineur et en Do, et une méthode en six étapes pour improviser dessus : la main gauche d’abord, puis la gamme, les notes cibles, le motif et la question-réponse.</p>
+      </header>
+
+      <div class="exercise">
+        <section class="exercise-block" aria-labelledby="t-grille">
+          <h2 id="t-grille">Choisis ta grille</h2>
+          <fieldset class="segmented grille-choix" data-grille-choix>
+            <legend class="visually-hidden">Grille</legend>
+            <label><input type="radio" name="grille" value="feuilles" checked />Le cycle des quintes</label>
+            <label><input type="radio" name="grille" value="chromatique" />La basse qui descend</label>
+            <label><input type="radio" name="grille" value="douce-amere" />La douce-amère</label>
+          </fieldset>
+          <p class="grille-presentation" data-grille="feuilles">La grille des <cite>Feuilles mortes</cite> (Joseph Kosma, 1945), en La mineur : les accords seulement, pas la mélodie. Chaque basse descend d’une quinte, d’abord vers Do majeur, puis vers La mineur. C’est la grille sur laquelle les jazzmen apprennent à improviser.</p>
+          <p class="grille-presentation" data-grille="chromatique" hidden>Un accord de La mineur qui ne bouge pas, et une basse qui descend par demi-tons : la, sol♯, sol, fa♯, fa. On la trouve dans des centaines de chansons mélancoliques. C’est la plus simple des trois pour improviser.</p>
+          <p class="grille-presentation" data-grille="douce-amere" hidden>Une grille en Do majeur, lumineuse, que l’accord de Fa mineur voile un instant. C’est la nostalgie des chansons douces : on est bien, et pourtant quelque chose serre le cœur.</p>
+          <div class="grille" id="grille"></div>
+          <p class="grille-note">Quand une mesure porte deux accords, chacun dure deux temps. Lent, environ 70 à la noire. Le choix de la grille vaut pour les six étapes.</p>
+        </section>
+
+        <section class="exercise-block" aria-labelledby="t-nostalgie">
+          <h2 id="t-nostalgie">Pourquoi c’est nostalgique</h2>
+          <div class="table-scroll">
+            <table class="ficelles">
+              <thead>
+                <tr><th scope="col">Ingrédient</th><th scope="col">Où</th><th scope="col">Ce que tu entends</th></tr>
+              </thead>
+              <tbody data-grille="feuilles">
+                <tr><td>Le cycle des quintes</td><td>Toute la grille : ré, sol, do, fa, si, mi, la</td><td>Chaque basse descend d’une quinte vers la suivante : on sent où l’on va, comme une suite de marches.</td></tr>
+                <tr><td>Le majeur, puis le mineur</td><td>Mesures 1 à 3, puis 5 à 7</td><td>Le même enchaînement mène d’abord à Do majeur, puis à La mineur : la lumière, puis l’ombre.</td></tr>
+                <tr><td>Les accords à quatre sons</td><td>Partout : m7, 7, 7M, m7♭5</td><td>Les septièmes adoucissent tout : aucun accord ne sonne franc.</td></tr>
+                <tr><td>La sensible</td><td>Mi7, mesure 6</td><td>Le sol♯ tire vers le la : la tension juste avant le retour au mineur.</td></tr>
+              </tbody>
+              <tbody data-grille="chromatique" hidden>
+                <tr><td>La basse chromatique</td><td>Mesures 1 à 5 : la, sol♯, sol, fa♯, fa</td><td>La basse descend par demi-tons sous un accord immobile : le temps qui passe.</td></tr>
+                <tr><td>L’accord qui reste</td><td>Do et mi, mesures 1 à 5</td><td>Les mêmes notes changent de couleur à chaque basse, de la mélancolie au rêve (Fa7M).</td></tr>
+                <tr><td>Le retard</td><td>Mi7sus4 puis Mi7</td><td>Le la tarde à descendre sur le sol♯ : un soupir avant de conclure.</td></tr>
+                <tr><td>La sensible</td><td>Mi7, mesure 7</td><td>Le sol♯ tire vers le la : la fin se pose sur La mineur.</td></tr>
+              </tbody>
+              <tbody data-grille="douce-amere" hidden>
+                <tr><td>La septième majeure</td><td>Do7M, Fa7M</td><td>Un majeur adouci, presque rêveur.</td></tr>
+                <tr><td>L’emprunt mineur</td><td>Fa7M puis Fa m6</td><td>Le la devient la♭ : la lumière se voile un instant.</td></tr>
+                <tr><td>Le retour par la basse</td><td>Do/Sol, puis La m7</td><td>Le do revient, mais sur la basse sol : on n’est pas encore arrivé.</td></tr>
+                <tr><td>La fin sans appuyer</td><td>Sol7sus4 puis Do</td><td>La dominante garde le do au lieu du si : la fin se pose doucement.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Bandeau collant : tempo et suivi de la lecture (voir src/shell/music/exercise.ts). -->
+        <div class="exercise-bar" data-exercise-bar role="group" aria-label="Réglages de l’écoute">
+          <span class="tempo">
+            <label for="tempo">Tempo</label>
+            <input type="range" id="tempo" data-tempo min="46" max="100" step="2" value="70" />
+            <span><output data-tempo-out for="tempo">70</output> à la noire</span>
+          </span>
+          <label><input type="checkbox" id="follow" data-follow checked /> Suivre la lecture</label>
+          <fieldset class="segmented chord-labels" data-chord-labels>
+            <legend class="visually-hidden">Au-dessus de la portée</legend>
+            <label><input type="radio" name="chord-labels" id="labels-names" value="names" checked />Accords</label>
+            <label><input type="radio" name="chord-labels" id="labels-degrees" value="degrees" />Degrés</label>
+            <label><input type="radio" name="chord-labels" id="labels-both" value="both" />Les deux</label>
+          </fieldset>
+        </div>
+
+        <article class="exercise-step" id="etape-1">
+          <p class="exercise-step-num">Étape 1</p>
+          <h2>La main gauche</h2>
+          <ul>
+            <li>Main gauche seule : la basse sur le premier temps, puis deux notes tenues jusqu’au bout de la mesure. C’est la position que tu garderas pendant toute l’improvisation.</li>
+            <li>Les deux notes du haut sont choisies pour bouger le moins possible : d’un accord au suivant, elles glissent d’un demi-ton ou d’un ton, ou ne bougent pas du tout.</li>
+            <li data-grille="feuilles">Ce sont la 3ce et la 7e de chaque accord : fa-do, fa-si, mi-si, mi-la, ré-la, ré-sol♯, do-sol. À chaque accord, une seule des deux bouge, sauf à l’arrivée sur La m7 où les deux descendent.</li>
+            <li data-grille="chromatique" hidden>Do et mi ne bougent pas pendant cinq mesures : seule la basse descend, la, sol♯, sol, fa♯, fa. Puis mi monte à fa (Ré m7), et la fin passe par Mi7sus4 et Mi7.</li>
+            <li data-grille="douce-amere" hidden>Mesures 3 et 4, la basse reste sur fa et le la descend sur la♭ : c’est tout le passage de Fa7M à Fa m6. Mesures 5 et 6, mi et sol ne bougent pas, seule la basse monte de sol à la.</li>
+            <li>Joue-la jusqu’à ne plus avoir à la regarder.</li>
+          </ul>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-1" aria-pressed="false"></button>
+            <label><input type="checkbox" id="loop-1" data-loop="etape-1" /> En boucle</label>
+          </div>
+          <div class="score" data-score="etape-1"></div>
+        </article>
+
+        <article class="exercise-step" id="etape-2">
+          <p class="exercise-step-num">Étape 2</p>
+          <h2>La ligne guide</h2>
+          <ul>
+            <li>Main droite : une seule note par accord, sur le premier temps. Ces notes forment une mélodie cachée qui avance par petits pas.</li>
+            <li data-grille="feuilles">Do, si, si, la, la, sol♯, la : la ligne descend doucement. Le sol♯ de Mi7 est la seule touche noire ; il tire vers le la de La m7.</li>
+            <li data-grille="chromatique" hidden>Le mi reste en haut pendant que la basse descend, et sur Fa7M il devient la 7M. Puis fa, la, sol♯, la : le la de Mi7sus4 descend sur le sol♯, qui remonte au la.</li>
+            <li data-grille="douce-amere" hidden>Mi, ré, mi, puis la♭ sur Fa m6 : la ligne monte sur la note qui serre le cœur, et retombe sur sol.</li>
+            <li>Chante-la en jouant : c’est le squelette de toutes tes improvisations.</li>
+          </ul>
+          <p class="degree-legend"><b>3, 5, 7, 7M, ♭3</b> sous la portée : la note, nommée par rapport à l’accord.</p>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-2" aria-pressed="false"></button>
+            <label><input type="checkbox" id="mute-2" data-mute="etape-2" /> Sans la main droite</label>
+            <label><input type="checkbox" id="loop-2" data-loop="etape-2" /> En boucle</label>
+          </div>
+          <div class="score" data-score="etape-2"></div>
+        </article>
+
+        <article class="exercise-step" id="etape-3">
+          <p class="exercise-step-num">Étape 3</p>
+          <h2>Une seule gamme</h2>
+          <ul>
+            <li>Les touches blanches suffisent presque partout : c’est la gamme de La mineur, qui a les mêmes notes que celle de Do majeur.</li>
+            <li data-grille="feuilles">Une exception : sur Mi7, le sol devient sol♯, la tierce de l’accord. Un sol naturel y sonnerait faux.</li>
+            <li data-grille="chromatique" hidden>Deux pièges : sur la basse sol♯, évite le sol ; sur la basse fa♯, évite le fa. Une note à un demi-ton de la basse frotte. Sur Mi7, joue sol♯.</li>
+            <li data-grille="douce-amere" hidden>Une exception : sur Fa m6, le la devient la♭. Le la naturel contredirait l’accord mineur.</li>
+            <li>Écoute l’exemple, puis coupe la main droite, mets en boucle et joue des croches dans la gamme, sans chercher de mélodie. Pose les notes longues sur une note de l’accord : elles se reposent.</li>
+          </ul>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-3" aria-pressed="false"></button>
+            <label><input type="checkbox" id="mute-3" data-mute="etape-3" /> Sans la main droite</label>
+            <label><input type="checkbox" id="loop-3" data-loop="etape-3" /> En boucle</label>
+          </div>
+          <div class="score" data-score="etape-3"></div>
+        </article>
+
+        <article class="exercise-step" id="etape-4">
+          <p class="exercise-step-num">Étape 4</p>
+          <h2>Les notes cibles</h2>
+          <ul>
+            <li>Sur le premier temps de chaque accord, vise la note de la ligne guide (le chiffre sous la portée), puis promène-toi dans la gamme jusqu’à l’accord suivant.</li>
+            <li>C’est ce qui fait entendre la grille dans ta mélodie, même sans la main gauche.</li>
+            <li data-grille="feuilles">Sur Do7M, la cible est le si, la 7M : une note douce, qui flotte. Sur Mi7, c’est le sol♯ : tiens-le, il appelle la suite.</li>
+            <li data-grille="chromatique" hidden>Les quatre premières mesures visent toutes le do : la même note, sur quatre basses différentes. Écoute comme elle change.</li>
+            <li data-grille="douce-amere" hidden>Le la♭ de Fa m6, au premier temps, est le moment fort de la grille : laisse-le sonner avant de redescendre.</li>
+            <li>Ensuite, improvise : garde les cibles, change tout le reste.</li>
+          </ul>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-4" aria-pressed="false"></button>
+            <label><input type="checkbox" id="mute-4" data-mute="etape-4" /> Sans la main droite</label>
+            <label><input type="checkbox" id="loop-4" data-loop="etape-4" /> En boucle</label>
+          </div>
+          <div class="score" data-score="etape-4"></div>
+        </article>
+
+        <article class="exercise-step" id="etape-5">
+          <p class="exercise-step-num">Étape 5</p>
+          <h2>Le motif</h2>
+          <ul>
+            <li>Un motif de quatre notes, toujours sur le même rythme : une noire, deux croches, une blanche.</li>
+            <li data-grille="feuilles">Il descend d’une marche à chaque accord : il commence sur mi, puis ré, do, si, la, sol♯. Le cycle des quintes est lui-même une suite de marches : le motif l’accompagne.</li>
+            <li data-grille="chromatique" hidden>Il ne change pas pendant cinq mesures : do, si, la, mi. C’est la basse qui le recolore. Puis il s’ajuste à Ré m7 et à Mi7.</li>
+            <li data-grille="douce-amere" hidden>Un soupir : une note haute qui retombe. Sur Mi m7 il ne bouge pas, car les mêmes notes vont encore ; sur Fa m6, il prend le la♭.</li>
+            <li>À toi : invente un motif de trois ou quatre notes, garde son rythme et ajuste ses notes à chaque accord.</li>
+          </ul>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-5" aria-pressed="false"></button>
+            <label><input type="checkbox" id="mute-5" data-mute="etape-5" /> Sans la main droite</label>
+            <label><input type="checkbox" id="loop-5" data-loop="etape-5" /> En boucle</label>
+          </div>
+          <div class="score" data-score="etape-5"></div>
+        </article>
+
+        <article class="exercise-step" id="etape-6">
+          <p class="exercise-step-num">Étape 6</p>
+          <h2>Question et réponse</h2>
+          <ul>
+            <li>Quatre phrases de deux mesures. Chacune commence par un silence : laisser respirer, c’est déjà improviser.</li>
+            <li>La question s’arrête sur une note qui reste en l’air ; la réponse se pose sur la tonique.</li>
+            <li data-grille="feuilles">La deuxième question s’arrête sur le sol♯ de Mi7 : on attend le la, et la réponse le donne.</li>
+            <li data-grille="chromatique" hidden>La réponse reprend exactement la première mesure de la question et change seulement la fin : si, puis la.</li>
+            <li data-grille="douce-amere" hidden>La deuxième question s’arrête sur le sol, la 7e de La m7 ; la réponse redescend jusqu’au do.</li>
+            <li>Puis coupe la main droite, mets en boucle, et réponds-toi.</li>
+          </ul>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-6" aria-pressed="false"></button>
+            <label><input type="checkbox" id="mute-6" data-mute="etape-6" /> Sans la main droite</label>
+            <label><input type="checkbox" id="loop-6" data-loop="etape-6" /> En boucle</label>
+          </div>
+          <div class="score" data-score="etape-6"></div>
+        </article>
+      </div>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#pourquoi">Pourquoi ça marche</a></li>
+            <li><a href="#limites">Ce que l’exercice ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>Les noms d’accords sont écrits à la française au-dessus de la portée : Ré m7 est un ré mineur avec septième, Do7M un do majeur avec septième majeure, Si m7♭5 un si mineur avec septième et quinte diminuée. La m/Sol♯ est un accord de la mineur avec sol♯ à la basse. Mi7sus4 remplace la tierce (sol♯) par la quarte (la).</p>
+            <p>Les chiffres orange sous la portée nomment une note de la main droite par rapport à l’accord : 1 pour la fondamentale, 3 pour la tierce, 5 pour la quinte, 7 pour la septième, 7M pour la septième majeure, 4 pour la quarte d’un accord suspendu, ♭3 pour la tierce mineure empruntée.</p>
+            <p>Le choix « Degrés » du bandeau remplace les noms par la place de chaque accord dans la tonalité, en chiffres romains : majuscule pour un accord majeur, minuscule pour un mineur, ø pour un accord semi-diminué. Le cycle des quintes et la douce-amère s’analysent en Do (V7/vi : la dominante de vi). La basse qui descend s’analyse en La mineur ; i/♯7 se lit « l’accord de i posé sur la basse ♯7 ».</p>
+          </section>
+          <section id="pourquoi">
+            <h2>Pourquoi ça marche</h2>
+            <p>Improviser n’est pas jouer n’importe quoi : c’est choisir, à chaque instant, entre une note qui se repose et une note qui avance. La main gauche porte l’harmonie avec deux notes seulement, la 3ce et la 7e quand c’est possible : ce sont elles qui disent si l’accord est majeur ou mineur, doux ou tendu. Comme elles glissent par petits pas d’un accord au suivant, une mélodie qui les suit épouse la grille sans effort : c’est la ligne guide.</p>
+            <p>La gamme donne toutes les notes permises ; les cibles disent lesquelles mettre en valeur ; le motif donne une forme à reconnaître ; la question-réponse donne une respiration. Chaque étape ajoute une seule contrainte, et la dernière les réunit.</p>
+          </section>
+          <section id="limites">
+            <h2>Ce que l’exercice ne dit pas</h2>
+            <p>Le son est un piano de synthèse simple, juste pour repérer les enchaînements. Les doigtés et la pédale ne sont pas notés : garde la pédale enfoncée pendant chaque accord et relève-la au changement. La première grille reprend les accords des <cite>Feuilles mortes</cite>, transposés en La mineur, sans leur mélodie ; les deux autres sont des grilles courantes, écrites pour l’exercice. Les exemples de main droite ne sont qu’un point de départ : l’improvisation commence quand tu t’en écartes.</p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
