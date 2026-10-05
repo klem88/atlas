@@ -176,3 +176,19 @@
   color: var(--accent);
   font-weight: 600;
 }
+
+/* Choix de ce qu'on écrit au-dessus de la portée : noms d'accords, degrés, ou les deux. */
+.exercise-bar .chord-labels {
+  flex: 0 1 18rem;
+  min-width: 15rem;
+}
+
+.exercise-bar .chord-labels label {
+  justify-content: center;
+  padding: var(--space-1) var(--space-2);
+}
+
+.score .abcjs-annotation.abcjs-roman {
+  font-weight: 400;
+  fill: var(--ink-2);
+}

@@ -115,3 +115,29 @@
     padding-top: 0;
   }
 }
+
+/* Nom et degré de chaque accord : l'un, l'autre ou les deux selon le choix du bandeau. */
+.grille-accord {
+  display: grid;
+  gap: 2px;
+}
+
+.grille-degre {
+  display: none;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+.grille[data-labels='degrees'] .grille-nom {
+  display: none;
+}
+
+.grille[data-labels='degrees'] .grille-degre,
+.grille[data-labels='both'] .grille-degre {
+  display: block;
+}
+
+.grille[data-labels='degrees'] .grille-degre {
+  font-weight: 600;
+  color: var(--ink);
+}

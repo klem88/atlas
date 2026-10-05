@@ -70,6 +70,40 @@ export function abcNotes(abc: string): PlayedNote[] {
 /** Une annotation est un degré (7M, 9, ♭3…) si elle commence par un chiffre, éventuellement altéré. */
 export const isDegreeLabel = (text: string): boolean => /^[♭♯]?\d/.test(text.trim());
 
+/**
+ * Une annotation est un degré d'accord en chiffres romains (I7M, V⁶, ii7/IV…). Aucun nom d'accord
+ * français ne commence par I ou V.
+ */
+export const isRomanLabel = (text: string): boolean => /^[♭♯]?[IViv]/.test(text.trim());
+
+/** Ce qu'on écrit au-dessus de la portée : le nom des accords, leur degré, ou les deux. */
+export type ChordLabelMode = 'names' | 'degrees' | 'both';
+
+/**
+ * Les accords s'écrivent `"^Do7M|I7M"` (nom|degré). Selon le mode, on garde le nom, le degré,
+ * ou les deux l'un au-dessus de l'autre. Une annotation sans « | » reste telle quelle.
+ */
+export function applyChordLabels(abc: string, mode: ChordLabelMode): string {
+  return mapAnnotations(abc, (text) => {
+    const m = /^\^([^|]+)\|(.+)$/.exec(text);
+    if (!m) return `"${text}"`;
+    const [, name, degree] = m;
+    return mode === 'names' ? `"^${name}"` : mode === 'degrees' ? `"^${degree}"` : `"^${name}""^${degree}"`;
+  });
+}
+
+/**
+ * Réécrit chaque texte entre guillemets d'une partition ABC (`fn` reçoit le texte sans guillemets
+ * et renvoie le remplacement, guillemets compris). Les guillemets sont appariés dans l'ordre :
+ * dans `"_3"^c4`, le `^` qui suit est un dièse, pas le début d'une annotation.
+ */
+export function mapAnnotations(abc: string, fn: (text: string) => string): string {
+  return abc
+    .split(/("[^"]*")/)
+    .map((part, i) => (i % 2 === 1 ? fn(part.slice(1, -1)) : part))
+    .join('');
+}
+
 /** Nombre de mesures par ligne selon la largeur disponible. */
 export const measuresPerLine = (width: number): number => (width < 520 ? 2 : width < 820 ? 3 : 4);
 
@@ -81,7 +115,7 @@ export class Score {
 
   constructor(
     readonly el: HTMLElement,
-    readonly abc: string,
+    private abc: string,
   ) {
     this.render();
     new ResizeObserver(() => {
@@ -94,6 +128,14 @@ export class Score {
   /** Prévient quand la partition est redessinée (la lecture en cours doit s'arrêter). */
   onRerender(listener: () => void): void {
     this.listeners.add(listener);
+  }
+
+  /** Remplace la partition (par exemple pour changer les noms d'accords en degrés). */
+  setAbc(abc: string): void {
+    if (abc === this.abc) return;
+    this.abc = abc;
+    this.render();
+    for (const l of this.listeners) l();
   }
 
   private render(): void {
@@ -109,7 +151,9 @@ export class Score {
       wrap: { minSpacing: 1.6, maxSpacing: 2.7, preferredMeasuresPerLine: measuresPerLine(width) },
     })[0]!;
     this.el.querySelectorAll('.abcjs-annotation').forEach((n) => {
-      if (isDegreeLabel(n.textContent ?? '')) n.classList.add('abcjs-degree');
+      const text = n.textContent ?? '';
+      if (isDegreeLabel(text)) n.classList.add('abcjs-degree');
+      else if (isRomanLabel(text)) n.classList.add('abcjs-roman');
     });
   }
 

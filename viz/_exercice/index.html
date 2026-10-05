@@ -43,6 +43,12 @@
             <span><output data-tempo-out for="tempo">70</output> à la noire</span>
           </span>
           <label><input type="checkbox" id="follow" data-follow checked /> Suivre la lecture</label>
+          <fieldset class="segmented chord-labels" data-chord-labels>
+            <legend class="visually-hidden">Au-dessus de la portée</legend>
+            <label><input type="radio" name="chord-labels" id="labels-names" value="names" checked />Accords</label>
+            <label><input type="radio" name="chord-labels" id="labels-degrees" value="degrees" />Degrés</label>
+            <label><input type="radio" name="chord-labels" id="labels-both" value="both" />Les deux</label>
+          </fieldset>
         </div>
 
         <!-- Une étape par partition : data-play, data-mute, data-loop et data-score partagent le même identifiant. -->

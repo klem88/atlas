@@ -3,7 +3,60 @@
  * Avec L:1/8 : un « 8 » est une ronde, un « 4 » une blanche. C = do4 (do central), C, = do3, c = do5.
  * Une altération vaut pour le reste de la mesure (« [DF_B]4 [DEB]4 » : le second si est bémol).
  */
-import { pianoTune } from '@shell/music/score';
+import { mapAnnotations, pianoTune } from '@shell/music/score';
+
+/**
+ * Degrés des accords, en chiffres romains : majuscule = accord majeur, minuscule = mineur.
+ * ⁶ : premier renversement (tierce à la basse) ; ⁶₄ : deuxième renversement (quinte à la basse).
+ * V/IV : la dominante de IV ; IV/V : l'accord de IV posé sur la basse de V (pas un renversement).
+ * Le A s'analyse en Do ; le pont, qui prépare la montée, et le A′ s'analysent en Ré.
+ */
+export const DEGRES_DO: Readonly<Record<string, string>> = {
+  Do7M: 'I7M',
+  'Sol/Si': 'V⁶',
+  'La m7': 'vi7',
+  'Sol m7': 'ii7/IV',
+  Do9: 'V9/IV',
+  Fa7M: 'IV7M',
+  'Fa m': 'iv',
+  'Do/Sol': 'I⁶₄',
+  La7: 'V7/ii',
+  'Ré m7': 'ii7',
+  'Fa/Sol': 'IV/V',
+};
+
+export const DEGRES_RE: Readonly<Record<string, string>> = {
+  La7sus4: 'V7sus4',
+  La7: 'V7',
+  Ré7M: 'I7M',
+  'La/Do♯': 'V⁶',
+  'Si m7': 'vi7',
+  'La m7': 'ii7/IV',
+  Ré9: 'V9/IV',
+  Sol7M: 'IV7M',
+  'Sol m': 'iv',
+  'Ré/La': 'I⁶₄',
+  Si7: 'V7/ii',
+  'Mi m7': 'ii7',
+  'Sol/La': 'IV/V',
+};
+
+/** Le pont ouvre la partie analysée en Ré. */
+const PONT = '"^La7sus4"';
+
+/** Ajoute son degré à chaque nom d'accord (`"^Do7M"` → `"^Do7M|I7M"`), en Do avant le pont, en Ré ensuite. */
+export function chiffrer(abc: string): string {
+  const cut = abc.includes(PONT) ? abc.indexOf(PONT) : abc.length;
+  const tag = (part: string, degres: Readonly<Record<string, string>>) =>
+    mapAnnotations(part, (text) => {
+      if (!text.startsWith('^')) return `"${text}"`;
+      const nom = text.slice(1);
+      const degre = degres[nom];
+      if (!degre) throw new Error(`Degré inconnu pour « ${nom} »`);
+      return `"^${nom}|${degre}"`;
+    });
+  return tag(abc.slice(0, cut), DEGRES_DO) + tag(abc.slice(cut), DEGRES_RE);
+}
 
 /** La grille, pour l'affichage en jetons. Deux accords dans une mesure : deux temps chacun. */
 export const GRILLE = [
@@ -39,8 +92,8 @@ const rh4 =
   '"^La7sus4"d4 "^La7""_3"^c4 |[K:D] "^Ré7M""_7M"c4 d2 e2 | "^La/Do♯""_9"B4 c2 d2 | "^Si m7""_7"A4 B2 c2 | "^La m7""_7"G2 A2 "^Ré9""_7"=c4 | "^Sol7M"B2 d2 "_7M"f4 | "^Sol m"e2 d2 "_♭3"_B4 | "^Ré/La"A2 d2 "^Si7""_3"^d4 | "^Mi m7"g2 "_9"f2 "^Sol/La"e4 | "^Ré7M"!fermata!f8 |]';
 
 export const SCORES: Record<string, string> = {
-  'etape-1': pianoTune({ rh: rh1, lh: lh1 }),
-  'etape-2': pianoTune({ rh: rh2, lh: `${lhA} ${lhPont}${lhA2}` }),
-  'etape-3': pianoTune({ rh: rh3, lh: lhA }),
-  'etape-4': pianoTune({ rh: rh4, lh: `${lhPont}${lhA2}` }),
+  'etape-1': pianoTune({ rh: chiffrer(rh1), lh: lh1 }),
+  'etape-2': pianoTune({ rh: chiffrer(rh2), lh: `${lhA} ${lhPont}${lhA2}` }),
+  'etape-3': pianoTune({ rh: chiffrer(rh3), lh: lhA }),
+  'etape-4': pianoTune({ rh: chiffrer(rh4), lh: `${lhPont}${lhA2}` }),
 };

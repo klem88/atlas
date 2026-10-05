@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { abcNotes, abcWarnings } from '@shell/music/score';
-import { GRILLE, SCORES } from './partition';
+import { abcNotes, abcWarnings, applyChordLabels } from '@shell/music/score';
+import { DEGRES_DO, DEGRES_RE, GRILLE, SCORES, chiffrer } from './partition';
 
 /** Notes de chaque accord (classes de hauteur, do = 0), écrites à la main pour contrôler la partition. */
 const NOTES: Record<string, number[]> = {
@@ -91,5 +91,22 @@ describe('partitions de « Six ficelles au piano »', () => {
       const melodie = abcNotes(SCORES[id]!).filter((n) => n.track === 0 && n.start === start);
       expect(melodie.map((n) => n.midi), `${id} à ${start}`).toEqual([midi]);
     }
+  });
+
+  it('chaque accord porte son degré, en Do puis en Ré après le pont', () => {
+    for (const abc of Object.values(SCORES)) {
+      const degres = applyChordLabels(abc, 'degrees');
+      expect(degres).not.toMatch(/"\^(Do|Ré|Mi|Fa|Sol|La|Si)/);
+      expect(applyChordLabels(abc, 'names')).not.toContain('|I');
+    }
+    expect(chiffrer('"^La7"C8 | "^La7sus4"C8 | "^La7"C8')).toBe('"^La7|V7/ii"C8 | "^La7sus4|V7sus4"C8 | "^La7|V7"C8');
+    expect(() => chiffrer('"^Mi7"C8')).toThrow(/Mi7/);
+  });
+
+  it('la grille a un degré pour chaque accord', () => {
+    const tables = [DEGRES_DO, DEGRES_RE, DEGRES_RE];
+    GRILLE.forEach((partie, p) => {
+      for (const a of partie.bars.flatMap((b) => b.split(' · '))) expect(tables[p]![a], a).toBeDefined();
+    });
   });
 });

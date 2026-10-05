@@ -68,6 +68,12 @@
             <span><output data-tempo-out for="tempo">70</output> à la noire</span>
           </span>
           <label><input type="checkbox" id="follow" data-follow checked /> Suivre la lecture</label>
+          <fieldset class="segmented chord-labels" data-chord-labels>
+            <legend class="visually-hidden">Au-dessus de la portée</legend>
+            <label><input type="radio" name="chord-labels" id="labels-names" value="names" checked />Accords</label>
+            <label><input type="radio" name="chord-labels" id="labels-degrees" value="degrees" />Degrés</label>
+            <label><input type="radio" name="chord-labels" id="labels-both" value="both" />Les deux</label>
+          </fieldset>
         </div>
 
         <article class="exercise-step" id="etape-1">
@@ -148,7 +154,8 @@
           <section id="lire">
             <h2>Comment lire</h2>
             <p>Les noms d’accords sont écrits à la française au-dessus de la portée : Do7M est un do majeur avec septième majeure, Sol/Si un accord de sol avec si à la basse. Les chiffres orange sous la portée nomment la note de couleur de la mélodie par rapport à l’accord : 7M pour la septième majeure, 9 pour la neuvième, ♭3 pour la tierce mineure empruntée.</p>
-            <p>Les octaves suivent la convention française : do4 est le do central. Pendant l’écoute, le curseur orange suit les notes, et la page défile pour garder la ligne jouée à l’écran. Si tu fais défiler toi-même, le suivi s’arrête quelques secondes. L’écran reste allumé pendant la lecture quand le navigateur le permet.</p>
+            <p>Le choix « Degrés » du bandeau remplace les noms par la place de chaque accord dans la tonalité, en chiffres romains : majuscule pour un accord majeur, minuscule pour un mineur. ⁶ signale le premier renversement (la tierce à la basse, comme Sol/Si = V⁶), ⁶₄ le deuxième (la quinte à la basse, comme Do/Sol = I⁶₄). V/IV se lit « la dominante de IV » ; IV/V est l’accord de IV posé sur la basse de V, sans être un renversement. Le A s’analyse en Do ; le pont et le A′ s’analysent en Ré. Avec les degrés, on voit que la même progression revient un ton plus haut.</p>
+            <p>Les octaves suivent la convention française : do4 est le do central. Pendant l’écoute, le curseur orange suit les notes, et la page garde la ligne jouée au centre de l’écran : elle glisse doucement vers la ligne suivante pendant la fin de la ligne en cours, si bien que tu peux toujours lire la suite. Si tu fais défiler toi-même, le suivi s’arrête quelques secondes, puis revient en douceur. L’écran reste allumé pendant la lecture quand le navigateur le permet.</p>
           </section>
           <section id="pourquoi">
             <h2>Pourquoi ça sonne</h2>
