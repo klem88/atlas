@@ -33,6 +33,16 @@ Une rubrique « Exercices au piano » sur l’accueil, à côté des visualisati
   - calcul pur et testé dans `follow.ts` (`lineSpans`, `centeredScroll`, `easeToward`).
 - **Degrés** : choix « Accords / Degrés / Les deux » dans le bandeau, retenu d’une visite à l’autre. Dans l’ABC, chaque accord s’écrit `"^Do7M|I7M"` ; `applyChordLabels` garde l’un, l’autre ou les deux. Chiffrage : chiffres romains, majuscule = majeur, ⁶ et ⁶₄ pour les renversements, V/x pour les dominantes secondaires, IV/V pour l’accord sur basse étrangère. Les annotations sont lues en appariant les guillemets dans l’ordre (`mapAnnotations`) : une expression régulière confondait le dièse de `"_3"^c4` avec une annotation.
 
+## Deuxième exercice : « Improviser sur trois grilles nostalgiques »
+
+Branche `feat/improviser-nostalgie` (depuis `main`), en brouillon. Demandé le 5 octobre 2026 : le même rendu, mais centré sur l’improvisation, avec une progression nostalgique, et « je dois comprendre ce que je joue ». Choix de l’auteur :
+- les trois grilles proposées, **sur une seule page avec un sélecteur** : le cycle des quintes (les accords des *Feuilles mortes*), la basse qui descend, la douce-amère ;
+- la méthode complète en six étapes : main gauche, ligne guide, gamme, notes cibles, motif, question-réponse ;
+- La mineur / Do (presque tout sur les touches blanches) ;
+- une main gauche « basse + deux notes tenues », la même à toutes les étapes.
+
+Socle touché : `mountExercise` renvoie `setScores` (changer toutes les partitions sans recharger la page). Les styles de la grille en jetons et du tableau passent de `viz/six-ficelles/viz.css` à `src/shell/music/score.css`, puisque deux exercices s’en servent.
+
 ## Prochaine action
 
-Recueillir le retour de l’auteur au piano (sur tablette) : le confort du suivi, le son, et les exercices suivants à écrire (autre ambiance, autre tonalité, improvisation).
+Recueillir le retour de l’auteur au piano sur « Improviser sur trois grilles nostalgiques » (`feat/improviser-nostalgie`) : les grilles, les exemples de main droite, la difficulté de la main gauche. Ensuite : image d’aperçu, publication, fusion sur `main`. Retour toujours attendu sur Six ficelles (confort du suivi, son).

@@ -15,6 +15,9 @@
  *
  *   mountExercise({ slug: 'six-ficelles', scores: { 'etape-1': pianoTune({ rh, lh }) } });
  *
+ * `mountExercise` renvoie `setScores`, qui remplace toutes les partitions sans recharger la page
+ * (un exercice à plusieurs grilles) : la lecture en cours s'arrête.
+ *
  * Le mode d'affichage des accords est annoncé par un événement `chordlabels` sur `document`
  * (detail : le mode), pour que la page puisse accorder ses propres éléments (grille…).
  */
@@ -29,6 +32,11 @@ export interface ExerciseOptions {
   slug: string;
   /** Partitions ABC, par identifiant (`data-score`). */
   scores: Record<string, string>;
+}
+
+export interface Exercise {
+  /** Remplace les partitions (mêmes identifiants `data-score`) et arrête la lecture en cours. */
+  setScores(scores: Record<string, string>): void;
 }
 
 const ICON_PLAY = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 .5v9l8-4.5z"/></svg>';
@@ -63,7 +71,8 @@ function remembered(key: string): { get(): string | null; set(v: string): void }
   };
 }
 
-export function mountExercise({ slug, scores }: ExerciseOptions): void {
+export function mountExercise({ slug, scores: initialScores }: ExerciseOptions): Exercise {
+  let scores = initialScores;
   const q = <T extends Element>(sel: string) => document.querySelector<T>(sel);
   const tempo = q<HTMLInputElement>('[data-tempo]');
   const tempoOut = q<HTMLOutputElement>('[data-tempo-out]');
@@ -233,4 +242,15 @@ export function mountExercise({ slug, scores }: ExerciseOptions): void {
     setButton(id, false);
     q(`[data-play="${id}"]`)?.addEventListener('click', () => (current?.id === id ? stop() : play(id)));
   }
+
+  return {
+    setScores(next) {
+      stop();
+      scores = next;
+      for (const [id, view] of views) {
+        const abc = scores[id];
+        if (abc) view.setAbc(applyChordLabels(abc, labelMode));
+      }
+    },
+  };
 }

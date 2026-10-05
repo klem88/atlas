@@ -192,3 +192,147 @@
   font-weight: 400;
   fill: var(--ink-2);
 }
+
+/* Grille en jetons (nom et degré de chaque accord) et tableau des ingrédients : communs aux exercices. */
+
+.grille {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.grille-partie {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.grille-label {
+  padding-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+.grille-mesures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grille-mesures li {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+}
+
+.grille-num {
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+
+.grille-note {
+  max-width: var(--measure);
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.ficelles {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.ficelles th,
+.ficelles td {
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ficelles th {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.ficelles td:first-child {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Sur téléphone, chaque ficelle devient une petite fiche : nom, endroit, effet. */
+@media (max-width: 560px) {
+  .ficelles thead {
+    display: none;
+  }
+
+  .ficelles tr {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .ficelles td {
+    padding: 0;
+    border: 0;
+  }
+
+  .ficelles td:nth-child(2) {
+    color: var(--ink-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .grille-partie {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+
+  .grille-label {
+    padding-top: 0;
+  }
+}
+
+/* Nom et degré de chaque accord : l'un, l'autre ou les deux selon le choix du bandeau. */
+.grille-accord {
+  display: grid;
+  gap: 2px;
+}
+
+.grille-degre {
+  display: none;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+.grille[data-labels='degrees'] .grille-nom {
+  display: none;
+}
+
+.grille[data-labels='degrees'] .grille-degre,
+.grille[data-labels='both'] .grille-degre {
+  display: block;
+}
+
+.grille[data-labels='degrees'] .grille-degre {
+  font-weight: 600;
+  color: var(--ink);
+}
