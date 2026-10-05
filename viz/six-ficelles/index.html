@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Six ficelles au piano — Atlas</title>
+    <meta name="description" content="Une grille de huit mesures en Do, puis un ton plus haut, qui réunit les six ficelles de la chanson française : à jouer en quatre étapes, des accords plaqués à la mélodie." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/six-ficelles/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="Six ficelles au piano" />
+    <meta property="og:description" content="Une grille de huit mesures en Do, puis un ton plus haut, qui réunit les six ficelles de la chanson française : à jouer en quatre étapes, des accords plaqués à la mélodie." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/six-ficelles/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/six-ficelles.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Piano · Harmonie · Exercice</p>
+        <h1>Six ficelles au piano</h1>
+        <p class="viz-lede">Une grille de huit mesures en Do, puis un ton plus haut, qui réunit les six ficelles de la chanson française : à jouer en quatre étapes, des accords plaqués à la mélodie.</p>
+      </header>
+
+      <div class="exercise">
+        <section class="exercise-block" aria-labelledby="t-grille">
+          <h2 id="t-grille">La grille</h2>
+          <div class="grille" id="grille"></div>
+          <p class="grille-note">Quand une mesure porte deux accords, chacun dure deux temps. Lent, environ 70 à la noire.</p>
+        </section>
+
+        <section class="exercise-block" aria-labelledby="t-ficelles">
+          <h2 id="t-ficelles">Où sont les ficelles</h2>
+          <div class="table-scroll">
+            <table class="ficelles">
+              <thead>
+                <tr><th scope="col">Ficelle</th><th scope="col">Où</th><th scope="col">Ce que tu entends</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>La basse qui descend</td><td>Mesures 1 à 5 : do, si, la, sol, fa</td><td>La basse descend la gamme pendant que le haut reste calme.</td></tr>
+                <tr><td>Les accords enrichis</td><td>Partout : 7M, m7, 9</td><td>Les accords sonnent doux plutôt que francs.</td></tr>
+                <tr><td>La dominante qui annonce</td><td>Sol m7 – Do9 avant Fa ; La7 avant Ré m7</td><td>Ces accords préparent le suivant : on l’attend.</td></tr>
+                <tr><td>L’emprunt mineur</td><td>Fa7M puis Fa m</td><td>Le la devient la♭ : le moment qui serre le cœur.</td></tr>
+                <tr><td>La dominante suspendue</td><td>Fa/Sol, à la fin de la grille</td><td>Un accord de Fa sur une basse sol : ça reste en l’air au lieu de conclure.</td></tr>
+                <tr><td>La montée finale</td><td>La mesure de pont, puis tout un ton plus haut</td><td>La reprise en Ré soulève la fin.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Bandeau collant : tempo et suivi de la lecture (voir src/shell/music/exercise.ts). -->
+        <div class="exercise-bar" data-exercise-bar role="group" aria-label="Réglages de l’écoute">
+          <span class="tempo">
+            <label for="tempo">Tempo</label>
+            <input type="range" id="tempo" data-tempo min="46" max="100" step="2" value="70" />
+            <span><output data-tempo-out for="tempo">70</output> à la noire</span>
+          </span>
+          <label><input type="checkbox" id="follow" data-follow checked /> Suivre la lecture</label>
+        </div>
+
+        <article class="exercise-step" id="etape-1">
+          <p class="exercise-step-num">Étape 1</p>
+          <h2>Les accords plaqués</h2>
+          <ul>
+            <li>Main gauche : la basse à l’octave. Main droite : trois notes, en rondes.</li>
+            <li>Écoute ce qui change d’une mesure à l’autre : le plus souvent, une seule note de la main droite bouge.</li>
+            <li>Mesures 4 à 7, la note du haut descend par demi-tons : si♭, la, la♭, sol. C’est la ligne cachée de la grille.</li>
+            <li>Mesure 8, Ré m7 puis Fa/Sol : la main droite ne bouge pas, seule la basse change.</li>
+          </ul>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-1" aria-pressed="false"></button>
+          </div>
+          <div class="score" data-score="etape-1"></div>
+        </article>
+
+        <article class="exercise-step" id="etape-2">
+          <p class="exercise-step-num">Étape 2</p>
+          <h2>Le rythme de ballade</h2>
+          <ul>
+            <li>Main gauche : l’accord déroulé en croches, la basse d’abord, puis les notes de l’accord au-dessus.</li>
+            <li>Main droite : les positions de l’étape 1, rejouées en blanches.</li>
+            <li>Pédale enfoncée pendant chaque accord, relevée au changement.</li>
+          </ul>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-2" aria-pressed="false"></button>
+            <label><input type="checkbox" id="mute-2" data-mute="etape-2" /> Sans la main droite</label>
+          </div>
+          <div class="score" data-score="etape-2"></div>
+        </article>
+
+        <article class="exercise-step" id="etape-3">
+          <p class="exercise-step-num">Étape 3</p>
+          <h2>La mélodie sur les notes de couleur</h2>
+          <ul>
+            <li>Main gauche : l’arpège de l’étape 2. La main droite chante.</li>
+            <li>La 1<sup>re</sup> fois, joue la mélodie écrite : trois marches qui descendent (si-do-ré, la-si-do, sol-la-si), puis une phrase qui monte jusqu’au do♯.</li>
+            <li>La 2<sup>e</sup> fois, improvise : pose une note de couleur au début de chaque accord, puis promène-toi autour.</li>
+            <li>Pour t’entraîner, coupe la main droite et mets en boucle : tu improvises sur l’accompagnement.</li>
+          </ul>
+          <p class="degree-legend"><b>7M, 9, 7, ♭3, 3</b> sous la portée : la note de couleur, nommée par rapport à l’accord.</p>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-3" aria-pressed="false"></button>
+            <label><input type="checkbox" id="mute-3" data-mute="etape-3" /> Sans la main droite</label>
+            <label><input type="checkbox" id="loop-3" data-loop="etape-3" /> En boucle</label>
+          </div>
+          <div class="score" data-score="etape-3"></div>
+        </article>
+
+        <article class="exercise-step" id="etape-4">
+          <p class="exercise-step-num">Étape 4</p>
+          <h2>La montée</h2>
+          <ul>
+            <li>Enchaîne directement après l’étape 3.</li>
+            <li>La mesure de pont prépare Ré majeur : le ré descend sur le do♯, et ce do♯ devient la 7M du premier accord.</li>
+            <li>Puis tout recommence un ton plus haut, avec deux dièses à la clé : mêmes gestes, mêmes notes de couleur.</li>
+            <li>Ensuite, improvise sur cette partie comme à l’étape 3.</li>
+          </ul>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-4" aria-pressed="false"></button>
+            <label><input type="checkbox" id="mute-4" data-mute="etape-4" /> Sans la main droite</label>
+            <label><input type="checkbox" id="loop-4" data-loop="etape-4" /> En boucle</label>
+          </div>
+          <div class="score" data-score="etape-4"></div>
+        </article>
+      </div>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#pourquoi">Pourquoi ça sonne</a></li>
+            <li><a href="#limites">Ce que l’exercice ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>Les noms d’accords sont écrits à la française au-dessus de la portée : Do7M est un do majeur avec septième majeure, Sol/Si un accord de sol avec si à la basse. Les chiffres orange sous la portée nomment la note de couleur de la mélodie par rapport à l’accord : 7M pour la septième majeure, 9 pour la neuvième, ♭3 pour la tierce mineure empruntée.</p>
+            <p>Les octaves suivent la convention française : do4 est le do central. Pendant l’écoute, le curseur orange suit les notes, et la page défile pour garder la ligne jouée à l’écran. Si tu fais défiler toi-même, le suivi s’arrête quelques secondes. L’écran reste allumé pendant la lecture quand le navigateur le permet.</p>
+          </section>
+          <section id="pourquoi">
+            <h2>Pourquoi ça sonne</h2>
+            <p>D’un accord à l’autre, la main droite bouge le moins possible, souvent d’un demi-ton : c’est ce qui rend l’enchaînement fluide. Sous les accords, la basse descend la gamme (do, si, la, sol), puis une ligne cachée descend par demi-tons dans le haut de la main droite (si♭, la, la♭, sol). Le la♭ de Fa m est une note empruntée au mode mineur : elle assombrit un instant une grille majeure.</p>
+            <p>Les dominantes préparent leur résolution : Do9 annonce Fa, La7 annonce Ré m7, et le do♯ de La7 retombe sur le do de Ré m7. Fa/Sol garde la tension sans la résoudre, et la mesure de pont fait monter toute la grille d’un ton, un geste courant à la fin des chansons.</p>
+          </section>
+          <section id="limites">
+            <h2>Ce que l’exercice ne dit pas</h2>
+            <p>Le son est un piano de synthèse simple, juste pour repérer les enchaînements. Les doigtés et la pédale ne sont pas notés. La grille a été composée pour réunir les six ficelles en peu de mesures : elle ne reprend aucune chanson existante, même si chacun de ses gestes est fréquent chez les auteurs-compositeurs français des années 70.</p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -30,6 +30,14 @@ La commande :
 
 La liste des étapes avant publication se trouve dans le `README.md` créé dans le dossier de la visualisation. Pour publier : passer `status` à `'published'`, puis pousser sur `main`.
 
+## Ajouter un exercice au piano
+
+```bash
+npm run new:viz -- valse-triste --exercice --title "Valse triste" --tags "Piano,Harmonie,Exercice"
+```
+
+Même principe, depuis [`viz/_exercice/`](viz/_exercice/) : l'exercice est rangé dans la rubrique « Exercices au piano » de l'accueil (`kind: 'exercice'`). Il ne contient que ses partitions, en notation ABC (`domain/partition.ts`), et le texte de ses étapes. Le socle fait le reste ([`src/shell/music/exercise.ts`](src/shell/music/exercise.ts)) : rendu de la partition (abcjs), écoute au piano de synthèse, curseur, page qui défile toute seule pendant la lecture, écran maintenu allumé.
+
 ## Structure
 
 ```
@@ -41,7 +49,8 @@ src/shell/                  socle partagé par toutes les visualisations
   components.css            champs, contrôle segmenté, boutons, infobulle, fenêtre, panneau dépliable
   catalog.css               cartes du catalogue
   charts/                   petits graphiques réutilisables (ligne)
-  music/                    hauteurs, accordages, synthèse Web Audio, clavier jouable
+  music/                    hauteurs, accordages, synthèse Web Audio, clavier jouable,
+                            partitions et exercices au piano (score.ts, exercise.ts, piano.ts, follow.ts)
   share.ts                  fenêtre « Partager » (image, partage natif, lien)
   search.ts                 recherche avec suggestions (combobox accessible)
   store.ts                  état réactif minimal
@@ -53,6 +62,7 @@ tools/                      outils Node communs
   og.ts                     polices, couleurs et écriture des images d'aperçu
   lib/                      téléchargement avec cache, journalisation, corpus d'accords et leur tokenisation
 viz/_template/              modèle de visualisation (ignoré au build)
+viz/_exercice/              modèle d'exercice au piano (ignoré au build)
 viz/<slug>/                 une visualisation = un dossier autonome
   index.html, main.ts       la page et son point d'entrée
   viz.css                   styles propres (dérivés des jetons)
@@ -84,3 +94,9 @@ docs/                       idées, design
 | [Cinquante ans de refrains](viz/cinquante-ans-de-refrains/) | publiée | [rapport qualité](viz/cinquante-ans-de-refrains/pipeline/REPORT.md) · Chordonomicon, Billboard |
 | [Compose ta progression](viz/compose-ta-progression/) | publiée | aucune donnée propre : lit celles de progression-jouee |
 | [Où le solo respire](viz/ou-le-solo-respire/) | publiée | [rapport qualité](viz/ou-le-solo-respire/pipeline/REPORT.md) · Weimar Jazz Database |
+
+## Exercices au piano
+
+| Exercice | État | Notes |
+| --- | --- | --- |
+| [Six ficelles au piano](viz/six-ficelles/) | publié | aucune donnée, partitions ABC testées note à note |
