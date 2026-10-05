@@ -3,6 +3,10 @@
  *
  *   npm run new:viz -- sous-tes-pieds --title "Sous tes pieds" --summary "La roche sous ta maison." --tags "Géologie,France"
  *
+ * Avec `--exercice`, crée un exercice au piano depuis viz/_exercice (rubrique « Exercices au piano » de l'accueil) :
+ *
+ *   npm run new:viz -- valse-triste --exercice --title "Valse triste" --tags "Piano,Harmonie,Exercice"
+ *
  * Seul le slug est obligatoire ; les textes se corrigent ensuite dans les fichiers créés.
  */
 import { cp, readFile, readdir, stat, writeFile } from 'node:fs/promises';
@@ -13,6 +17,7 @@ import { pathToFileURL } from 'node:url';
 
 const ROOT = join(import.meta.dirname, '..');
 const TEMPLATE = join(ROOT, 'viz', '_template');
+const EXERCISE_TEMPLATE = join(ROOT, 'viz', '_exercice');
 const SITE_FILE = join(ROOT, 'src', 'shell', 'site.ts');
 const CATALOG_MARKER = '  // npm run new:viz ajoute ici';
 
@@ -21,6 +26,8 @@ export interface VizInfo {
   title: string;
   summary: string;
   tags: string[];
+  /** Exercice au piano plutôt que visualisation. */
+  exercise?: boolean;
 }
 
 export function assertValidSlug(slug: string): void {
@@ -58,6 +65,7 @@ export function insertCatalogEntry(siteSource: string, info: VizInfo, month: str
     `    tags: [${info.tags.map(q).join(', ')}],`,
     `    status: 'draft',`,
     `    published: ${q(month)},`,
+    ...(info.exercise ? [`    kind: 'exercice',`] : []),
     '  },',
   ].join('\n');
   return siteSource.replace(CATALOG_MARKER, `${entry}\n${CATALOG_MARKER}`);
@@ -77,7 +85,7 @@ async function main(argv: string[]): Promise<void> {
   const { values, positionals } = parseArgs({
     args: argv,
     allowPositionals: true,
-    options: { title: { type: 'string' }, summary: { type: 'string' }, tags: { type: 'string' } },
+    options: { title: { type: 'string' }, summary: { type: 'string' }, tags: { type: 'string' }, exercice: { type: 'boolean' } },
   });
   const slug = positionals[0];
   if (!slug) throw new Error('Usage : npm run new:viz -- <slug> [--title "…"] [--summary "…"] [--tags "A,B"]');
@@ -90,10 +98,11 @@ async function main(argv: string[]): Promise<void> {
     slug,
     title: values.title ?? slug.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase()),
     summary: values.summary ?? 'À écrire : une phrase qui dit ce que montre la visualisation.',
-    tags: (values.tags ?? 'À classer').split(',').map((t) => t.trim()).filter(Boolean),
+    tags: (values.tags ?? (values.exercice ? 'Piano,Exercice' : 'À classer')).split(',').map((t) => t.trim()).filter(Boolean),
+    exercise: values.exercice ?? false,
   };
 
-  await cp(TEMPLATE, target, { recursive: true });
+  await cp(info.exercise ? EXERCISE_TEMPLATE : TEMPLATE, target, { recursive: true });
   for (const file of await listFiles(target)) {
     await writeFile(file, fillPlaceholders(await readFile(file, 'utf8'), info, extname(file)));
   }

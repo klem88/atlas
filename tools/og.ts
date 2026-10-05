@@ -51,3 +51,37 @@ export async function writeOgImage(slug: string, canvas: Canvas): Promise<string
   await writeFile(out, canvas.toBuffer('image/png'));
   return out;
 }
+
+/**
+ * Deux portées vides (clé de sol et clé de fa) en filets discrets : le décor commun des images
+ * d'aperçu des exercices au piano. `marks` place des rondes (x en fraction de la largeur, y en
+ * demi-interlignes au-dessus de la ligne du bas de la portée du haut), dessinées à l'accent.
+ */
+export function drawGrandStaff(
+  ctx: ReturnType<Canvas['getContext']>,
+  tokens: Record<string, string>,
+  box: { x: number; y: number; width: number; gap?: number },
+  marks: { x: number; step: number }[] = [],
+): void {
+  const space = box.gap ?? 14;
+  const between = space * 6;
+  ctx.strokeStyle = tokens['rule-strong']!;
+  ctx.lineWidth = 1.5;
+  for (const staff of [0, 1]) {
+    for (let i = 0; i < 5; i++) {
+      const y = box.y + staff * (4 * space + between) + i * space;
+      ctx.beginPath();
+      ctx.moveTo(box.x, y);
+      ctx.lineTo(box.x + box.width, y);
+      ctx.stroke();
+    }
+  }
+  const bottom = box.y + 4 * space;
+  ctx.strokeStyle = tokens.accent!;
+  ctx.lineWidth = 2.5;
+  for (const m of marks) {
+    ctx.beginPath();
+    ctx.ellipse(box.x + m.x * box.width, bottom - (m.step * space) / 2, space * 0.72, space * 0.48, -0.35, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}

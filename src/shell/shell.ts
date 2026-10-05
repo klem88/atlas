@@ -5,7 +5,7 @@ import './components.css';
 import './charts/charts.css';
 import { setupDetails } from './details';
 import { escapeHtml } from './html';
-import { SITE, VISUALIZATIONS, homeUrl, listedVisualizations, vizUrl } from './site';
+import { SITE, VISUALIZATIONS, homeUrl, listedVisualizations, vizUrl, type EntryKind } from './site';
 
 /**
  * Monte l'en-tête et le pied de page communs dans les éléments
@@ -36,9 +36,13 @@ export function mountShell(options: { currentSlug?: string } = {}): void {
   setupDetails();
 }
 
-/** Rend la liste des visualisations (page d'accueil). Les brouillons n'apparaissent qu'en développement. */
-export function renderCatalog(target: HTMLElement): void {
-  target.innerHTML = listedVisualizations(import.meta.env.DEV).map(
+/**
+ * Rend une rubrique de l'accueil (visualisations ou exercices au piano).
+ * Les brouillons n'apparaissent qu'en développement. Renvoie le nombre d'entrées affichées.
+ */
+export function renderCatalog(target: HTMLElement, kind: EntryKind = 'viz'): number {
+  const entries = listedVisualizations(import.meta.env.DEV, VISUALIZATIONS, kind);
+  target.innerHTML = entries.map(
     (v) => `
     <li class="catalog-item"${v.status === 'draft' ? ' data-draft' : ''}>
       <a href="${vizUrl(v.slug)}">
@@ -48,4 +52,5 @@ export function renderCatalog(target: HTMLElement): void {
       </a>
     </li>`,
   ).join('');
+  return entries.length;
 }

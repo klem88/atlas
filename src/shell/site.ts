@@ -17,7 +17,14 @@ export interface VizEntry {
   status: 'draft' | 'published';
   /** Mois de publication (AAAA-MM), sert au tri : la plus récente en premier. */
   published: string;
+  /**
+   * `viz` (par défaut) : une visualisation, dans le catalogue principal.
+   * `exercice` : un exercice au piano, rangé dans sa propre rubrique sur l'accueil.
+   */
+  kind?: EntryKind;
 }
+
+export type EntryKind = 'viz' | 'exercice';
 
 export const SITE = {
   name: 'Atlas',
@@ -161,12 +168,27 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     status: 'published',
     published: '2026-10',
   },
+  {
+    slug: 'six-ficelles',
+    title: 'Six ficelles au piano',
+    summary: 'Une grille de huit mesures en Do, puis un ton plus haut, qui réunit les six ficelles de la chanson française : à jouer en quatre étapes, des accords plaqués à la mélodie.',
+    tags: ['Piano', 'Harmonie', 'Exercice'],
+    status: 'published',
+    published: '2026-10',
+    kind: 'exercice',
+  },
   // npm run new:viz ajoute ici les nouvelles entrées (en brouillon).
 ];
 
-/** Visualisations à afficher sur l'accueil, la plus récente d'abord. */
-export function listedVisualizations(includeDrafts: boolean, all: readonly VizEntry[] = VISUALIZATIONS): VizEntry[] {
-  return all.filter((v) => includeDrafts || v.status === 'published').sort((a, b) => b.published.localeCompare(a.published));
+/** Entrées d'une rubrique de l'accueil (visualisations ou exercices), la plus récente d'abord. */
+export function listedVisualizations(
+  includeDrafts: boolean,
+  all: readonly VizEntry[] = VISUALIZATIONS,
+  kind: EntryKind = 'viz',
+): VizEntry[] {
+  return all
+    .filter((v) => (v.kind ?? 'viz') === kind && (includeDrafts || v.status === 'published'))
+    .sort((a, b) => b.published.localeCompare(a.published));
 }
 
 /** URL publiques, relatives à la base de déploiement (`/` en local, `/atlas/` sur GitHub Pages). */

@@ -40,6 +40,13 @@ describe('insertCatalogEntry', () => {
     expect(out.replace(/ {2}\{\n {4}slug: 'sous-tes-pieds'[\s\S]*?\n {2}\},\n/, '')).toBe(site);
   });
 
+  it('marque un exercice au piano', () => {
+    const out = insertCatalogEntry(site, { ...info, exercise: true }, '2026-11');
+    expect(out).toMatch(/slug: 'sous-tes-pieds',[\s\S]*?kind: 'exercice',\n {2}\},/);
+    const viz = insertCatalogEntry(site, info, '2026-11');
+    expect(viz.match(/ {2}\{\n {4}slug: 'sous-tes-pieds'[\s\S]*?\n {2}\},\n/)![0]).not.toContain('kind:');
+  });
+
   it('refuse un doublon', () => {
     expect(() => insertCatalogEntry(site, { ...info, slug: 'salaire-logement' }, '2026-11')).toThrow(/déjà/);
   });

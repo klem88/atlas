@@ -20,6 +20,12 @@ describe('listedVisualizations', () => {
   it('les montre en développement, la plus récente d’abord', () => {
     expect(listedVisualizations(true, all).map((v) => v.slug)).toEqual(['b', 'c', 'a']);
   });
+
+  it('range les exercices au piano dans leur propre rubrique', () => {
+    const mixed = [...all, { ...entry('e', 'published', '2026-10'), kind: 'exercice' as const }];
+    expect(listedVisualizations(false, mixed).map((v) => v.slug)).toEqual(['c', 'a']);
+    expect(listedVisualizations(false, mixed, 'exercice').map((v) => v.slug)).toEqual(['e']);
+  });
 });
 
 describe('catalogue', () => {

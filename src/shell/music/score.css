@@ -1,0 +1,178 @@
+/*
+ * Exercices au piano : partitions, boutons d'écoute et bandeau de tempo.
+ * Le curseur de lecture et les degrés sous la portée prennent l'accent ; tout le reste reste à l'encre.
+ */
+
+.exercise {
+  display: grid;
+  gap: var(--space-7);
+  max-width: 62rem;
+  padding-bottom: var(--space-7);
+}
+
+.exercise-block {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.exercise-block > h2,
+.exercise-step h2 {
+  font-size: var(--text-xl);
+  font-weight: 300;
+  text-wrap: balance;
+}
+
+/* Bandeau collant : tempo et suivi de la lecture. */
+.exercise-bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-5);
+  padding: var(--space-2) var(--space-4);
+  background: color-mix(in srgb, var(--page) 90%, transparent);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+}
+
+.exercise-bar .tempo {
+  display: flex;
+  flex: 1 1 16rem;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--ink-2);
+}
+
+.exercise-bar input[type='range'] {
+  flex: 1 1 8rem;
+  accent-color: var(--accent);
+}
+
+.exercise-bar output {
+  display: inline-block;
+  min-width: 2.5ch;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/* Une étape : numéro, titre, consignes, commandes, partition. */
+.exercise-step {
+  display: grid;
+  gap: var(--space-4);
+  scroll-margin-top: 5rem;
+}
+
+.exercise-step-num {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.exercise-step ul {
+  display: grid;
+  gap: var(--space-1);
+  max-width: var(--measure);
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.exercise-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  font-size: var(--text-sm);
+}
+
+.exercise-controls label,
+.exercise-bar label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.exercise-controls input[type='checkbox'],
+.exercise-bar input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent);
+}
+
+.play-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.play-button:hover {
+  border-color: var(--ink-3);
+}
+
+.play-button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.play-button svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: currentColor;
+}
+
+/* La partition. */
+.score {
+  padding: var(--space-2) var(--space-1);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow-x: auto;
+}
+
+.score svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.score .abcjs-annotation {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.score .abcjs-annotation.abcjs-degree {
+  font-size: 13px;
+  fill: var(--accent);
+}
+
+.score .is-playing,
+.score .is-playing path {
+  fill: var(--accent);
+}
+
+.degree-legend {
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+
+.degree-legend b {
+  color: var(--accent);
+  font-weight: 600;
+}

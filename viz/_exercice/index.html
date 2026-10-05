@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>__TITLE__ — Atlas</title>
+    <meta name="description" content="__SUMMARY__" />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/__SLUG__/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="__TITLE__" />
+    <meta property="og:description" content="__SUMMARY__" />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/__SLUG__/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/__SLUG__.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">__TAGS__</p>
+        <h1>__TITLE__</h1>
+        <p class="viz-lede">__SUMMARY__</p>
+      </header>
+
+      <div class="exercise">
+        <!-- Bandeau collant : tempo et suivi de la lecture (voir src/shell/music/exercise.ts). -->
+        <div class="exercise-bar" data-exercise-bar role="group" aria-label="Réglages de l’écoute">
+          <span class="tempo">
+            <label for="tempo">Tempo</label>
+            <input type="range" id="tempo" data-tempo min="46" max="100" step="2" value="70" />
+            <span><output data-tempo-out for="tempo">70</output> à la noire</span>
+          </span>
+          <label><input type="checkbox" id="follow" data-follow checked /> Suivre la lecture</label>
+        </div>
+
+        <!-- Une étape par partition : data-play, data-mute, data-loop et data-score partagent le même identifiant. -->
+        <article class="exercise-step" id="etape-1">
+          <p class="exercise-step-num">Étape 1</p>
+          <h2>À écrire : le titre de l’étape</h2>
+          <ul>
+            <li>À écrire : ce que fait chaque main, ce qu’il faut écouter.</li>
+          </ul>
+          <div class="exercise-controls">
+            <button class="play-button" type="button" data-play="etape-1" aria-pressed="false"></button>
+            <label><input type="checkbox" id="mute-1" data-mute="etape-1" /> Sans la main droite</label>
+            <label><input type="checkbox" id="loop-1" data-loop="etape-1" /> En boucle</label>
+          </div>
+          <div class="score" data-score="etape-1"></div>
+        </article>
+      </div>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#lire">Comment lire</a></li>
+            <li><a href="#pourquoi">Pourquoi ça sonne</a></li>
+            <li><a href="#limites">Ce que l’exercice ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="lire">
+            <h2>Comment lire</h2>
+            <p>À écrire : conventions de la partition (do4 = do central, noms d’accords, degrés en orange).</p>
+          </section>
+          <section id="pourquoi">
+            <h2>Pourquoi ça sonne</h2>
+            <p>À écrire : les procédés harmoniques, avec les mesures où on les entend.</p>
+          </section>
+          <section id="limites">
+            <h2>Ce que l’exercice ne dit pas</h2>
+            <p>À écrire : les simplifications (son de synthèse, doigtés absents…).</p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
