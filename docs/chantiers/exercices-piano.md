@@ -35,7 +35,7 @@ Une rubrique « Exercices au piano » sur l’accueil, à côté des visualisati
 
 ## Deuxième exercice : « Improviser sur trois grilles nostalgiques »
 
-Branche `feat/improviser-nostalgie` (depuis `main`), en brouillon. Demandé le 5 octobre 2026 : le même rendu, mais centré sur l’improvisation, avec une progression nostalgique, et « je dois comprendre ce que je joue ». Choix de l’auteur :
+Branche `feat/improviser-nostalgie` (depuis `main`), fusionnée et publiée le 5 octobre 2026. Demandé le 5 octobre 2026 : le même rendu, mais centré sur l’improvisation, avec une progression nostalgique, et « je dois comprendre ce que je joue ». Choix de l’auteur :
 - les trois grilles proposées, **sur une seule page avec un sélecteur** : le cycle des quintes (les accords des *Feuilles mortes*), la basse qui descend, la douce-amère ;
 - la méthode complète en six étapes : main gauche, ligne guide, gamme, notes cibles, motif, question-réponse ;
 - La mineur / Do (presque tout sur les touches blanches) ;
@@ -45,4 +45,4 @@ Socle touché : `mountExercise` renvoie `setScores` (changer toutes les partitio
 
 ## Prochaine action
 
-Recueillir le retour de l’auteur au piano sur « Improviser sur trois grilles nostalgiques » (`feat/improviser-nostalgie`) : les grilles, les exemples de main droite, la difficulté de la main gauche. Ensuite : image d’aperçu, publication, fusion sur `main`. Retour toujours attendu sur Six ficelles (confort du suivi, son).
+Recueillir le retour de l’auteur au piano sur « Improviser sur trois grilles nostalgiques » (publiée) : les grilles, les exemples de main droite, la difficulté de la main gauche. Retour toujours attendu sur Six ficelles (confort du suivi, son).

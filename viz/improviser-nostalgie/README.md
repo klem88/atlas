@@ -35,6 +35,5 @@ Deuxième exercice au piano, demandé le 5 octobre 2026 après « Six ficelles a
 - [x] Partitions lisibles sans avertissement et hauteurs vérifiées (`npm test`).
 - [x] Textes « Comment lire », « Pourquoi ça marche », « Ce que l’exercice ne dit pas ».
 - [x] Vérifiée en clair (ordinateur) et en sombre (375 px), lecture et changement de grille compris.
-- [ ] Relecture de l’auteur au piano.
-- [ ] Image d’aperçu : `npm run og -- improviser-nostalgie`.
-- [ ] Dans `src/shell/site.ts`, `status: 'published'`.
+- [x] Image d’aperçu : `npm run og -- improviser-nostalgie`.
+- [x] Publiée le 5 octobre 2026, à la demande de l’auteur, avant sa relecture au piano.

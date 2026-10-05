@@ -182,7 +182,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'Improviser sur trois grilles nostalgiques',
     summary: 'Trois grilles mélancoliques en La mineur et en Do, et une méthode en six étapes pour improviser dessus : la main gauche d’abord, puis la gamme, les notes cibles, le motif et la question-réponse.',
     tags: ['Piano', 'Improvisation', 'Exercice'],
-    status: 'draft',
+    status: 'published',
     published: '2026-10',
     kind: 'exercice',
   },
