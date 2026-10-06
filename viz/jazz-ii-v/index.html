@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Les ii–V du jazz — Atlas</title>
+    <meta name="description" content="Onze progressions du jazz dans la tonalité de ton choix : quel mode jouer sur chaque accord, six paliers rythmiques avec une section rythmique qui swingue, et un carnet de tes tempos." />
+    <link rel="canonical" href="%VITE_SITE_URL%/viz/jazz-ii-v/" />
+    <link rel="icon" href="%BASE_URL%favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Atlas" />
+    <meta property="og:title" content="Les ii–V du jazz" />
+    <meta property="og:description" content="Onze progressions du jazz dans la tonalité de ton choix : quel mode jouer sur chaque accord, six paliers rythmiques avec une section rythmique qui swingue, et un carnet de tes tempos." />
+    <meta property="og:url" content="%VITE_SITE_URL%/viz/jazz-ii-v/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og/jazz-ii-v.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,300..700;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+  </head>
+  <body>
+    <header data-site-header></header>
+
+    <main class="viz">
+      <header class="viz-intro">
+        <p class="viz-kicker">Piano · Jazz · Rythme · Exercice</p>
+        <h1>Les ii–V du jazz</h1>
+        <p class="viz-lede">Onze progressions qu’on retrouve dans des centaines de standards, dans la tonalité de ton choix. Pour chaque accord : le mode à jouer. Pour le rythme : une contrebasse et une batterie qui swinguent, et six paliers pour placer tes mains. Tamponne ce que tu sais faire, à quel tempo, et regarde-toi progresser.</p>
+      </header>
+
+      <div class="exercise jazz">
+        <!-- Bandeau collant : lecture, tempo, palier, exemple, tonalité. -->
+        <div class="exercise-bar jazz-bar" role="group" aria-label="Lecture">
+          <button class="play-button" type="button" data-lecture aria-pressed="false"></button>
+          <span class="tempo">
+            <label for="tempo">Tempo</label>
+            <input type="range" id="tempo" min="40" max="260" step="4" value="100" />
+            <span><output id="tempo-out" for="tempo">100</output> à la noire</span>
+          </span>
+          <label class="bar-palier">Palier
+            <select id="palier"></select>
+          </label>
+          <label><input type="checkbox" id="exemple" /> Exemple de main gauche</label>
+          <span class="bar-ton"><span data-ton-nom>Do majeur</span> <button class="bouton-lien" type="button" data-ton-suivant>Tonalité suivante ›</button></span>
+        </div>
+
+        <section class="jazz-choix" aria-label="Progression et tonalité">
+          <label class="champ" for="progression">Progression</label>
+          <select id="progression"></select>
+          <fieldset class="segmented tons" data-tons>
+            <legend>Tonalité, dans l’ordre du cycle des quartes</legend>
+          </fieldset>
+        </section>
+
+        <section class="jazz-tete" aria-labelledby="titre-progression">
+          <h2 id="titre-progression" data-titre></h2>
+          <p class="jazz-court" data-court></p>
+          <p class="jazz-explication" data-explication></p>
+          <p class="jazz-ou"><span class="jazz-etiquette">On l’entend dans</span> <span data-ou></span></p>
+          <div class="jazz-frequence" data-frequence></div>
+        </section>
+
+        <ol class="jazz-grille" data-grille aria-label="La grille, une case par mesure"></ol>
+
+        <section class="exercise-block" aria-labelledby="titre-modes">
+          <h2 id="titre-modes">Quel mode sur quel accord</h2>
+          <p class="jazz-aide">En haut, la main droite : le mode de l’accord. Les notes guides (3ce et 7e) sont en orange, ce sont elles qui disent l’accord. En bas, la main gauche du palier choisi.</p>
+          <div class="jazz-accords" data-accords></div>
+        </section>
+
+        <section class="exercise-block" aria-labelledby="titre-paliers">
+          <h2 id="titre-paliers">Six paliers</h2>
+          <p class="jazz-aide">Un palier à la fois, dans une tonalité, au tempo où tout tient. Quand tu y arrives, tamponne : le carnet garde la date et le tempo. Puis monte le tempo de quelques crans, ou passe à la tonalité suivante.</p>
+          <div class="jazz-paliers" data-paliers></div>
+        </section>
+
+        <section class="exercise-block" aria-labelledby="titre-carnet">
+          <h2 id="titre-carnet">Ton carnet</h2>
+          <div data-carnet></div>
+        </section>
+      </div>
+
+      <section class="viz-notes">
+        <nav class="viz-notes-toc" aria-label="Sommaire des explications">
+          <ol>
+            <li><a href="#travailler">Comment travailler</a></li>
+            <li><a href="#chiffres">D’où viennent les chiffres</a></li>
+            <li><a href="#limites">Ce que l’exercice ne dit pas</a></li>
+          </ol>
+        </nav>
+        <div class="prose">
+          <section id="travailler">
+            <h2>Comment travailler</h2>
+            <p>Commence lentement : le tempo où tu joues sans t’arrêter, même s’il te paraît ridicule. Le swing se construit à tempo lent, parce qu’on a le temps d’entendre où tombe chaque croche.</p>
+            <p>La contrebasse marche sur les quatre temps, la ride joue « ding, ding-ga ding, ding-ga » et le charleston ferme sur 2 et 4. C’est sur 2 et 4 que le jazz bat la mesure : si tu tapes du pied, tape avec le charleston, pas avec la basse.</p>
+            <p>Les tonalités tournent dans l’ordre du cycle des quartes (do, fa, si♭, mi♭…), comme le font les méthodes d’Aebersold : chaque tonalité prépare la suivante. Le bouton « Tonalité suivante » du bandeau t’y emmène sans couper la musique.</p>
+            <p>Les paliers suivent la pédagogie classique du piano jazz :</p>
+            <ul>
+              <li>les notes guides d’abord (la 3ce et la 7e, la méthode de toutes les écoles) ;</li>
+              <li>puis les voicings sans fondamentale, où la 3ce ou la 7e est en bas, tels que Mark Levine les présente dans <em>The Jazz Piano Book</em> à partir du jeu de Bill Evans ;</li>
+              <li>puis le rythme de l’accompagnement : le Charleston, puis l’anticipation ;</li>
+              <li>enfin la main droite, qui part des modes et vise les notes de l’accord sur le temps (l’idée de <em>Forward Motion</em> de Hal Galper), avec les encerclements du bebop.</li>
+            </ul>
+          </section>
+          <section id="chiffres">
+            <h2>D’où viennent les chiffres</h2>
+            <p>Le nombre de standards vient de l’<strong>iRb</strong> (Broze et Shanahan, Ohio State University) : 1 185 grilles de standards de jazz tirées d’iRealPro. Chaque grille est lue dans l’ordre de ses sections, les accords répétés sont fusionnés, et la fin rejoint le début.</p>
+            <p>Une progression est cherchée par ses intervalles et ses qualités, pas par ses noms. Un ii–V–I, c’est un accord m7, puis une dominante une quarte plus haut, puis un accord majeur encore une quarte plus haut. On le trouve donc aussi dans une tonalité de passage, au milieu d’un pont.</p>
+            <p class="detail">Le détail de chaque motif est dans <code>viz/jazz-ii-v/domain/progressions.ts</code>, et le rapport du calcul dans <code>viz/jazz-ii-v/pipeline/REPORT.md</code>.</p>
+          </section>
+          <section id="limites">
+            <h2>Ce que l’exercice ne dit pas</h2>
+            <ul>
+              <li>Les sons sont synthétisés dans ton navigateur : une contrebasse, une ride et un charleston approximatifs, sans échantillons. Ils donnent le temps, pas la beauté d’un vrai trio.</li>
+              <li>Le swing est joué en rapport 2:1 (la croche du « et » sur la dernière note d’un triolet) jusqu’à 160 à la noire, puis il se redresse peu à peu, comme chez les musiciens.</li>
+              <li>Les voicings de main gauche restent entre ré3 et sol4. Sur les grilles qui descendent par quintes, la main glisse vers le grave et doit remonter une fois par tour : dans certaines tonalités, tu verras ce saut.</li>
+              <li>La page ne t’écoute pas : c’est toi qui décides quand tu y arrives.</li>
+              <li>Le carnet est gardé dans ce navigateur, sur cet appareil. Exporte-le pour le garder ou le passer sur un autre appareil.</li>
+              <li>Les modes proposés sont les choix les plus courants, pas les seuls. Sur un V7, le mixolydien, l’altéré et le ton/demi-ton sont tous possibles : chacun donne une couleur différente.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer data-site-footer></footer>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

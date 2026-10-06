@@ -87,7 +87,7 @@ export class PianoSynth {
     const bus = ctx.createGain();
     bus.connect(master);
     const t0 = ctx.currentTime + lead;
-    for (const n of notes) this.note(ctx, bus, n.midi, t0 + n.start, n.duration, n.velocity);
+    for (const n of notes) pianoNote(ctx, bus, n.midi, t0 + n.start, n.duration, n.velocity);
     return {
       stop: () => {
         bus.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.05);
@@ -95,33 +95,34 @@ export class PianoSynth {
       },
     };
   }
+}
 
-  private note(ctx: AudioContext, bus: GainNode, midi: number, t: number, dur: number, vel: number): void {
-    const f = 440 * 2 ** ((midi - 69) / 12);
-    const lp = ctx.createBiquadFilter();
-    lp.type = 'lowpass';
-    lp.frequency.setValueAtTime(Math.min(6000, f * 6), t);
-    lp.frequency.exponentialRampToValueAtTime(Math.min(2500, f * 2.5), t + 0.6);
-    const o1 = ctx.createOscillator();
-    o1.type = 'triangle';
-    o1.frequency.value = f;
-    const o2 = ctx.createOscillator();
-    o2.type = 'sine';
-    o2.frequency.value = f * 2;
-    const g2 = ctx.createGain();
-    g2.gain.value = 0.25;
-    const g = ctx.createGain();
-    o1.connect(lp);
-    o2.connect(g2).connect(lp);
-    lp.connect(g).connect(bus);
-    const peak = 0.22 * vel;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(peak, t + 0.008);
-    g.gain.setTargetAtTime(peak * 0.12, t + 0.01, decayTime(midi));
-    g.gain.setTargetAtTime(0.0001, t + dur, 0.09);
-    o1.start(t);
-    o2.start(t);
-    o1.stop(t + dur + 0.6);
-    o2.stop(t + dur + 0.6);
-  }
+/** Une note de piano de synthèse, programmée au temps `t` (horloge du contexte), vers `bus`. */
+export function pianoNote(ctx: BaseAudioContext, bus: AudioNode, midi: number, t: number, dur: number, vel: number): void {
+  const f = 440 * 2 ** ((midi - 69) / 12);
+  const lp = ctx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.setValueAtTime(Math.min(6000, f * 6), t);
+  lp.frequency.exponentialRampToValueAtTime(Math.min(2500, f * 2.5), t + 0.6);
+  const o1 = ctx.createOscillator();
+  o1.type = 'triangle';
+  o1.frequency.value = f;
+  const o2 = ctx.createOscillator();
+  o2.type = 'sine';
+  o2.frequency.value = f * 2;
+  const g2 = ctx.createGain();
+  g2.gain.value = 0.25;
+  const g = ctx.createGain();
+  o1.connect(lp);
+  o2.connect(g2).connect(lp);
+  lp.connect(g).connect(bus);
+  const peak = 0.22 * vel;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(peak, t + 0.008);
+  g.gain.setTargetAtTime(peak * 0.12, t + 0.01, decayTime(midi));
+  g.gain.setTargetAtTime(0.0001, t + dur, 0.09);
+  o1.start(t);
+  o2.start(t);
+  o1.stop(t + dur + 0.6);
+  o2.stop(t + dur + 0.6);
 }
