@@ -1,1 +1,679 @@
 /* Styles propres à « Les ii–V du jazz ». Les styles communs des exercices sont dans src/shell/music/score.css. */
+
+.jazz {
+  gap: var(--space-6);
+}
+
+/* Les grilles CSS prennent sinon la largeur de leur contenu le plus large (le tableau du carnet) au lieu de le
+   laisser défiler : sur téléphone, toute la page débordait. */
+.jazz > *,
+.jazz .exercise-block > * {
+  min-width: 0;
+}
+
+/* Bandeau ------------------------------------------------------------------------------------------------- */
+
+.jazz-bar select {
+  font: inherit;
+  max-width: 13rem;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.bar-ton {
+  color: var(--ink-2);
+}
+
+.jazz-bar output {
+  min-width: 3ch;
+}
+
+/* Sur téléphone, le bandeau collant garde l'essentiel : lecture, tempo, tonalité. Le palier et l'exemple se
+   choisissent dans les cartes des paliers (« Écouter l'exemple »). */
+@media (max-width: 560px) {
+  .jazz-bar .bar-palier,
+  .jazz-bar label:has(#exemple) {
+    display: none;
+  }
+}
+
+.bar-ton > span {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.bouton-lien {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.bouton-lien:hover {
+  color: var(--ink);
+  text-decoration-color: currentColor;
+}
+
+.bouton-lien:disabled {
+  color: var(--ink-3);
+  cursor: default;
+  text-decoration: none;
+}
+
+/* Choix de la progression et de la tonalité ---------------------------------------------------------------- */
+
+.jazz-choix {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 44rem;
+}
+
+.jazz-choix > label {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.jazz-choix select {
+  justify-self: start;
+  max-width: 100%;
+  font: inherit;
+  font-size: var(--text-md);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.tons {
+  margin-top: var(--space-3);
+  grid-auto-flow: row;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.tons legend {
+  grid-column: 1 / -1;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.tons label {
+  padding-inline: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .tons {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* En-tête de la progression -------------------------------------------------------------------------------- */
+
+.jazz-tete {
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--measure);
+}
+
+.jazz-tete h2 {
+  font-size: var(--text-xl);
+  font-weight: 300;
+  text-wrap: balance;
+}
+
+.jazz-court {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+
+.jazz-explication,
+.jazz-ou,
+.jazz-frequence {
+  color: var(--ink-2);
+}
+
+.jazz-etiquette {
+  display: inline-block;
+  margin-right: var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.jazz-aide {
+  max-width: var(--measure);
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+/* La grille : une case par mesure --------------------------------------------------------------------------- */
+
+.jazz-grille {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 560px) {
+  .jazz-grille {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.jazz-grille li {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--space-2);
+  min-height: 4.6rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.jazz-grille li.mesure-jouee {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.jazz-mesure {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.jazz-accord {
+  display: grid;
+  gap: 2px;
+}
+
+.jazz-nom {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.jazz-degre {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.jazz-repete {
+  font-size: var(--text-lg);
+  color: var(--ink-3);
+}
+
+.jazz-temps {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.jazz-temps i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rule-strong);
+}
+
+/* Le charleston joue sur 2 et 4 : ces deux temps sont marqués. */
+.jazz-temps i:nth-child(even) {
+  background: var(--ink-3);
+}
+
+.jazz-temps i.temps-joue {
+  background: var(--accent);
+  transform: scale(1.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jazz-temps i.temps-joue {
+    transform: none;
+  }
+}
+
+/* Les cartes d'accords -------------------------------------------------------------------------------------- */
+
+.jazz-accords {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+  gap: var(--space-4);
+}
+
+.jazz-carte {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.jazz-carte h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-lg);
+}
+
+.carte-mode {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 300;
+}
+
+.carte-notes {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  word-spacing: 0.15em;
+}
+
+.carte-notes strong,
+.carte-cible strong {
+  color: var(--accent);
+}
+
+.carte-couleur,
+.carte-cible {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.carte-mg {
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.mini-clavier {
+  /* Un piano reste un piano : touches claires et noires dans les deux thèmes. */
+  --blanche: var(--page);
+  --noire: var(--ink-2);
+  --joue: var(--ink);
+  display: block;
+  width: 100%;
+  max-width: 20rem;
+  height: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) .mini-clavier {
+    --blanche: var(--ink);
+    --noire: var(--page);
+    --joue: var(--page);
+  }
+}
+
+:root[data-theme='dark'] .mini-clavier {
+  --blanche: var(--ink);
+  --noire: var(--page);
+  --joue: var(--page);
+}
+
+.touche-blanche {
+  fill: var(--blanche);
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+
+.touche-noire {
+  fill: var(--noire);
+}
+
+.pastille {
+  stroke: var(--blanche);
+  stroke-width: 1.2;
+}
+
+.pastille-mode {
+  fill: var(--ink-3);
+}
+
+.pastille-guide {
+  fill: var(--accent);
+}
+
+.pastille-joue {
+  fill: var(--joue);
+}
+
+/* Les paliers ----------------------------------------------------------------------------------------------- */
+
+.jazz-paliers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+  gap: var(--space-4);
+}
+
+.jazz-palier {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+  scroll-margin-top: 6rem;
+}
+
+.jazz-palier.palier-courant {
+  border-color: var(--accent);
+}
+
+.jazz-palier h3 {
+  font-size: var(--text-lg);
+  font-weight: 400;
+}
+
+.jazz-palier ul {
+  display: grid;
+  gap: var(--space-2);
+  padding-left: 1.1rem;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.palier-reussi,
+.palier-record {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.palier-tamponne {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.jazz-palier .bouton-tampon {
+  border-color: var(--accent);
+}
+
+/* Une mesure de rythme : huit croches, les coups de main gauche en barres. */
+.rythme {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-rows: 14px auto;
+  row-gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: var(--surface-sunk);
+}
+
+.coup {
+  grid-row: 1;
+  margin-right: 3px;
+  border-radius: 3px;
+  background: var(--ink-2);
+}
+
+.coup-deborde {
+  margin-right: calc(-1 * var(--space-3));
+  border-radius: 3px 0 0 3px;
+  background: linear-gradient(to right, var(--ink-2) 60%, transparent);
+}
+
+.temps {
+  grid-row: 2;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.temps-et {
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+/* Le carnet ------------------------------------------------------------------------------------------------- */
+
+.carnet-grille {
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.carnet-grille th {
+  font-weight: 400;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.carnet-grille thead th {
+  padding: 0 var(--space-1) var(--space-1);
+  font-size: var(--text-xs);
+}
+
+.carnet-grille thead th.courante {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.carnet-grille tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  padding-right: var(--space-3);
+  text-align: left;
+  background: var(--page);
+}
+
+@media (max-width: 560px) {
+  .carnet-grille .palier-nom {
+    display: none;
+  }
+}
+
+.carnet-grille tr.palier-courant th {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.carnet-grille td {
+  position: relative; /* garde le libellé caché « pas encore » dans la case, donc dans la zone qui défile */
+  min-width: 2.6rem;
+  height: 1.9rem;
+  border-radius: 3px;
+  text-align: center;
+  color: var(--ink);
+}
+
+.carnet-grille td.vide {
+  background: var(--surface-sunk);
+}
+
+.carnet-grille td.courante {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.tempo-1 {
+  background: var(--seq-1);
+}
+
+.tempo-2 {
+  background: var(--seq-2);
+}
+
+.tempo-3 {
+  background: var(--seq-3);
+}
+
+.tempo-4 {
+  background: var(--seq-4);
+  color: var(--page) !important;
+}
+
+.tempo-5 {
+  background: var(--seq-6);
+  color: var(--page) !important;
+}
+
+.carnet-legende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+}
+
+.carnet-legende span {
+  padding: 2px var(--space-2);
+  border-radius: 3px;
+  color: var(--ink);
+}
+
+.carnet-legende::before {
+  content: 'À la noire :';
+  margin-right: var(--space-1);
+  color: var(--ink-3);
+}
+
+.carnet-courbe {
+  margin: var(--space-3) 0 0;
+  max-width: 44rem;
+}
+
+.carnet-courbe svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.carnet-courbe figcaption {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+}
+
+.carnet-courbe .filet {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.carnet-courbe .graduation {
+  font-size: 11px;
+  fill: var(--ink-3);
+}
+
+.carnet-courbe .point {
+  fill: var(--ink-3);
+  stroke: var(--page);
+  stroke-width: 2;
+}
+
+.carnet-courbe .point-courant {
+  fill: var(--accent);
+}
+
+.carnet-courbe .etiquette {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.carnet-vide,
+.carnet-resume,
+.carnet-message {
+  max-width: var(--measure);
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.carnet-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.carnet-actions label.button:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Les standards --------------------------------------------------------------------------------------------- */
+
+.standards {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.standards-filtre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.standards-filtre input {
+  font: inherit;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.standards-liste {
+  max-height: 28rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  list-style: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+}
+
+.standards-liste summary {
+  padding: var(--space-1) 0;
+  cursor: pointer;
+}
+
+.standard-info {
+  color: var(--ink-3);
+}
+
+.standard-grille {
+  padding: var(--space-2) 0 var(--space-3) var(--space-4);
+  color: var(--ink-2);
+  line-height: 1.9;
+}
+
+.standard-grille span,
+.standard-grille mark {
+  white-space: nowrap;
+}
+
+.standard-grille mark {
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--accent-soft);
+  color: var(--ink);
+}
