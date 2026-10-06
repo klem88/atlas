@@ -42,6 +42,7 @@ Dans une session neuve : *« Reprends docs/chantiers/<slug>.md »*. La fiche suf
 | 3i | [chemin-des-accords](chemin-des-accords.md) : Le chemin des accords | publiée ; piste B (guidage) sur `feat/chemin-guidage`, en attente de relecture |
 | 3j | [les-ficelles](les-ficelles.md) : Les ficelles (nom provisoire) | publiée le 4 octobre 2026, en attente de relecture et des titres à valider |
 | 3k | [exercices-piano](exercices-piano.md) : rubrique « Exercices au piano », premier exercice « Six ficelles au piano » | publiée le 5 octobre 2026, en attente du retour de l’auteur au piano ; deuxième exercice « Improviser sur trois grilles nostalgiques » publié le même jour |
+| 3l | [jazz-ii-v](jazz-ii-v.md) : les progressions du jazz, modes, rythme et carnet de tempo | fiche rédigée le 6 octobre 2026 sur `feat/jazz-ii-v`, plan d’implémentation à faire |
 | 4 | [Qui chante autour de chez toi](qui-chante.md) | publiée (2026-09-30) ; restent l'image de partage et le test sur téléphone |
 | 5 | [Sous tes pieds](sous-tes-pieds.md) | cadrage validé, sondes faites |
 
