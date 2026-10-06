@@ -11,18 +11,19 @@ Demandé par l’auteur le 6 octobre 2026, après avoir testé « Improviser sur
 
 ## Critères de fin
 
-- [ ] Onze progressions, une affichée à la fois (voir la liste plus bas), transposables dans les 12 tonalités.
-- [ ] Pour chaque accord : le mode, un mini-clavier qui allume ses notes, les notes guides (3ce et 7e) mises en avant, et la note à viser sur l’accord suivant.
-- [ ] Six paliers par progression. Chaque palier tient sur une carte : une consigne de deux ou trois lignes, **une seule mesure de rythme** pour la main gauche (rythme seul et voicing sur le clavier, sans portée) et le bouton « J’y arrive ».
-- [ ] Un accompagnement swing qui boucle sur la grille : une contrebasse qui marche, une ride, le charleston sur les temps 2 et 4. Il suit la tonalité et le tempo choisis.
-- [ ] « Écouter l’exemple » ajoute à l’accompagnement la main gauche du palier en cours.
-- [ ] Le carnet :
+- [x] Onze progressions, une affichée à la fois (voir la liste plus bas), transposables dans les 12 tonalités.
+- [x] Pour chaque accord : le mode, un mini-clavier qui allume ses notes, les notes guides (3ce et 7e) mises en avant, et la note à viser sur l’accord suivant.
+- [x] Six paliers par progression. Chaque palier tient sur une carte : une consigne de deux ou trois lignes, **une seule mesure de rythme** pour la main gauche (rythme seul et voicing sur le clavier, sans portée) et le bouton « J’y arrive ».
+- [x] Un accompagnement swing qui boucle sur la grille : une contrebasse qui marche, une ride, le charleston sur les temps 2 et 4. Il suit la tonalité et le tempo choisis.
+- [x] « Écouter l’exemple » ajoute à l’accompagnement la main gauche du palier en cours.
+- [x] Le carnet :
   - un tampon (palier, progression, tonalité, tempo, date) par « J’y arrive » ;
   - par progression, une grille paliers × 12 tonalités qui montre le meilleur tempo, et une petite courbe du tempo dans le temps ;
   - un résumé global (nombre de tampons, tempo moyen) ;
   - un export et un import en fichier JSON.
-- [ ] La fréquence de chaque progression dans le corpus iRb (standards de jazz), avec quelques titres en exemple : « présente dans N standards sur 1 186 ».
-- [ ] Tests au vert, typecheck au vert, page vérifiée en clair, en sombre et sur mobile (375 px).
+- [x] La fréquence de chaque progression dans le corpus iRb : « N standards sur 1 185 la contiennent ». La liste complète s’ouvre à la demande, et chaque titre montre sa grille avec la progression surlignée (demandé par l’auteur le 6 octobre 2026).
+- [x] Tests au vert, typecheck au vert, page vérifiée en clair, en sombre et sur mobile (375 px).
+- [ ] Écoute au piano par l’auteur, puis publication (`status: 'published'`).
 
 ## Les onze progressions
 
@@ -96,11 +97,42 @@ Exercice (`viz/jazz-ii-v/`) :
 - `domain/paliers.ts` : le motif rythmique de main gauche de chaque palier et son texte ;
 - `pipeline/build.ts` : compte chaque progression dans le corpus iRb (`tools/lib/corpora.ts`, `readIrb`) par motifs d’intervalles entre fondamentales et de qualités, sans estimer la tonalité. Il écrit `public/data/jazz-ii-v/frequences.json` et `REPORT.md`.
 
+## Résultats de l’iRb (6 octobre 2026)
+
+Nombre de standards, sur 1 185, qui contiennent chaque progression :
+
+| Progression | Standards |
+|---|---:|
+| ii–V–I majeur | 871 |
+| ii–V–i mineur | 455 |
+| Turnaround I–vi–ii–V | 359 |
+| iii–VI–ii–V | 332 |
+| ii–V vers le IV, puis IV–iv | 282 |
+| Dominantes en chaîne | 244 |
+| Backdoor | 170 |
+| ii–V en chaîne qui descendent | 98 |
+| Diminué de passage | 81 |
+| Substitution tritonique | 38 |
+| Majeur puis relatif mineur | 15 |
+
+Le motif d’*Autumn Leaves* est strict (cinq accords d’affilée), d’où son petit nombre. Le détail est dans `viz/jazz-ii-v/pipeline/REPORT.md`.
+
+## Construit le 6 octobre 2026
+
+- Sur la page : bandeau collant (lecture, tempo, palier, exemple, tonalité suivante), choix de la progression et des 12 tonalités, grille dont la mesure et le temps joués s’allument, cartes d’accords (mode, notes guides en orange, note à viser, claviers des deux mains), six paliers, carnet, standards.
+- Socle ajouté (`src/shell/music/`) :
+  - `swing.ts`, `sounds.ts`, `band.ts`, `logbook.ts` ;
+  - `piano.ts` exporte maintenant `pianoNote`.
+- Voicings : choisis par programmation dynamique sur toute la boucle. Sur les grilles qui descendent par quintes, la main gauche glisse vers le grave et doit remonter une fois par tour : ce saut est signalé dans les limites de la page.
+- Sur téléphone, le bandeau ne garde que la lecture, le tempo et la tonalité. Le palier et l’exemple se choisissent dans les cartes.
+- Non vérifié par Claude : le son lui-même (le navigateur de test ne fait pas entendre l’audio) et l’allumage des mesures pendant la lecture (l’animation ne tourne pas dans le panneau de test masqué). L’horloge, elle, a été mesurée : décompte, position, changement de tempo.
+
 ## À décider
 
 - Le nom de la page (« Les ii–V du jazz » est provisoire).
-- Le rapport de swing par défaut : 2:1, ou plus droit aux tempos rapides.
+- Le swing : en attendant, rapport 2:1 jusqu’à 160 à la noire, puis de plus en plus droit (0,58 à 260). À juger à l’oreille.
+- Le son de la contrebasse et de la ride : à juger sur la tablette.
 
 ## Prochaine action
 
-Rédiger le plan d’implémentation (skill writing-plans), puis commencer par le domaine pur : progressions, transposition, modes, puis `swing.ts`.
+Faire écouter la page à l’auteur, au piano (`npm run dev`, puis http://localhost:5173/viz/jazz-ii-v/, en brouillon) : son de la section, swing, voicings, textes des paliers. Corriger d’après son retour, puis publier et fusionner sur `main`.

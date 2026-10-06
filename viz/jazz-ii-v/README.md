@@ -2,18 +2,28 @@
 
 Onze progressions du jazz dans la tonalité de ton choix : quel mode jouer sur chaque accord, six paliers rythmiques avec une section rythmique qui swingue, et un carnet de tes tempos.
 
-Exercice au piano : il apparaît dans la rubrique « Exercices au piano » de l’accueil (`kind: 'exercice'` dans `src/shell/site.ts`).
+Exercice au piano de la rubrique « Exercices au piano » (`kind: 'exercice'` dans `src/shell/site.ts`). Contrairement aux autres exercices, il n’a **pas de partition** : l’auteur lit mal la portée, il veut savoir quel mode jouer sur quel accord, et sur quel rythme. La fiche du chantier est dans `docs/chantiers/jazz-ii-v.md`.
 
 ## Comment c’est fait
 
-- Les partitions sont écrites en notation ABC dans `domain/partition.ts`, une par étape, assemblées par `pianoTune` (`src/shell/music/score.ts`).
-- La page déclare ses étapes en HTML avec des attributs (`data-score`, `data-play`, `data-mute`, `data-loop`). `mountExercise` (`src/shell/music/exercise.ts`) fait le reste : rendu, écoute, curseur, défilement automatique, écran maintenu allumé.
-- Les noms d’accords s’écrivent en annotations au-dessus (`"^Do7M"`), les degrés en dessous (`"_7M"`) : ils prennent l’accent.
+- `domain/` (pur, testé) :
+  - `progressions.ts` : les 11 grilles en degrés, avec leurs motifs de comptage ;
+  - `spelling.ts` : l’orthographe des notes (le ♭II de do s’écrit ré♭) ;
+  - `modes.ts` : les modes et leurs notes ;
+  - `voicings.ts` : la main gauche, notes guides ou voicings A/B, avec le moins de mouvement possible sur toute la boucle ;
+  - `paliers.ts` : les six paliers, leur rythme et leur exemple de main gauche.
+- Socle (`src/shell/music/`), partagé avec les futurs exercices :
+  - `swing.ts` : la contrebasse qui marche, la ride et le charleston ;
+  - `sounds.ts` : les sons synthétisés ;
+  - `band.ts` : l’horloge Web Audio, qui joue en boucle et suit le tempo en direct ;
+  - `logbook.ts` : le carnet de tampons, gardé dans le navigateur.
+- `pipeline/` : `npm run data -- jazz-ii-v` compte chaque progression dans l’iRb (1 185 standards) et écrit `public/data/jazz-ii-v/frequences.json` et `standards.json`. Le rapport est dans `pipeline/REPORT.md`.
+- `ui/` : le mini-clavier SVG, le carnet (grille et courbe), la liste des standards.
 
 ## Avant de publier
 
-- [ ] Chaque partition se lit sans avertissement (`npm test`), et les hauteurs jouées ont été écoutées.
-- [ ] Les sections « Comment lire », « Pourquoi ça sonne » et « Ce que l’exercice ne dit pas » sont rédigées.
-- [ ] L’affichage a été vérifié en clair, en sombre et sur mobile (375 px), lecture et défilement compris.
-- [ ] L’image d’aperçu est générée : `npm run og -- jazz-ii-v` crée `public/og/jazz-ii-v.png`.
-- [ ] Dans `src/shell/site.ts`, le statut passe de `draft` à `published`, avec le mois de publication.
+- [x] Tests au vert, typecheck au vert.
+- [x] Affichage vérifié en clair, en sombre et sur mobile (375 px).
+- [x] Image d’aperçu : `npm run og -- jazz-ii-v`.
+- [ ] Écoute au piano par l’auteur : le son de la section, le swing, les voicings, les textes des paliers.
+- [ ] Dans `src/shell/site.ts`, passer le statut de `draft` à `published`.
