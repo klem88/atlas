@@ -191,7 +191,7 @@ export const VISUALIZATIONS: readonly VizEntry[] = [
     title: 'Les ii–V du jazz',
     summary: 'Onze progressions du jazz dans la tonalité de ton choix : quel mode jouer sur chaque accord, six paliers rythmiques avec une section rythmique qui swingue, et un carnet de tes tempos.',
     tags: ['Piano', 'Jazz', 'Rythme', 'Exercice'],
-    status: 'draft',
+    status: 'published',
     published: '2026-10',
     kind: 'exercice',
   },

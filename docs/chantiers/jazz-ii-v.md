@@ -23,7 +23,8 @@ Demandé par l’auteur le 6 octobre 2026, après avoir testé « Improviser sur
   - un export et un import en fichier JSON.
 - [x] La fréquence de chaque progression dans le corpus iRb : « N standards sur 1 185 la contiennent ». La liste complète s’ouvre à la demande, et chaque titre montre sa grille avec la progression surlignée (demandé par l’auteur le 6 octobre 2026).
 - [x] Tests au vert, typecheck au vert, page vérifiée en clair, en sombre et sur mobile (375 px).
-- [ ] Écoute au piano par l’auteur, puis publication (`status: 'published'`).
+- [x] Publiée et fusionnée sur `main` le 6 octobre 2026, à la demande de l’auteur, avant son écoute au piano.
+- [ ] Écoute au piano par l’auteur.
 
 ## Les onze progressions
 
@@ -135,4 +136,4 @@ Le motif d’*Autumn Leaves* est strict (cinq accords d’affilée), d’où son
 
 ## Prochaine action
 
-Faire écouter la page à l’auteur, au piano (`npm run dev`, puis http://localhost:5173/viz/jazz-ii-v/, en brouillon) : son de la section, swing, voicings, textes des paliers. Corriger d’après son retour, puis publier et fusionner sur `main`.
+Recueillir le retour de l’auteur au piano sur la page publiée (https://klem88.github.io/atlas/viz/jazz-ii-v/) : son de la section, swing, voicings, textes des paliers. Corriger d’après son retour, sur une nouvelle branche.

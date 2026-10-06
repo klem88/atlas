@@ -25,5 +25,5 @@ Exercice au piano de la rubrique « Exercices au piano » (`kind: 'exercice'` da
 - [x] Tests au vert, typecheck au vert.
 - [x] Affichage vérifié en clair, en sombre et sur mobile (375 px).
 - [x] Image d’aperçu : `npm run og -- jazz-ii-v`.
-- [ ] Écoute au piano par l’auteur : le son de la section, le swing, les voicings, les textes des paliers.
-- [ ] Dans `src/shell/site.ts`, passer le statut de `draft` à `published`.
+- [ ] Écoute au piano par l’auteur : le son de la section, le swing, les voicings, les textes des paliers (publiée avant, à sa demande).
+- [x] Statut `published` dans `src/shell/site.ts`.
