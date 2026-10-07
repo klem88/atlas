@@ -35,9 +35,8 @@ describe('exemples de main gauche', () => {
 });
 
 describe('les paliers', () => {
-  it('sont numérotés de 1 à 6, chacun avec un rythme', () => {
+  it('sont numérotés de 1 à 6', () => {
     expect(PALIERS.map((p) => p.n)).toEqual([1, 2, 3, 4, 5, 6]);
-    for (const p of PALIERS) expect(p.rythme.length).toBeGreaterThan(0);
   });
 });
 

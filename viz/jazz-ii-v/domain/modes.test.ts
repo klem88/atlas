@@ -10,10 +10,14 @@ describe('modes', () => {
   it('écrit une lettre par note', () => {
     expect(nomsDuMode('Si', 11, 'locrien')).toEqual(['si', 'do', 'ré', 'mi', 'fa', 'sol', 'la']);
     expect(nomsDuMode('Ré♭', 1, 'lydienB7')).toEqual(['ré♭', 'mi♭', 'fa', 'sol', 'la♭', 'si♭', 'do♭']);
-    expect(nomsDuMode('Mi', 4, 'altere')).toEqual(['mi', 'fa', 'sol', 'la♭', 'si♭', 'do', 'ré']);
+    expect(nomsDuMode('Ré♭', 1, 'lydienB7')[2]).toBe('fa');
+  });
+
+  it('nomme l’altéré par fonction : la 3ce de Sol 7 est si', () => {
+    expect(nomsDuMode('Sol', 7, 'altere')).toEqual(['sol', 'la♭', 'la♯', 'si', 'ré♭', 'mi♭', 'fa']);
   });
 
   it('nomme simplement la gamme diminuée', () => {
-    expect(nomsDuMode('Do♯', 1, 'tonDemiTon')).toEqual(['do♯', 'ré♯', 'mi', 'fa♯', 'sol', 'la', 'la♯', 'do']);
+    expect(nomsDuMode('Do♯', 1, 'tonDemiTon')).toEqual(['do♯', 'ré♯', 'mi', 'fa♯', 'sol', 'la', 'si♭', 'si♯']);
   });
 });

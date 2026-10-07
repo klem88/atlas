@@ -1,10 +1,13 @@
 import { escapeHtml } from '@shell/html';
 import { Band, type Loop } from '@shell/music/band';
 import { carnetStocke, exporterCarnet, fusionner, lireCarnet, meilleurTempo } from '@shell/music/logbook';
+import { Score } from '@shell/music/score';
 import { drumPattern, walkingBass, type ChordSpan } from '@shell/music/swing';
 import { mountShell } from '@shell/shell';
 import { MODES, nomsDuMode, notesDuMode } from './domain/modes';
-import { PALIERS, encerclement, exemple, nomMode, type Palier } from './domain/paliers';
+import { abcCellule } from './domain/abc';
+import { FENETRE, cellule, type Cellule } from './domain/cellules';
+import { PALIERS, encerclement, nomMode, type Palier } from './domain/paliers';
 import { PROGRESSIONS, QUALITES, dureeGrille, nomTonalite, progression, transpose, type Qualite } from './domain/progressions';
 import { CYCLE_QUARTES, tonicName } from './domain/spelling';
 import { voicingsMainGauche } from './domain/voicings';
@@ -91,12 +94,22 @@ function tonsBasse(q: Qualite): number[] {
   return QUALITES[q].notes.slice(0, 4);
 }
 
-function boucle(): Loop {
+/** Les deux mesures d'exemple d'un palier, avec les voicings de toute la grille. */
+function celluleDe(p: Palier): Cellule {
   const a = accords();
-  const L = dureeGrille(etat.p);
+  return cellule(p, a, voicingsMainGauche(a, p.main));
+}
+
+/**
+ * Sans l'exemple, la section rythmique joue toute la grille. Avec l'exemple, elle boucle sur les deux mesures
+ * écrites dans la carte du palier, et le piano joue les deux mains telles qu'elles sont écrites.
+ */
+function boucle(): Loop {
+  const c = etat.exemple ? celluleDe(palierCourant()) : null;
+  const a = c ? c.accords : accords();
+  const L = c ? FENETRE : dureeGrille(etat.p);
   const spans: ChordSpan[] = a.map((x) => ({ root: x.racine, start: x.debut, beats: x.temps, tones: tonsBasse(x.qualite) }));
-  const hits = [...walkingBass(spans, L), ...drumPattern(L)];
-  if (etat.exemple) hits.push(...exemple(palierCourant(), a, L));
+  const hits = [...walkingBass(spans, L), ...drumPattern(L), ...(c ? c.hits : [])];
   return { hits, beats: L };
 }
 
@@ -149,7 +162,7 @@ el.tempo.addEventListener('input', () => {
   etat.bpm = Number(el.tempo.value);
   el.tempoOut.textContent = el.tempo.value;
   band.setTempo(etat.bpm);
-  rendrePaliers();
+  majBoutonsTampon();
 });
 el.tempo.addEventListener('change', () => tempoRetenu.set(el.tempo.value));
 
@@ -278,19 +291,6 @@ function rendreAccords(): void {
     .join('');
 }
 
-function rythme(p: Palier): string {
-  const coups = p.rythme
-    .map((c) => {
-      const debut = c.debut * 2 + 1;
-      const fin = Math.min(9, debut + c.duree * 2);
-      const deborde = c.debut + c.duree > 4;
-      return `<span class="coup${deborde ? ' coup-deborde' : ''}" style="grid-column:${debut} / ${fin}"></span>`;
-    })
-    .join('');
-  const temps = ['1', 'et', '2', 'et', '3', 'et', '4', 'et'].map((t, i) => `<span class="temps${i % 2 ? ' temps-et' : ''}" style="grid-column:${i + 1}">${t}</span>`).join('');
-  return `<div class="rythme" role="img" aria-label="Rythme de la main gauche">${coups}${temps}</div>`;
-}
-
 function rendrePaliers(): void {
   const a = accords();
   const enc = encerclement(a[a.length - 2] ?? a[0]!, a[a.length - 1]!);
@@ -302,17 +302,30 @@ function rendrePaliers(): void {
     return `<article class="jazz-palier${courant ? ' palier-courant' : ''}" data-palier="${p.n}">
       <p class="exercise-step-num">Palier ${p.n}</p>
       <h3>${escapeHtml(p.titre)}</h3>
-      ${rythme(p)}
+      <div class="score palier-partition" data-partition="${p.n}" role="img" aria-label="Deux mesures d’exemple, main droite et main gauche"></div>
       <ul>${p.consignes.map((c) => `<li>${escapeHtml(c)}</li>`).join('')}${exempleEnc}</ul>
       <p class="palier-reussi"><span class="jazz-etiquette">Réussi quand</span> ${escapeHtml(p.reussi)}</p>
       <div class="exercise-controls">
         <button type="button" class="play-button" data-ecouter="${p.n}" aria-pressed="false"></button>
-        <button type="button" class="button bouton-tampon" data-tampon="${p.n}">J’y arrive à ${etat.bpm}, en ${escapeHtml(ton)}</button>
+        <button type="button" class="button bouton-tampon" data-tampon="${p.n}">${escapeHtml(libelleTampon(ton))}</button>
       </div>
       <p class="palier-record" data-record="${p.n}">${record ? `Ton record ici : <strong>${record}</strong> à la noire.` : 'Pas encore de tampon dans cette tonalité.'}</p>
     </article>`;
   }).join('');
+  // Les deux mesures d'exemple de chaque palier, dans la progression et la tonalité choisies.
+  for (const p of PALIERS) {
+    const el = q<HTMLElement>(`[data-partition="${p.n}"]`);
+    new Score(el, abcCellule(celluleDe(p), etat.tonique, etat.p.mode), true);
+  }
   majLecture();
+}
+
+const libelleTampon = (ton: string) => `J’y arrive à ${etat.bpm}, en ${ton}`;
+
+/** Le tempo change : seuls les boutons « J’y arrive » changent de texte, les partitions restent. */
+function majBoutonsTampon(): void {
+  const ton = tonicName(etat.tonique, etat.p.mode);
+  document.querySelectorAll<HTMLButtonElement>('[data-tampon]').forEach((b) => (b.textContent = libelleTampon(ton)));
 }
 
 function rendreLeCarnet(): void {

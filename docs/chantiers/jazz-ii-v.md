@@ -128,6 +128,21 @@ Le motif d’*Autumn Leaves* est strict (cinq accords d’affilée), d’où son
 - Sur téléphone, le bandeau ne garde que la lecture, le tempo et la tonalité. Le palier et l’exemple se choisissent dans les cartes.
 - Non vérifié par Claude : le son lui-même (le navigateur de test ne fait pas entendre l’audio) et l’allumage des mesures pendant la lecture (l’animation ne tourne pas dans le panneau de test masqué). L’horloge, elle, a été mesurée : décompte, position, changement de tempo.
 
+## Deux mesures écrites par palier (7 octobre 2026)
+
+Demandé par l’auteur : il ne veut pas tout lire sur partition, mais de petites cellules écrites l’aident. Par exemple, il voulait voir ce qu’est le voicing à quatre sons du palier 2. Branche `feat/jazz-ii-v-partitions`.
+
+- La bande « 1 et 2 et… » de chaque palier est remplacée par **deux mesures sur deux portées** (abcjs). Elles sont écrites dans la progression et la tonalité choisies, avec l’armure, les noms d’accords et « Swing » en tête. Les croches sont écrites droites.
+- Main gauche : l’exemple du palier, avec les voicings de toute la grille (les mêmes que les claviers des cartes). Main droite : silence aux paliers 1 à 3. Aux paliers 4 à 6 : croches dans le mode qui retombent sur la 3ce, une phrase au « et » de 1 qui finit sur une note guide, puis l’encerclement.
+- **« Écouter l’exemple » joue maintenant les deux mains telles qu’écrites**, en boucle sur les deux mesures, avec la section rythmique (choix A de l’auteur). Sans l’exemple, la section joue toute la grille.
+- Écriture, alignée sur les grilles de jazz :
+  - Do♭, Fa♭, Mi♯ et Si♯ deviennent Si, Mi, Fa et Do ;
+  - un accord dont le mode demande des doubles altérations prend l’autre nom de sa fondamentale (Fa♯ m7, pas Sol♭ m7) ;
+  - l’altéré et la gamme diminuée sont nommés par fonction (la 3ce de Sol 7 est si).
+- Piège d’abcjs : il ne retient pas l’altération d’une note liée par-dessus la barre. Toute altération hors armure est donc réécrite, même répétée dans la mesure.
+- Les tests vérifient, pour les 11 progressions, les 12 tonalités et les 6 paliers, qu’abcjs relit la partition sans avertissement et rejoue exactement les notes calculées.
+- Mise en page : cartes des paliers deux par rangée, cellule sur une ligne (une mesure par ligne sous 420 px). Le socle `Score` prend une option `uneLigne`.
+
 ## À décider
 
 - Le nom de la page (« Les ii–V du jazz » est provisoire).
@@ -136,4 +151,4 @@ Le motif d’*Autumn Leaves* est strict (cinq accords d’affilée), d’où son
 
 ## Prochaine action
 
-Recueillir le retour de l’auteur au piano sur la page publiée (https://klem88.github.io/atlas/viz/jazz-ii-v/) : son de la section, swing, voicings, textes des paliers. Corriger d’après son retour, sur une nouvelle branche.
+Les partitions des paliers sont sur `feat/jazz-ii-v-partitions`, à fusionner quand l’auteur le dit. Puis recueillir son retour au piano sur la page publiée (https://klem88.github.io/atlas/viz/jazz-ii-v/) : son de la section, swing, voicings, textes des paliers. Corriger d’après son retour, sur une nouvelle branche.

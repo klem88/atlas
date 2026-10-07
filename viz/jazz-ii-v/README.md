@@ -2,7 +2,7 @@
 
 Onze progressions du jazz dans la tonalité de ton choix : quel mode jouer sur chaque accord, six paliers rythmiques avec une section rythmique qui swingue, et un carnet de tes tempos.
 
-Exercice au piano de la rubrique « Exercices au piano » (`kind: 'exercice'` dans `src/shell/site.ts`). Contrairement aux autres exercices, il n’a **pas de partition** : l’auteur lit mal la portée, il veut savoir quel mode jouer sur quel accord, et sur quel rythme. La fiche du chantier est dans `docs/chantiers/jazz-ii-v.md`.
+Exercice au piano de la rubrique « Exercices au piano » (`kind: 'exercice'` dans `src/shell/site.ts`). Contrairement aux autres exercices, il n’a **pas de partition complète** : l’auteur lit mal la portée, il veut savoir quel mode jouer sur quel accord, et sur quel rythme. Chaque palier montre seulement deux mesures écrites, que « Écouter l’exemple » joue en boucle. La fiche du chantier est dans `docs/chantiers/jazz-ii-v.md`.
 
 ## Comment c’est fait
 
@@ -11,7 +11,9 @@ Exercice au piano de la rubrique « Exercices au piano » (`kind: 'exercice'` da
   - `spelling.ts` : l’orthographe des notes (le ♭II de do s’écrit ré♭) ;
   - `modes.ts` : les modes et leurs notes ;
   - `voicings.ts` : la main gauche, notes guides ou voicings A/B, avec le moins de mouvement possible sur toute la boucle ;
-  - `paliers.ts` : les six paliers, leur rythme et leur exemple de main gauche.
+  - `paliers.ts` : les six paliers et leur main gauche ;
+  - `cellules.ts` : les deux mesures d’exemple de chaque palier, note à note pour les deux mains ;
+  - `abc.ts` : ces deux mesures en notation ABC (armure, altérations, liaisons, noms d’accords).
 - Socle (`src/shell/music/`), partagé avec les futurs exercices :
   - `swing.ts` : la contrebasse qui marche, la ride et le charleston ;
   - `sounds.ts` : les sons synthétisés ;
