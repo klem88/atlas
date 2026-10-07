@@ -6,11 +6,10 @@ import { drumPattern, walkingBass, type ChordSpan } from '@shell/music/swing';
 import { mountShell } from '@shell/shell';
 import { MODES, nomsDuMode, notesDuMode } from './domain/modes';
 import { abcCellule } from './domain/abc';
-import { FENETRE, cellule, type Cellule } from './domain/cellules';
-import { PALIERS, encerclement, nomMode, type Palier } from './domain/paliers';
+import { cellule, type Cellule } from './domain/cellules';
+import { PALIERS, encerclement, mains, nomMode, type Palier } from './domain/paliers';
 import { PROGRESSIONS, QUALITES, dureeGrille, nomTonalite, progression, transpose, type Qualite } from './domain/progressions';
 import { CYCLE_QUARTES, tonicName } from './domain/spelling';
-import { voicingsMainGauche } from './domain/voicings';
 import { miniClavier, type Marque } from './ui/clavier';
 import { dateCourte, rendreCarnet } from './ui/carnet';
 import { chargerFrequences, rendreFrequence } from './ui/standards';
@@ -45,6 +44,7 @@ function retenu(cle: string) {
 
 const tempoRetenu = retenu('tempo');
 const palierRetenu = retenu('palier');
+const soloRetenu = retenu('solo');
 const carnet = carnetStocke(SLUG);
 
 const q = <T extends Element>(sel: string) => document.querySelector<T>(sel)!;
@@ -53,7 +53,7 @@ const el = {
   tempo: q<HTMLInputElement>('#tempo'),
   tempoOut: q<HTMLOutputElement>('#tempo-out'),
   palier: q<HTMLSelectElement>('#palier'),
-  exemple: q<HTMLInputElement>('#exemple'),
+  solo: q<HTMLInputElement>('#solo'),
   tonNom: q<HTMLElement>('[data-ton-nom]'),
   tonSuivant: q<HTMLButtonElement>('[data-ton-suivant]'),
   progression: q<HTMLSelectElement>('#progression'),
@@ -77,7 +77,10 @@ const etat = {
   tonique: 0,
   palier: Math.min(6, Math.max(1, Number(palierRetenu.get()) || 1)),
   bpm: Number(tempoRetenu.get()) || 100,
-  exemple: false,
+  /** Palier dont l'exemple ouvre la lecture en cours (joué au premier tour seulement), ou `null`. */
+  exempleDe: null as number | null,
+  /** Piano solo : la contrebasse se tait, ta main gauche fait la basse. */
+  solo: soloRetenu.get() === '1',
 };
 const kParam = Number(params.get('k'));
 etat.tonique = params.has('k') && Number.isInteger(kParam) && kParam >= 0 && kParam < 12 ? kParam : etat.p.tonique;
@@ -94,23 +97,21 @@ function tonsBasse(q: Qualite): number[] {
   return QUALITES[q].notes.slice(0, 4);
 }
 
-/** Les deux mesures d'exemple d'un palier, avec les voicings de toute la grille. */
-function celluleDe(p: Palier): Cellule {
-  const a = accords();
-  return cellule(p, a, voicingsMainGauche(a, p.main));
-}
+/** Les deux mesures d'exemple d'un palier, dans la progression et la tonalité choisies. */
+const celluleDe = (p: Palier): Cellule => cellule(p, accords());
 
 /**
- * Sans l'exemple, la section rythmique joue toute la grille. Avec l'exemple, elle boucle sur les deux mesures
- * écrites dans la carte du palier, et le piano joue les deux mains telles qu'elles sont écrites.
+ * La section rythmique joue toute la grille, en boucle (sans contrebasse en piano solo). Lancée par
+ * « Écouter l'exemple », la lecture commence par les deux mesures écrites du palier, jouées par le piano au premier
+ * tour seulement : ensuite, c'est à toi.
  */
 function boucle(): Loop {
-  const c = etat.exemple ? celluleDe(palierCourant()) : null;
-  const a = c ? c.accords : accords();
-  const L = c ? FENETRE : dureeGrille(etat.p);
+  const a = accords();
+  const L = dureeGrille(etat.p);
   const spans: ChordSpan[] = a.map((x) => ({ root: x.racine, start: x.debut, beats: x.temps, tones: tonsBasse(x.qualite) }));
-  const hits = [...walkingBass(spans, L), ...drumPattern(L), ...(c ? c.hits : [])];
-  return { hits, beats: L };
+  const hits = [...(etat.solo ? [] : walkingBass(spans, L)), ...drumPattern(L)];
+  const ex = etat.exempleDe === null ? null : celluleDe(PALIERS[etat.exempleDe - 1]!);
+  return ex ? { hits, beats: L, intro: ex.hits } : { hits, beats: L };
 }
 
 function majAdresse(): void {
@@ -131,7 +132,7 @@ function majLecture(): void {
   el.lecture.innerHTML = band.playing ? `${ICON_STOP} Arrêter` : `${ICON_PLAY} Jouer avec la section`;
   el.lecture.setAttribute('aria-pressed', String(band.playing));
   document.querySelectorAll<HTMLButtonElement>('[data-ecouter]').forEach((b) => {
-    const actif = band.playing && etat.exemple && Number(b.dataset.ecouter) === etat.palier;
+    const actif = band.playing && etat.exempleDe === Number(b.dataset.ecouter);
     b.setAttribute('aria-pressed', String(actif));
     b.innerHTML = actif ? `${ICON_STOP} Arrêter l’exemple` : `${ICON_PLAY} Écouter l’exemple`;
   });
@@ -148,13 +149,20 @@ function jouer(): void {
 }
 
 function arreter(): void {
+  etat.exempleDe = null;
   band.stop();
   void wakeLock?.release().catch(() => undefined);
   wakeLock = null;
   majLecture();
 }
 
-el.lecture.addEventListener('click', () => (band.playing ? arreter() : jouer()));
+el.lecture.addEventListener('click', () => {
+  if (band.playing) arreter();
+  else {
+    etat.exempleDe = null;
+    jouer();
+  }
+});
 
 el.tempo.value = String(etat.bpm);
 el.tempoOut.textContent = String(etat.bpm);
@@ -169,10 +177,11 @@ el.tempo.addEventListener('change', () => tempoRetenu.set(el.tempo.value));
 el.palier.innerHTML = PALIERS.map((p) => `<option value="${p.n}">${p.n}. ${escapeHtml(p.titre)}</option>`).join('');
 el.palier.addEventListener('change', () => choisirPalier(Number(el.palier.value)));
 
-el.exemple.addEventListener('change', () => {
-  etat.exemple = el.exemple.checked;
-  band.setLoop(boucle());
-  majLecture();
+el.solo.checked = etat.solo;
+el.solo.addEventListener('change', () => {
+  etat.solo = el.solo.checked;
+  soloRetenu.set(etat.solo ? '1' : '0');
+  if (band.playing) band.setLoop(boucle());
 });
 
 el.tonSuivant.addEventListener('click', () => {
@@ -188,6 +197,7 @@ el.progression.addEventListener('change', () => {
   // On garde la tonique si on reste dans le même mode, sinon on prend celle de la progression.
   if (p.mode !== etat.p.mode) etat.tonique = p.tonique;
   etat.p = p;
+  etat.exempleDe = null;
   if (band.playing) band.setLoop(boucle());
   rendreTout();
 });
@@ -196,6 +206,7 @@ el.tons.addEventListener('change', (e) => choisirTonalite(Number((e.target as HT
 
 function choisirTonalite(k: number): void {
   etat.tonique = k;
+  etat.exempleDe = null;
   if (band.playing) band.setLoop(boucle());
   rendreTout();
 }
@@ -204,7 +215,6 @@ function choisirPalier(n: number): void {
   etat.palier = n;
   el.palier.value = String(n);
   palierRetenu.set(String(n));
-  if (band.playing && etat.exemple) band.setLoop(boucle());
   rendreAccords();
   rendrePaliers();
   rendreLeCarnet();
@@ -259,7 +269,8 @@ function rendreGrille(): void {
 
 function rendreAccords(): void {
   const a = accords();
-  const voicings = voicingsMainGauche(a, palierCourant().main);
+  const palier = palierCourant();
+  const { mg: shellsMg, md: harmonieMd } = mains(palier, a);
   el.accords.innerHTML = a
     .map((acc, i) => {
       const suivant = a[(i + 1) % a.length]!;
@@ -274,7 +285,8 @@ function rendreAccords(): void {
       // Deux octaves, du do ou du fa en dessous : tous les claviers ont la même taille.
       const debut = bas - (bas % 12 < 5 ? bas % 12 : (bas % 12) - 5);
       const fin = debut + 24;
-      const mg = new Map<number, Marque>(voicings[i]!.map((m) => [m, 'joue']));
+      const mg = new Map<number, Marque>(shellsMg[i]!.map((m) => [m, 'joue']));
+      const mdJouee = harmonieMd ? new Map<number, Marque>(harmonieMd[i]!.map((m) => [m, 'joue'])) : null;
       const enc = encerclement(acc, suivant);
       const listeNoms = noms.map((n, k) => (guides.includes(pcs[k]!) ? `<strong>${escapeHtml(n)}</strong>` : escapeHtml(n))).join(' ');
       return `<article class="jazz-carte">
@@ -284,8 +296,14 @@ function rendreAccords(): void {
         ${miniClavier(debut, fin, md, `Main droite : ${nomMode(acc)}`)}
         <p class="carte-couleur">${escapeHtml(MODES[acc.mode].couleur)}</p>
         <p class="carte-cible">Vers ${escapeHtml(suivant.nom)} : vise <strong>${escapeHtml(enc.cible)}</strong>.</p>
-        <p class="carte-mg">Main gauche</p>
-        ${miniClavier(48, 71, mg, `Main gauche : ${voicings[i]!.length} notes`)}
+        ${
+          mdJouee
+            ? `<p class="carte-mg">Main droite, palier ${palier.n} : ${palier.md === 'guide' ? 'l’autre note guide' : 'le voicing à quatre sons'}</p>
+        ${miniClavier(53, 79, mdJouee, `Main droite au palier ${palier.n}`)}`
+            : ''
+        }
+        <p class="carte-mg">Main gauche : le shell (fondamentale et note guide)</p>
+        ${miniClavier(36, 59, mg, 'Main gauche : fondamentale et note guide')}
       </article>`;
     })
     .join('');
@@ -339,16 +357,14 @@ el.paliers.addEventListener('click', (e) => {
   const ecouter = cible.closest<HTMLButtonElement>('[data-ecouter]');
   if (ecouter) {
     const n = Number(ecouter.dataset.ecouter);
-    if (band.playing && etat.exemple && n === etat.palier) {
+    if (band.playing && etat.exempleDe === n) {
       arreter();
       return;
     }
-    etat.exemple = true;
-    el.exemple.checked = true;
     if (n !== etat.palier) choisirPalier(n);
-    if (band.playing) band.setLoop(boucle());
-    else jouer();
-    majLecture();
+    // L'exemple ouvre toujours la grille depuis le début, avec le décompte.
+    etat.exempleDe = n;
+    jouer();
     return;
   }
   const tampon = cible.closest<HTMLButtonElement>('[data-tampon]');

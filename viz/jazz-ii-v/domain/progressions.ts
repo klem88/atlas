@@ -288,6 +288,9 @@ export function transpose(p: Progression, tonique: number): AccordJoue[] {
 
 export const dureeGrille = (p: Progression) => p.accords.reduce((s, x) => s + x.temps, 0);
 
+/** Durée d'une grille déjà transposée, en temps. */
+export const dureeGrilleJouee = (accords: readonly AccordJoue[]) => accords.reduce((s, x) => s + x.temps, 0);
+
 /** Nom de la tonalité affichée (« Si♭ majeur », « La mineur »). */
 export function nomTonalite(p: Progression, tonique: number): string {
   return `${tonicName(tonique, p.mode)} ${p.mode}`;

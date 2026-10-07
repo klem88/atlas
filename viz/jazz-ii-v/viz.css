@@ -31,11 +31,10 @@
   min-width: 3ch;
 }
 
-/* Sur téléphone, le bandeau collant garde l'essentiel : lecture, tempo, tonalité. Le palier et l'exemple se
-   choisissent dans les cartes des paliers (« Écouter l'exemple »). */
+/* Sur téléphone, le bandeau collant garde l'essentiel : lecture, tempo, piano solo, tonalité. Le palier se choisit
+   dans les cartes des paliers (« Écouter l'exemple »). */
 @media (max-width: 560px) {
-  .jazz-bar .bar-palier,
-  .jazz-bar label:has(#exemple) {
+  .jazz-bar .bar-palier {
     display: none;
   }
 }

@@ -143,6 +143,19 @@ Demandé par l’auteur : il ne veut pas tout lire sur partition, mais de petite
 - Les tests vérifient, pour les 11 progressions, les 12 tonalités et les 6 paliers, qu’abcjs relit la partition sans avertissement et rejoue exactement les notes calculées.
 - Mise en page : cartes des paliers deux par rangée, cellule sur une ligne (une mesure par ligne sous 420 px). Le socle `Score` prend une option `uneLigne`.
 
+## Piano solo et exemple suivi de toute la grille (7 octobre 2026)
+
+Demandé par l’auteur. Branche `feat/jazz-ii-v-solo`, publiée le même jour à sa demande (« publie si tout roule »).
+
+- **« Écouter l’exemple » lance toute la grille**, en boucle, avec la section rythmique. Le piano joue les deux mesures écrites au premier tour seulement (`Loop.intro` dans `band.ts`), puis se tait : l’auteur enchaîne. Choix de l’auteur, parmi « se tait », « garde la main gauche » et « les deux mains continuent ».
+- **Une basse à la main gauche dans tous les paliers**, pour jouer en piano solo : un shell à la Bud Powell, fondamentale et 7e ou 3ce (choix de l’auteur, parmi « shells », « basse puis voicing » et « stride »). La main droite complète :
+  - palier 1 : l’autre note guide ;
+  - paliers 2 et 3 : le voicing à quatre sons ;
+  - paliers 4 à 6 : la ligne.
+- `voicings.ts` : `shells` (fondamentale de mi2 à mi3), `voicings` (main droite, de la3 à fa5), `autresGuides`, et la programmation dynamique commune `enchainement`.
+- **Case « Piano solo (sans contrebasse) »** dans le bandeau, retenue d’une visite à l’autre. La case « Exemple de main gauche » a disparu.
+- Les cartes d’accords montrent le mode, la main droite du palier choisi (paliers 1 à 3) et le shell.
+
 ## À décider
 
 - Le nom de la page (« Les ii–V du jazz » est provisoire).

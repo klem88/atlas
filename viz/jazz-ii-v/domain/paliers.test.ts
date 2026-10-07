@@ -1,13 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { PALIERS, encerclement, exemple } from './paliers';
+import { PALIERS, encerclement, exemple, mains, type Palier } from './paliers';
 import { PROGRESSIONS, dureeGrille, progression, transpose } from './progressions';
 
 const iiVI = transpose(progression('ii-v-i'), 0);
-const debuts = (n: number) => [...new Set(exemple(PALIERS[n - 1]!, iiVI, 16).map((h) => h.beat))];
+const mg = (palier: Palier, accords = iiVI) => mains(palier, accords).mg;
+const debuts = (n: number) => [...new Set(exemple(PALIERS[n - 1]!, iiVI, 16, mg(PALIERS[n - 1]!)).map((h) => h.beat))];
 
-describe('exemples de main gauche', () => {
-  it('palier 1 : un coup de deux notes par accord, à son début', () => {
-    const hits = exemple(PALIERS[0]!, iiVI, 16);
+describe('deux mains en piano solo', () => {
+  it('la main gauche joue toujours un shell ; la droite complète selon le palier', () => {
+    expect(PALIERS.map((p) => p.md)).toEqual(['guide', 'voicing', 'voicing', 'ligne', 'ligne', 'ligne']);
+    for (const p of PALIERS) {
+      const { mg: g, md } = mains(p, iiVI);
+      for (const s of g) expect(s).toHaveLength(2);
+      expect(md?.[0]?.length ?? 0).toBe(p.md === 'guide' ? 1 : p.md === 'voicing' ? 4 : 0);
+    }
+  });
+});
+
+describe('accompagnement', () => {
+  it('palier 1 : un shell tenu par accord, à son début', () => {
+    const hits = exemple(PALIERS[0]!, iiVI, 16, mg(PALIERS[0]!));
     expect(hits).toHaveLength(6);
     expect(debuts(1)).toEqual([0, 4, 8]);
   });
@@ -27,7 +39,7 @@ describe('exemples de main gauche', () => {
   it('restent dans la boucle, pour toutes les grilles', () => {
     for (const p of PROGRESSIONS)
       for (const palier of PALIERS)
-        for (const h of exemple(palier, transpose(p, p.tonique), dureeGrille(p))) {
+        for (const h of exemple(palier, transpose(p, p.tonique), dureeGrille(p), mg(palier, transpose(p, p.tonique)))) {
           expect(h.beat).toBeGreaterThanOrEqual(0);
           expect(h.beat).toBeLessThan(dureeGrille(p));
         }

@@ -11,6 +11,8 @@ export interface Loop {
   hits: readonly Hit[];
   /** Longueur de la boucle, en temps. */
   beats: number;
+  /** Coups joués au premier tour seulement (un exemple, avant de laisser jouer). */
+  intro?: readonly Hit[];
 }
 
 const AVANCE = 0.15;
@@ -108,7 +110,8 @@ export class Band {
     for (let b = Math.ceil(debut); b < Math.min(fin, 0); b++) hatHit(ctx, bus, this.timeOf(b), 1);
     const L = this.loop.beats;
     for (let pass = Math.floor(Math.max(debut, 0) / L); pass * L < fin; pass++) {
-      for (const h of this.loop.hits) {
+      const coups = pass === 0 && this.loop.intro ? [...this.loop.hits, ...this.loop.intro] : this.loop.hits;
+      for (const h of coups) {
         const abs = pass * L + h.beat;
         if (abs < debut || abs >= fin || abs < 0) continue;
         const t = this.timeOf(swungBeat(abs, frac));

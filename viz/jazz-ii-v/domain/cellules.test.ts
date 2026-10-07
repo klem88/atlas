@@ -6,14 +6,12 @@ import { notesDuMode } from './modes';
 import { PALIERS } from './paliers';
 import { PROGRESSIONS, QUALITES, progression, transpose } from './progressions';
 import { CYCLE_QUARTES } from './spelling';
-import { voicingsMainGauche } from './voicings';
 
 const pc = (n: number) => ((n % 12) + 12) % 12;
 
 function celluleDe(id: string, tonique: number, n: number): Cellule {
   const accords = transpose(progression(id), tonique);
-  const palier = PALIERS[n - 1]!;
-  return cellule(palier, accords, voicingsMainGauche(accords, palier.main));
+  return cellule(PALIERS[n - 1]!, accords);
 }
 
 const accordA = (c: Cellule, t: number) => c.accords.filter((a) => a.debut <= t).pop()!;
@@ -31,36 +29,58 @@ describe('armure', () => {
   });
 });
 
-describe('main gauche', () => {
-  it('palier 2 en do : le voicing à quatre sons, en noire pointée puis croche', () => {
+const pcs = (notes: readonly number[]) => [...notes].map(pc).sort((a, b) => a - b);
+
+describe('piano solo : shell à gauche, harmonie ou ligne à droite', () => {
+  it('palier 2 en do : shell ré + do ou fa, voicing fa-la-do-mi à droite, en noire pointée puis croche', () => {
     const c = celluleDe('ii-v-i', 0, 2);
-    expect(c.mg.slice(0, 2).map((e) => [e.debut, e.duree, e.notes])).toEqual([
-      [0, 1.5, [53, 57, 60, 64]], // fa la do mi
-      [1.5, 0.5, [53, 57, 60, 64]],
+    expect(c.md.slice(0, 2).map((e) => [e.debut, e.duree, pcs(e.notes)])).toEqual([
+      [0, 1.5, [0, 4, 5, 9]],
+      [1.5, 0.5, [0, 4, 5, 9]],
     ]);
-    expect(c.mg[0]!.noms).toEqual(['fa', 'la', 'do', 'mi']);
+    expect(c.mg[0]!.noms[0]).toBe('ré');
+    expect(c.mg.slice(0, 2).map((e) => [e.debut, e.duree, e.notes.length])).toEqual([
+      [0, 1.5, 2],
+      [1.5, 0.5, 2],
+    ]);
   });
 
-  it('palier 3 : l’accord de la mesure 2 arrive sur le « et » de 4 de la mesure 1', () => {
+  it('palier 3 : les deux mains anticipent l’accord de la mesure 2 sur le « et » de 4', () => {
     const c = celluleDe('ii-v-i', 0, 3);
-    expect(c.mg.map((e) => e.debut)).toContain(3.5);
-    expect(c.mg.find((e) => e.debut === 3.5)!.notes.map(pc)).toEqual([5, 9, 11, 4]); // fa la si mi : Sol 7
+    expect(pcs(c.md.find((e) => e.debut === 3.5)!.notes)).toEqual([4, 5, 9, 11]); // fa la si mi : Sol 7
+    expect(pc(c.mg.find((e) => e.debut === 3.5)!.notes[0]!)).toBe(7); // sol à la basse
   });
 
-  it('palier 1 : 3ce et 7e tenues', () => {
+  it('palier 1 : un shell et l’autre note guide, tenus', () => {
     const c = celluleDe('ii-v-i', 0, 1);
     expect(c.mg.map((e) => [e.debut, e.duree, e.notes.length])).toEqual([
       [0, 4, 2],
       [4, 4, 2],
     ]);
+    expect(c.md.map((e) => [e.debut, e.duree, e.notes.length])).toEqual([
+      [0, 4, 1],
+      [4, 4, 1],
+    ]);
+  });
+
+  it('la main gauche a toujours la fondamentale en bas, à tous les paliers', () => {
+    for (const p of PROGRESSIONS)
+      for (const palier of PALIERS)
+        for (const t of [0, 6]) {
+          const c = celluleDe(p.id, t, palier.n);
+          const grille = transpose(p, t);
+          const L = grille.reduce((x, a) => x + a.temps, 0);
+          for (const e of c.mg) {
+            // Au palier 3, le coup du « et » de 4 appartient déjà à l'accord suivant de la grille.
+            const b = (e.debut + (palier.n === 3 && e.debut % 1 ? 0.5 : 0)) % L;
+            const acc = grille.filter((a) => a.debut <= b).pop()!;
+            expect(pc(e.notes[0]!), `${p.id} ${t} ${palier.n} ${e.debut}`).toBe(acc.racine);
+          }
+        }
   });
 });
 
-describe('main droite', () => {
-  it('se tait aux paliers 1 à 3', () => {
-    for (const n of [1, 2, 3]) expect(celluleDe('ii-v-i', 0, n).md).toEqual([]);
-  });
-
+describe('ligne de main droite', () => {
   for (const p of PROGRESSIONS)
     for (const n of [4, 5, 6])
       it(`${p.id}, palier ${n} : notes du mode, dans la zone, 3ce sur chaque changement d’accord`, () => {
@@ -124,7 +144,7 @@ describe('partition ABC', () => {
 
   it('écrit le Charleston en do comme on l’attend', () => {
     const abc = abcCellule(celluleDe('ii-v-i', 0, 2), 0, 'majeur');
-    expect(abc).toContain('[F,A,CE]3');
+    expect(abc.split('\n').find((l) => l.startsWith('[V:RH]'))).toMatch(/\][3]/); // un accord en noire pointée à droite
     expect(abc).toContain('"^Swing · Ré m7"');
   });
 
