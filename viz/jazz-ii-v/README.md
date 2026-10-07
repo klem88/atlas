@@ -10,8 +10,8 @@ Exercice au piano de la rubrique « Exercices au piano » (`kind: 'exercice'` da
   - `progressions.ts` : les 11 grilles en degrés, avec leurs motifs de comptage ;
   - `spelling.ts` : l’orthographe des notes (le ♭II de do s’écrit ré♭) ;
   - `modes.ts` : les modes et leurs notes ;
-  - `voicings.ts` : la main gauche, notes guides ou voicings A/B, avec le moins de mouvement possible sur toute la boucle ;
-  - `paliers.ts` : les six paliers et leur main gauche ;
+  - `voicings.ts` : les deux mains en piano solo. À gauche les shells (fondamentale et note guide), à droite les notes guides ou les voicings A/B, avec le moins de mouvement possible sur toute la boucle ;
+  - `paliers.ts` : les six paliers, ce que joue chaque main et l’accompagnement sur la grille ;
   - `cellules.ts` : les deux mesures d’exemple de chaque palier, note à note pour les deux mains ;
   - `abc.ts` : ces deux mesures en notation ABC (armure, altérations, liaisons, noms d’accords).
 - Socle (`src/shell/music/`), partagé avec les futurs exercices :

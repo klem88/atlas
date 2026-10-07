@@ -2,15 +2,16 @@
  * Deux mesures d'exemple par palier, écrites note à note pour les deux mains : ce que montre la petite partition
  * de chaque carte, et ce que joue « Écouter l'exemple » (en boucle, avec la section rythmique).
  *
- * - Main gauche : l'exemple du palier (`exemple`), avec les voicings de toute la grille, pour que la partition
- *   montre les mêmes notes que les claviers des cartes d'accords.
- * - Main droite : rien aux paliers 1 à 3 ; aux paliers 4 à 6, une ligne de croches calculée dans le mode de chaque
- *   accord, qui retombe sur la 3ce à chaque changement d'accord.
+ * - Les deux mesures sont prises dans l'accompagnement de toute la grille (`exemple`), avec les notes de toute la grille
+ *   (`mains`) : la partition montre les mêmes notes que les claviers des cartes d'accords, et l'anticipation de la fin
+ *   de la mesure 2 vise bien l'accord suivant de la grille.
+ * - Main gauche : le shell. Main droite : l'autre note guide (palier 1), le voicing (paliers 2 et 3), ou, aux paliers
+ *   4 à 6, une ligne de croches calculée dans le mode de chaque accord, qui retombe sur la 3ce à chaque changement.
  */
 import type { Hit } from '@shell/music/swing';
 import { notesDuMode, nomsDuMode } from './modes';
-import { exemple, encerclement, type Palier } from './paliers';
-import { QUALITES, type AccordJoue } from './progressions';
+import { exemple, encerclement, mains, type Palier } from './paliers';
+import { QUALITES, dureeGrilleJouee, type AccordJoue } from './progressions';
 
 /** Longueur de l'exemple, en temps : deux mesures. */
 export const FENETRE = 8;
@@ -35,7 +36,7 @@ export interface Cellule {
   accords: AccordJoue[];
   md: Evenement[];
   mg: Evenement[];
-  /** Les deux mains, pour l'écoute (temps droits, le swing s'applique à la lecture). */
+  /** Les deux mains telles qu'écrites, pour l'écoute (temps droits, le swing s'applique à la lecture). */
   hits: Hit[];
 }
 
@@ -140,24 +141,29 @@ export function mainDroite(palier: Palier, accords: readonly AccordJoue[]): Even
 const arrondi = (x: number) => Math.max(0.5, Math.round(x * 2) / 2);
 
 /**
- * Main gauche écrite, à partir des coups de l'exemple : arrondie à la croche, coupée au coup suivant,
- * et un accord qui déborde de la boucle (l'anticipation du premier accord) est écrit en deux morceaux.
+ * Les coups de toute la grille ramenés aux deux mesures : ceux qui commencent avant la fin de la mesure 2 (coupés là),
+ * et le morceau d'un accord anticipé à la fin de la grille qui déborde sur le début (palier 3).
  */
-function mainGauche(hits: readonly Hit[], accords: readonly AccordJoue[], voicings: readonly (readonly number[])[]): Evenement[] {
+function fenetrer(hits: readonly Hit[], duree: number): Hit[] {
+  const out: Hit[] = [];
+  for (const h of hits) {
+    if (h.beat < FENETRE) out.push({ ...h, dur: Math.min(h.dur, FENETRE - h.beat) });
+    if (h.beat + h.dur > duree) out.push({ ...h, beat: 0, dur: h.beat + h.dur - duree });
+  }
+  return out;
+}
+
+/** Une main écrite, à partir de ses coups : arrondie à la croche, chaque coup coupé au suivant. */
+function ecrire(hits: readonly Hit[], accords: readonly AccordJoue[], notes: readonly (readonly number[])[]): Evenement[] {
   const parDebut = new Map<number, Hit[]>();
   for (const h of hits) parDebut.set(h.beat, [...(parDebut.get(h.beat) ?? []), h]);
   const evts: Evenement[] = [];
   for (const [debut, groupe] of parDebut) {
-    const notes = groupe.map((h) => h.midi!).sort((a, b) => a - b);
-    const cle = notes.join(',');
-    const i = voicings.findIndex((v) => [...v].sort((a, b) => a - b).join(',') === cle);
+    const n = [...new Set(groupe.map((h) => h.midi!))].sort((a, b) => a - b);
+    const cle = n.join(',');
+    const i = notes.findIndex((v) => [...v].sort((a, b) => a - b).join(',') === cle);
     const acc = accords[Math.max(0, i)]!;
-    const noms = notes.map((m) => nommer(acc, m));
-    const duree = arrondi(groupe[0]!.dur);
-    if (debut + duree > FENETRE) {
-      evts.push({ debut, duree: FENETRE - debut, notes, noms });
-      evts.push({ debut: 0, duree: debut + duree - FENETRE, notes, noms });
-    } else evts.push({ debut, duree, notes, noms });
+    evts.push({ debut, duree: arrondi(Math.max(...groupe.map((h) => h.dur))), notes: n, noms: n.map((m) => nommer(acc, m)) });
   }
   evts.sort((a, b) => a.debut - b.debut);
   evts.forEach((e, k) => {
@@ -167,14 +173,16 @@ function mainGauche(hits: readonly Hit[], accords: readonly AccordJoue[], voicin
   return evts;
 }
 
-/** Les deux mesures d'un palier, sur la grille `accords` (toute la grille) avec ses voicings de main gauche. */
-export function cellule(palier: Palier, accords: readonly AccordJoue[], voicings: readonly (readonly number[])[]): Cellule {
+const versHits = (evts: readonly Evenement[], vel: (e: Evenement) => number): Hit[] =>
+  evts.flatMap((e) => e.notes.map((midi) => ({ beat: e.debut, kind: 'piano' as const, midi, dur: e.duree * 0.9, vel: vel(e) })));
+
+/** Les deux mesures d'un palier, prises dans la grille `accords` (toute la grille, dans la tonalité choisie). */
+export function cellule(palier: Palier, accords: readonly AccordJoue[]): Cellule {
   const win = fenetre(accords);
-  const vWin = voicings.slice(0, win.length);
-  const hitsMg = exemple(palier, win, FENETRE, vWin);
-  const md = mainDroite(palier, win);
-  const hitsMd: Hit[] = md.flatMap((e) =>
-    e.notes.map((midi) => ({ beat: e.debut, kind: 'piano' as const, midi, dur: e.duree * 0.9, vel: e.debut % 1 ? 0.75 : 0.62 })),
-  );
-  return { accords: win, md, mg: mainGauche(hitsMg, win, vWin), hits: [...hitsMg, ...hitsMd].sort((a, b) => a.beat - b.beat) };
+  const duree = dureeGrilleJouee(accords);
+  const { mg: notesMg, md: notesMd } = mains(palier, accords);
+  const mg = ecrire(fenetrer(exemple(palier, accords, duree, notesMg), duree), accords, notesMg);
+  const md = notesMd ? ecrire(fenetrer(exemple(palier, accords, duree, notesMd), duree), accords, notesMd) : mainDroite(palier, win);
+  const hits = [...versHits(mg, () => 0.7), ...versHits(md, (e) => (notesMd ? 0.6 : e.debut % 1 ? 0.75 : 0.62))];
+  return { accords: win, md, mg, hits: hits.sort((a, b) => a.beat - b.beat) };
 }
