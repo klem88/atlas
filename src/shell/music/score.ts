@@ -116,6 +116,8 @@ export class Score {
   constructor(
     readonly el: HTMLElement,
     private abc: string,
+    /** Une seule ligne, sans retour, pour une courte cellule de deux mesures (une mesure par ligne sur téléphone). */
+    private readonly uneLigne = false,
   ) {
     this.render();
     new ResizeObserver(() => {
@@ -148,7 +150,10 @@ export class Score {
       paddingleft: 4,
       paddingright: 4,
       foregroundColor: 'currentColor',
-      wrap: { minSpacing: 1.6, maxSpacing: 2.7, preferredMeasuresPerLine: measuresPerLine(width) },
+      // Une cellule courte tient sur une ligne, sauf sur un téléphone, où chaque mesure prend la sienne.
+      ...(this.uneLigne && width >= 420
+        ? {}
+        : { wrap: { minSpacing: 1.6, maxSpacing: 2.7, preferredMeasuresPerLine: this.uneLigne ? 1 : measuresPerLine(width) } }),
     })[0]!;
     this.el.querySelectorAll('.abcjs-annotation').forEach((n) => {
       const text = n.textContent ?? '';

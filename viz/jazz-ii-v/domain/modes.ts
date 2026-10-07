@@ -2,7 +2,7 @@
  * Les modes à jouer sur chaque accord, et les notes qui comptent : les notes guides (3ce et 7e),
  * qui disent la couleur de l'accord, et la note à viser sur l'accord suivant (sa 3ce).
  */
-import { spellDegree } from './spelling';
+import { alterationBrute, spellDegree } from './spelling';
 
 export type ModeId =
   | 'ionien'
@@ -47,22 +47,37 @@ export function notesDuMode(racine: number, mode: ModeId): number[] {
 }
 
 const MAJEURE = [0, 2, 4, 5, 7, 9, 11];
-const BEMOLS = ['do', 'ré♭', 'ré', 'mi♭', 'mi', 'fa', 'sol♭', 'sol', 'la♭', 'la', 'si♭', 'si'];
-const DIESES = ['do', 'do♯', 'ré', 'ré♯', 'mi', 'fa', 'fa♯', 'sol', 'sol♯', 'la', 'la♯', 'si'];
 
 /**
- * Noms des notes du mode, depuis la fondamentale (« Ré » → ré, mi, fa…), en minuscules.
- * Un mode de sept notes prend une lettre par note ; la gamme diminuée (huit notes) prend des noms simples.
+ * Degrés qui nomment les notes des modes où « une lettre par note » trahit la fonction : l'altéré s'écrit
+ * 1, ♭9, ♯9, 3, ♭5, ♭13, ♭7 (sur Sol 7 : si, pas do♭), la gamme diminuée garde la 7e diminuée de l'accord (si♭ sur do♯).
+ */
+const DEGRES: Partial<Record<ModeId, readonly string[]>> = {
+  altere: ['1', 'b2', '#2', '3', 'b5', 'b6', 'b7'],
+  tonDemiTon: ['1', '2', 'b3', '4', 'b5', 'b6', 'bb7', '7'],
+};
+
+function degresDuMode(mode: ModeId): readonly string[] {
+  return (
+    DEGRES[mode] ??
+    MODES[mode].intervalles.map((i, k) => {
+      const ecart = i - MAJEURE[k]!;
+      return (ecart < 0 ? 'b'.repeat(-ecart) : '#'.repeat(ecart)) + String(k + 1);
+    })
+  );
+}
+
+/** Nombre de notes du mode qui demanderaient une double altération depuis cette fondamentale (si𝄫 dans sol♭ dorien). */
+export function doublesAlterations(note: string, mode: ModeId): number {
+  return degresDuMode(mode).filter((d) => Math.abs(alterationBrute(note, d)) > 1).length;
+}
+
+/**
+ * Noms des notes du mode, depuis la fondamentale (« Ré » → ré, mi, fa…), en minuscules : une lettre par note,
+ * sauf pour l'altéré et la gamme diminuée (voir `DEGRES`).
  */
 export function nomsDuMode(note: string, racine: number, mode: ModeId): string[] {
-  const intervalles = MODES[mode].intervalles;
-  if (intervalles.length !== 7) {
-    const noms = note.includes('♯') ? DIESES : BEMOLS;
-    return intervalles.map((i) => noms[mod12(racine + i)]!);
-  }
-  return intervalles.map((i, k) => {
-    const ecart = i - MAJEURE[k]!;
-    const degre = (ecart < 0 ? 'b'.repeat(-ecart) : '#'.repeat(ecart)) + String(k + 1);
-    return spellDegree(note, degre).toLowerCase();
-  });
+  const degres = degresDuMode(mode);
+  // spellDegree remplace lui-même une double altération par un nom simple.
+  return degres.map((d) => spellDegree(note, d).toLowerCase());
 }

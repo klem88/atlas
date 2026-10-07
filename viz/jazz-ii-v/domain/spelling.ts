@@ -30,7 +30,7 @@ export function pitchOfName(nom: string): number {
   return mod12(NATURELLE[lettre]! + alteration);
 }
 
-function lireNom(nom: string): { lettre: number; alteration: number } {
+export function lireNom(nom: string): { lettre: number; alteration: number } {
   const lettre = LETTRES.findIndex((l) => nom.startsWith(l));
   if (lettre < 0) throw new Error(`Note inconnue : ${nom}`);
   const reste = nom.slice(LETTRES[lettre]!.length);
@@ -38,6 +38,29 @@ function lireNom(nom: string): { lettre: number; alteration: number } {
   for (const c of reste) alteration += c === '♯' ? 1 : c === '♭' ? -1 : 0;
   return { lettre, alteration };
 }
+
+/** Altération que demanderait le degré, avant tout repli (2 = double dièse, -2 = double bémol). */
+export function alterationBrute(tonique: string, degre: string): number {
+  const m = /^([b#]*)([1-7])$/.exec(degre);
+  if (!m) throw new Error(`Degré illisible : ${degre}`);
+  const d = Number(m[2]) - 1;
+  const decalage = [...m[1]!].reduce((s, c) => s + (c === '#' ? 1 : -1), 0);
+  const t = lireNom(tonique);
+  const pc = mod12(NATURELLE[t.lettre]! + t.alteration + MAJEURE[d]! + decalage);
+  let alteration = pc - NATURELLE[(t.lettre + d) % 7]!;
+  if (alteration > 6) alteration -= 12;
+  if (alteration < -6) alteration += 12;
+  return alteration;
+}
+
+/** L'autre nom d'une note altérée (sol♭ ↔ fa♯) ; une note naturelle garde le sien. */
+export function enharmonique(nom: string): string {
+  const pc = pitchOfName(nom);
+  if (nom.includes('♭')) return DIESES_SIMPLES[pc]!;
+  if (nom.includes('♯')) return SIMPLES[pc]!;
+  return nom;
+}
+const DIESES_SIMPLES = ['Do', 'Do♯', 'Ré', 'Ré♯', 'Mi', 'Fa', 'Fa♯', 'Sol', 'Sol♯', 'La', 'La♯', 'Si'];
 
 /** Nom de la note au degré donné (« 2 », « b2 », « #1 », « b7 »…) au-dessus de la tonique. */
 export function spellDegree(tonique: string, degre: string): string {

@@ -29,6 +29,12 @@ describe('transposition', () => {
       for (const t of CYCLE_QUARTES) for (const acc of transpose(p, t)) expect(acc.note).not.toMatch(/♭♭|♯♯/);
   });
 
+  it('écrit les accords comme les grilles de jazz, sans do♭ ni double bémol', () => {
+    expect(noms('tritonique', 10)[1]).toBe('Si 7'); // et non Do♭ 7
+    expect(noms('ii-v-chromatiques', 3).slice(2, 4)).toEqual(['Fa♯ m7', 'Si 7']); // et non Sol♭ m7
+    expect(noms('ii-v-i', 6)).toEqual(['La♭ m7', 'Ré♭ 7', 'Sol♭ 7M']);
+  });
+
   it('place les débuts bout à bout', () => {
     expect(transpose(progression('ii-v-i'), 0).map((a) => a.debut)).toEqual([0, 4, 8]);
   });

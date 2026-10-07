@@ -1,18 +1,12 @@
 /**
  * Les six paliers, les mêmes pour toutes les progressions. Chacun dit en mots ce que fait chaque main,
- * montre une mesure de rythme de main gauche, et sait jouer cette main gauche sur la grille (« Écouter l'exemple »).
+ * et sait jouer sa main gauche sur une grille. Les deux mesures écrites de chaque carte sont dans cellules.ts.
  */
 import type { Hit } from '@shell/music/swing';
 import { MODES, notesDuMode } from './modes';
 import { QUALITES, type AccordJoue } from './progressions';
 import { spellDegree } from './spelling';
 import { voicingsMainGauche, type Main } from './voicings';
-
-/** Un coup de main gauche dans une mesure de 4 temps, en temps (croches à n + 0,5). */
-export interface Coup {
-  debut: number;
-  duree: number;
-}
 
 export interface Palier {
   n: number;
@@ -21,15 +15,8 @@ export interface Palier {
   consignes: readonly string[];
   /** Quand tamponner « J’y arrive ». */
   reussi: string;
-  /** Une mesure de rythme de main gauche, pour l'affichage. Un coup qui dépasse 4 déborde sur la mesure suivante. */
-  rythme: readonly Coup[];
   main: Main;
 }
-
-const CHARLESTON: Coup[] = [
-  { debut: 0, duree: 1.5 },
-  { debut: 1.5, duree: 0.5 },
-];
 
 export const PALIERS: readonly Palier[] = [
   {
@@ -41,7 +28,6 @@ export const PALIERS: readonly Palier[] = [
       'Main droite : rien. Ou la fondamentale à l’octave, si tu as besoin de te repérer.',
     ],
     reussi: 'Toute la grille sans t’arrêter, sans chercher la note suivante des yeux.',
-    rythme: [{ debut: 0, duree: 4 }],
     main: 'guides',
   },
   {
@@ -53,7 +39,6 @@ export const PALIERS: readonly Palier[] = [
       'Main droite : rien. Laisse la basse et la batterie te porter.',
     ],
     reussi: 'Tu tombes avec la ride sur le « et » de 2 sans y penser, à chaque mesure.',
-    rythme: CHARLESTON,
     main: 'sansFondamentale',
   },
   {
@@ -65,10 +50,6 @@ export const PALIERS: readonly Palier[] = [
       'Main droite : rien.',
     ],
     reussi: 'Quand la basse arrive sur le temps 1, ta main gauche y est déjà, sans précipiter le reste.',
-    rythme: [
-      { debut: 1.5, duree: 0.5 },
-      { debut: 3.5, duree: 2 },
-    ],
     main: 'sansFondamentale',
   },
   {
@@ -81,7 +62,6 @@ export const PALIERS: readonly Palier[] = [
       'Legato, accent sur les « et » : « dou-BA dou-BA ».',
     ],
     reussi: 'Des croches sans trou sur toute la grille, chaque nouvel accord pris par sa 3ce.',
-    rythme: CHARLESTON,
     main: 'sansFondamentale',
   },
   {
@@ -89,12 +69,11 @@ export const PALIERS: readonly Palier[] = [
     titre: 'Phrases à contretemps',
     consignes: [
       'Main gauche : le Charleston.',
-      'Main droite : deux mesures de jeu, deux mesures de silence. Chaque phrase commence sur un « et », le plus souvent le « et » de 1.',
+      'Main droite : une phrase courte, puis autant de silence (dans l’exemple, une mesure de chaque). Chaque phrase commence sur un « et », le plus souvent le « et » de 1.',
       'Finis sur une note guide, sur un temps faible, et laisse le silence répondre.',
       'C’est l’exercice qui fait swinguer : on apprend à partir d’à côté du temps, pas à jouer dessus.',
     ],
     reussi: 'Tes phrases démarrent sur le « et » sans hésiter, et tu retombes sur la grille après chaque silence.',
-    rythme: CHARLESTON,
     main: 'sansFondamentale',
   },
   {
@@ -106,14 +85,17 @@ export const PALIERS: readonly Palier[] = [
       'Entre deux encerclements, des croches dans le mode, comme au palier 4.',
     ],
     reussi: 'Chaque 3ce encerclée tombe pile sur le temps 1, sur toute la grille.',
-    rythme: CHARLESTON,
     main: 'sansFondamentale',
   },
 ];
 
 /** La main gauche du palier, jouée sur la grille : des coups de piano en temps depuis le début de la boucle. */
-export function exemple(palier: Palier, accords: readonly AccordJoue[], dureeBoucle: number): Hit[] {
-  const voicings = voicingsMainGauche(accords, palier.main);
+export function exemple(
+  palier: Palier,
+  accords: readonly AccordJoue[],
+  dureeBoucle: number,
+  voicings: readonly (readonly number[])[] = voicingsMainGauche(accords, palier.main),
+): Hit[] {
   const hits: Hit[] = [];
   const coup = (beat: number, dur: number, notes: readonly number[], vel: number) => {
     for (const midi of notes) hits.push({ beat: (beat + dureeBoucle) % dureeBoucle, kind: 'piano', midi, dur, vel });

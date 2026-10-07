@@ -4,8 +4,8 @@
  * (intervalles depuis le premier accord, qualités admises), indépendamment de la tonalité du morceau.
  */
 import type { Quality } from '@shell/music/chords';
-import type { ModeId } from './modes';
-import { pitchOfName, spellDegree, tonicName, type Mode } from './spelling';
+import { doublesAlterations, type ModeId } from './modes';
+import { enharmonique, pitchOfName, spellDegree, tonicName, type Mode } from './spelling';
 
 export type Qualite = 'm7' | '7' | '7alt' | '7M' | '6' | 'ø' | 'm6' | '°7';
 
@@ -264,11 +264,22 @@ export interface AccordJoue extends AccordGrille {
   debut: number;
 }
 
+/**
+ * Do♭, Fa♭, Mi♯ et Si♯ sont justes en théorie (le ♭II de si♭ est do♭) mais les grilles de jazz écrivent Si 7 :
+ * on les remplace par la note naturelle, dont les notes de mode restent lisibles.
+ */
+const ENHARMONIQUES: Readonly<Record<string, string>> = { 'Do♭': 'Si', 'Fa♭': 'Mi', 'Mi♯': 'Fa', 'Si♯': 'Do' };
+const respeller = (note: string) => ENHARMONIQUES[note] ?? note;
+
 export function transpose(p: Progression, tonique: number): AccordJoue[] {
   const t = tonicName(tonique, p.mode);
   let debut = 0;
   return p.accords.map((acc) => {
-    const note = spellDegree(t, acc.degre);
+    let note = respeller(spellDegree(t, acc.degre));
+    // Sol♭ m7 en mi♭ demanderait si𝄫 : on l'écrit Fa♯ m7, comme les grilles (c'est le ii de Si 7). Un accord altéré
+    // en demande parfois sous ses deux noms : on garde celui qui en demande le moins.
+    const autre = enharmonique(note);
+    if (doublesAlterations(autre, acc.mode) < doublesAlterations(note, acc.mode)) note = autre;
     const joue: AccordJoue = { ...acc, racine: pitchOfName(note), note, nom: `${note} ${QUALITES[acc.qualite].suffixe}`, debut };
     debut += acc.temps;
     return joue;
