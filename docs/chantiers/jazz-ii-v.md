@@ -151,4 +151,4 @@ Demandé par l’auteur : il ne veut pas tout lire sur partition, mais de petite
 
 ## Prochaine action
 
-Les partitions des paliers sont sur `feat/jazz-ii-v-partitions`, à fusionner quand l’auteur le dit. Puis recueillir son retour au piano sur la page publiée (https://klem88.github.io/atlas/viz/jazz-ii-v/) : son de la section, swing, voicings, textes des paliers. Corriger d’après son retour, sur une nouvelle branche.
+Partitions des paliers publiées le 7 octobre 2026. Recueillir son retour au piano sur la page publiée (https://klem88.github.io/atlas/viz/jazz-ii-v/) : son de la section, swing, voicings, textes des paliers. Corriger d’après son retour, sur une nouvelle branche.
